@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+
 public interface Database {
 	/**
 	 * Create database with the given name, or use it if exists. This method
