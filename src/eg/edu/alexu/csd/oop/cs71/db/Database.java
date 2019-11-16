@@ -25,8 +25,7 @@ public interface Database {
 	 * @throws SQLException
 	 *             syntax error
 	 */
-	public boolean executeStructureQuery(String query)
-			throws java.sql.SQLException;
+	public boolean executeStructureQuery(String query) throws java.sql.SQLException;
 
 	/**
 	 * Select from table
