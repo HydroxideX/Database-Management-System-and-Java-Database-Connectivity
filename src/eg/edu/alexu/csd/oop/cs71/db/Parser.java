@@ -29,6 +29,7 @@ class Parser {
                     {
                         if(command.length<3)
                             return false;
+                        if(command[0].equals("drop")&&command.length>3)return false;
                         if(command.length==3)return true;
                         if(!command[3].contains("("))
                             return false;
