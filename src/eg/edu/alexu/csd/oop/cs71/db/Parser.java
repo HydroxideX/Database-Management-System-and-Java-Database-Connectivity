@@ -1,7 +1,9 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 class Parser {
     private Main engine = new Main();
@@ -9,8 +11,10 @@ class Parser {
     {
         String q2=q;
         q=q.toLowerCase();
+        String[] dataSplit=q.split("\\(");
        String[] command=q.split(" ");
        String[] command2=q2.split(" ");
+       if(command.length<2)return false;
         switch (command[0])
         {
             case "create": case "drop":{
@@ -19,6 +23,22 @@ class Parser {
                     case "database": case "schema":{
                         if(command.length>3)
                             return false;
+                    }
+                    break;
+                    case "table":
+                    {
+                        if(command.length<3)
+                            return false;
+                        if(command.length==3)return true;
+                        if(!command[3].contains("("))
+                            return false;
+                        if(dataSplit.length>2)
+                            return false;
+                        boolean regex= dataSplit[1].matches("(\\s?\\w+\\s\\w+\\s?\\,\\s?)*(\\s?\\w+\\s\\w+\\s?\\))+");
+                        if(!regex)
+                        {
+                            return false;
+                        }
                     }
                     break;
                     default:return false;
