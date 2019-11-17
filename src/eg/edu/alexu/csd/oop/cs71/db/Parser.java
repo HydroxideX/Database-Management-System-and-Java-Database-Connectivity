@@ -66,6 +66,21 @@ class Parser {
                     return false;
             }
             break;
+            case "delete":
+            {
+
+            }
+            break;
+            case "update":
+            {
+
+            }
+            break;
+            case "insert":
+            {
+
+            }
+            break;
             case "select":
             {
 
