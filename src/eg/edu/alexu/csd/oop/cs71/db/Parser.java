@@ -34,6 +34,7 @@ class Parser {
                             return false;
                         if(dataSplit.length>2)
                             return false;
+                        if(!(dataSplit[1].contains("int")||dataSplit[1].contains("varchar")))return false;
                         boolean regex= dataSplit[1].matches("(\\s?\\w+\\s\\w+\\s?\\,\\s?)*(\\s?\\w+\\s\\w+\\s?\\))+");
                         if(!regex)
                         {
