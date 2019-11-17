@@ -30,6 +30,7 @@ public class Gui extends Application {
         button.setOnAction(e->{
             String query=textField.getText();
             query = query.replaceAll("( )+", " ");
+            query=query.replaceAll(";","");
             if(parser.validateQuery(query))
             {
                 parser.parse(query);

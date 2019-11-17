@@ -59,6 +59,18 @@ class Parser {
                 }
             }
             break;
+            case "alter":
+            {
+                boolean regex=q.matches("(alter)\\s(table)\\s\\w+\\s(((add)\\s\\w+\\s(int|varchar))|((modify)\\s\\w+\\s(int|varchar))|((change)\\s\\w+\\s\\w+\\s(int|varchar))|((drop)\\s(column)\\s\\w+))");
+                if(!regex)
+                    return false;
+            }
+            break;
+            case "select":
+            {
+
+            }
+            break;
             default:return false;
         }
         return true;
