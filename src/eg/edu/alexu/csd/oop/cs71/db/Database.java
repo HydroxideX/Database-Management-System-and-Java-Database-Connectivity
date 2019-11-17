@@ -10,7 +10,7 @@ public interface Database {
 	 * @param databaseName
 	 *            Database name, can be a path not a name only
 	 * @param dropIfExists
-	 *            is true, then delete the database and recreate it again.
+	 *             is true, then delete the database and recreate itagain.
 	 * @return the absolute path of the database directory wherein data is
 	 *         stored
 	 */

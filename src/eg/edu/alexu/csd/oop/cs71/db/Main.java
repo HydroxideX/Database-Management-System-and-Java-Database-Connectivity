@@ -1,9 +1,12 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Main implements Database{
-
+    ArrayList<String> databases=new ArrayList<>();
+    String currentDatabase= "";
+    Gui gui=new Gui();
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
         return null;

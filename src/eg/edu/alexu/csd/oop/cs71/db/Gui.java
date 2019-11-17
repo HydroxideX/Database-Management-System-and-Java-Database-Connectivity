@@ -16,6 +16,7 @@ public class Gui extends Application {
         launch(args);
     }
 
+    Label currentDb=new Label();
     private TableView table = new TableView();
     @Override
     public void start(Stage stage) {
@@ -23,7 +24,6 @@ public class Gui extends Application {
         stage.setTitle("Table View Sample");
         stage.setWidth(300);
         stage.setHeight(500);
-
         TextField textField =new TextField();
         Button button =new Button("Run");
         Parser parser=new Parser();
@@ -58,7 +58,7 @@ public class Gui extends Application {
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(textField,button, table);
+        vbox.getChildren().addAll(currentDb,textField,button, table);
 
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
 
