@@ -32,10 +32,9 @@ class Parser {
                         if(command.length==3)return true;
                         if(!command[3].contains("("))
                             return false;
-                        if(dataSplit.length>2)
+                        if(dataSplit.length !=2)
                             return false;
-                        if(!(dataSplit[1].contains("int")||dataSplit[1].contains("varchar")))return false;
-                        boolean regex= dataSplit[1].matches("(\\s?\\w+\\s\\w+\\s?\\,\\s?)*(\\s?\\w+\\s\\w+\\s?\\))+");
+                        boolean regex= dataSplit[1].matches("(\\s?\\w+\\s(int|varchar)+\\s?\\,\\s?)*(\\s?\\w+\\s(int|varchar)+\\s?\\))");
                         if(!regex)
                         {
                             return false;
