@@ -50,13 +50,6 @@ class Parser {
             {
                 if(command.length>2)
                     return false;
-                else {
-                    if(engine.databases.contains(command2[1]))
-                    {
-                        engine.currentDatabase=command2[1];
-                        engine.gui.currentDb.setText("Database:"+command2[1]);
-                    }
-                }
             }
             break;
             case "alter":
@@ -104,12 +97,9 @@ class Parser {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } else if (checker.contains("CREATE") || checker.contains("DROP")){
+        } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {
-                if(engine.databases.contains(command[2]))
-                engine.createDatabase(query,true);
-                else
-                    engine.createDatabase(query,false);
+                engine.createDatabase(command[2],true);
             } else {
                 try {
                     engine.executeStructureQuery(query);
@@ -123,6 +113,9 @@ class Parser {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }else if(checker.contains("USE"))
+        {
+            engine.createDatabase(command[2],false);
         }
     }
 }
