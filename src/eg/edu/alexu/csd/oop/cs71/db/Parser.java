@@ -1,9 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 class Parser {
     private Main engine = new Main();
@@ -98,7 +95,7 @@ class Parser {
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
-                || checker.contains("DELETE")) {
+                || checker.contains("DELETE")||checker.contains("ALTER")) {
             try {
                 engine.executeUpdateQuery(query);
             } catch (SQLException e) {
@@ -114,7 +111,15 @@ class Parser {
                     e.printStackTrace();
                 }
             }
-        } else if(checker.contains("SELECT")){
+        }else if(checker.contains("DROP"))
+        {
+            try {
+                engine.executeStructureQuery(query);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(checker.contains("SELECT")){
             try {
                 engine.executeQuery(query);
             } catch (SQLException e) {
