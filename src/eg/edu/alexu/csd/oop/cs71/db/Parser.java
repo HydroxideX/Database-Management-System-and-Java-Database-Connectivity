@@ -1,19 +1,14 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 class Parser {
     private Main engine = new Main();
     boolean validateQuery(String q)
     {
-        String q2=q;
         q=q.toLowerCase();
         String[] dataSplit=q.split("\\(");
        String[] command=q.split(" ");
-       String[] command2=q2.split(" ");
        if(command.length<2)return false;
         switch (command[0])
         {
@@ -61,22 +56,31 @@ class Parser {
             break;
             case "delete":
             {
-
+                boolean regex=q.matches("(delete\\sfrom)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                if(!regex)
+                    return false;
             }
             break;
             case "update":
             {
-
+                boolean regex=q.matches("(update)\\s\\w+\\s(set)\\s\\w+\\s?\\=\\s?\\'\\s?\\w+\\s?\\'(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                if(!regex)
+                    return false;
             }
             break;
             case "insert":
             {
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((\\'.+\\'\\s?\\,\\s?)*(\\'.+\\'\\)){1}");
+                if(!regex)
+                    return false;
 
             }
             break;
             case "select":
             {
-
+                boolean regex=q.matches("(select)\\s(\\*\\s|(\\w+\\s?\\,\\s?)*(\\w+\\s))(from)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?|(\\sorder\\sby\\s(\\*\\s|(\\w+\\s?\\,\\s?(asc|desc)?)*(\\w+\\s(asc|desc)?)))");
+                if(!regex)
+                    return false;
             }
             break;
             default:return false;
@@ -91,7 +95,7 @@ class Parser {
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
-                || checker.contains("DELETE")) {
+                || checker.contains("DELETE")||checker.contains("ALTER")) {
             try {
                 engine.executeUpdateQuery(query);
             } catch (SQLException e) {
@@ -107,7 +111,15 @@ class Parser {
                     e.printStackTrace();
                 }
             }
-        } else if(checker.contains("SELECT")){
+        }else if(checker.contains("DROP"))
+        {
+            try {
+                engine.executeStructureQuery(query);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(checker.contains("SELECT")){
             try {
                 engine.executeQuery(query);
             } catch (SQLException e) {
