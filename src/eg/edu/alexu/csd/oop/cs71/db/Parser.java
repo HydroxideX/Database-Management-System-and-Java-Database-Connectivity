@@ -9,11 +9,9 @@ class Parser {
     private Main engine = new Main();
     boolean validateQuery(String q)
     {
-        String q2=q;
         q=q.toLowerCase();
         String[] dataSplit=q.split("\\(");
        String[] command=q.split(" ");
-       String[] command2=q2.split(" ");
        if(command.length<2)return false;
         switch (command[0])
         {
@@ -71,6 +69,9 @@ class Parser {
             break;
             case "insert":
             {
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((\\'.+\\'\\s?\\,\\s?)*(\\'.+\\'\\)){1}");
+                if(!regex)
+                    return false;
 
             }
             break;
