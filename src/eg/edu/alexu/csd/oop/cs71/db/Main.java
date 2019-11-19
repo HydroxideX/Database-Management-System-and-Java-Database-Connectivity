@@ -1,20 +1,98 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+import java.io.File;
 public class Main implements Database{
     ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
     Gui gui=new Gui();
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
-        return null;
+        if (dropIfExists) {
+            try {
+                executeStructureQuery("drop database "+databaseName);
+                executeStructureQuery("create database "+databaseName);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!dropIfExists){
+            boolean exist = false;
+            for (int i=0; i<databases.size(); i++){
+                if (databases.get(i)==databaseName){
+                    exist = true;
+                }
+            }
+            if (!exist){
+                try {
+                    executeStructureQuery("create database "+databaseName);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        currentDatabase=databaseName;
+        Path currentRelativePath = Paths.get("");
+        String currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+
+        return currentpath;
     }
 
     @Override
     public boolean executeStructureQuery(String query) throws SQLException {
-        return false;
+        String[] command=query.split(" ");
+        String checker = query.substring(0, 8);
+        checker = checker.toUpperCase();
+        String secondChecker = command[1].toUpperCase();
+        if (checker.contains("CREATE")) {
+            if (secondChecker.contains("DATABASE")) {
+                String s="";
+                try {
+                    Path currentRelativePath = Paths.get("");
+                    s = currentRelativePath.toAbsolutePath().toString();
+                    s+="\\Databases\\";
+                    s+=command[2];
+                    File file = new File(s);
+                    boolean flag = file.mkdir();
+                    databases.add(command[2]);
+                    System.out.print("Directory created? " + flag);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (checker.contains("DROP")) {
+            if (secondChecker.contains("DATABASE")) {
+                boolean exist = false;
+                int foundat=0;
+                for (int i = 0; i < databases.size(); i++) {
+                    if (databases.get(i).equals(command[2])) {
+                        exist = true;
+                        foundat=i;
+                    }
+                }
+                if (exist) {
+                    Path currentRelativePath = Paths.get("");
+                    File dir = new File(currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" +command[2]);
+                    File[] listFiles = dir.listFiles();
+                    for (File file : listFiles) {
+                        //System.out.println("Deleting " + file.getName());
+                        file.delete();
+                    }
+                    boolean flag=dir.delete();
+                    databases.remove(foundat);
+                    if (flag)
+                        System.out.println("dir Deleted ");
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -27,9 +105,21 @@ public class Main implements Database{
         return 0;
     }
     public static void  main(String[] args){
+        Main a =new Main();
+        try {
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+            s+="\\Databases";
+            File file = new File(s);
+            boolean flag = file.mkdir();
+            // System.out.print("Directory created? " + flag);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Hello World");
         System.out.println("Hello World");
         System.out.println("Hello World");
-        System.out.println("Hello World");
+        a.createDatabase("4", false);
+        a.createDatabase("4",true);
     }
 }
