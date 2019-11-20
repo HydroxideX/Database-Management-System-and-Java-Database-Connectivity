@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.io.File;
 public class Main implements Database{
+    secondParser secondparser = new secondParser();
     static ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
     public static void startUp()
@@ -123,6 +124,7 @@ public class Main implements Database{
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
+        ArrayList <String> parsedQuery = secondparser.parseSelect(query);
         return new Object[0][];
     }
 

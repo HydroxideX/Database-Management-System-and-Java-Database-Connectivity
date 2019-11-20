@@ -4,11 +4,40 @@ import java.util.ArrayList;
 
 public class secondParser {
 
-    public static void main(String[] args) {
-        System.out.println(parseSelect("SELECT AVG(Price) FROM Products"));
+    private String[] keywordArrayEquals = {"SELECT","FROM","*","WHERE","AND","OR","NOT", "'","ORDER", "BY",
+            "COUNT","BY","AS","LIKE", "BETWEEN","DESC","NULL","IS","SUM","AVG","MAX","MIN",""};
+    private String[] keywordArrayContains = {"'"};
+
+    public ArrayList<String> getSelectNames (String query) {
+        String q = query.toUpperCase();
+        q = q.replaceAll("[\\=,>,<,\\(,\\),;]", " ");
+        q = q.substring(7,q.length());
+        String[] collection = q.split(" ");
+        ArrayList<String> ans = new ArrayList<String>();
+        for (int i = 0;i<collection.length;i++) {
+            if(In(collection[i])){
+                continue;
+            } else {
+                if(collection[i-1].equals("FROM")){
+                    ans.add("TABLE:"+collection[i]);
+                    continue;
+                }
+                ans.add(collection[i]);
+            }
+        }
+        return ans;
+    }
+    private boolean In(String s){
+        for(int i = 0;i<keywordArrayEquals.length;i++){
+            if(s.equals(keywordArrayEquals[i])) return true;
+        }
+        for(int i = 0;i<keywordArrayContains.length;i++){
+            if(s.contains(keywordArrayContains[i])) return true;
+        }
+        return false;
     }
 
-    public static ArrayList<String> parseSelect (String query) {
+    public ArrayList<String> parseSelect (String query) {
         query.replaceAll("<>","!=");
         String q = query.toUpperCase();
         q = q.substring(7,q.length());
@@ -57,33 +86,58 @@ public class secondParser {
         return ans;
     }
 
-    public static ArrayList<String> getTableAndColumnNames (String query) {
-        String q = query.toUpperCase();
-        q = q.replaceAll("[\\=,>,<,\\(,\\),;]", " ");
-        q = q.substring(7,q.length());
-        String[] collection = q.split(" ");
-        ArrayList<String> ans = new ArrayList<String>();
-        for(int i = 0;i<collection.length;i++){
-            if(collection[i].equals("SELECT")||collection[i].equals("FROM")
-                    ||collection[i].equals("*")||collection[i].equals("WHERE")
-                    || collection[i].equals("AND") || collection[i].equals("NOT")
-                    ||collection[i].contains("'") ||collection[i].equals("OR")
-                    ||collection[i].equals("ORDER")||collection[i].equals("BY")
-                    || collection[i].equals("COUNT")||collection[i].equals("AS")
-                    ||collection[i].contains("LIKE") ||collection[i].contains("BETWEEN")
-                    ||collection[i].contains("DESC") ||collection[i].contains("NULL")
-                    ||collection[i].equals("IS") || collection[i].equals("SUM")
-                    || collection[i].equals("AVG") ||collection[i].equals("MAX")
-                    ||collection[i].equals("MIN") ||collection[i].equals("")){
-                continue;
-            } else {
-                if(collection[i-1].equals("FROM")){
-                    ans.add("TABLE:"+collection[i]);
-                    continue;
+    public boolean parseTrueAndFalse(String expression){
+        String[] stringsList = expression.split(" ");
+        ArrayList<String> arrayListOfExpression = new ArrayList<>();
+        for(int i = 0;i< stringsList.length;i++){
+            arrayListOfExpression.add(stringsList[i]);
+        }
+        arrayListOfExpression = parseNot(arrayListOfExpression);
+        arrayListOfExpression = parseAnd(arrayListOfExpression);
+        return parseOr(arrayListOfExpression);
+    }
+
+    private ArrayList<String> parseNot(ArrayList<String> strings){
+        ArrayList<String> answerList  = new ArrayList<String>();
+        for(int i = 0;i<strings.size();i++){
+            if(strings.get(i).equals("NOT")){
+                if(strings.get(i+1).equals("TRUE")){
+                    answerList.add("FALSE");
+                } else{
+                    answerList.add("TRUE");
                 }
-                ans.add(collection[i]);
+                i++;
+            } else {
+                answerList.add(strings.get(i));
             }
         }
-        return ans;
+        return answerList;
+    }
+
+    private ArrayList<String> parseAnd(ArrayList<String> strings){
+        ArrayList<String> answerList  = new ArrayList<String>();
+        int temp = -1;
+        for(int i = 0;i<strings.size();i++) {
+            if(strings.get(i).equals("AND")) {
+                if(answerList.get(temp).equals("TRUE") && strings.get(i+1).equals("TRUE")) {
+                    answerList.add("TRUE");
+                } else {
+                    answerList.add("FALSE");
+                }
+                answerList.remove(temp);
+                i++;
+            } else {
+                answerList.add(strings.get(i));
+                temp++;
+            }
+        }
+        return answerList;
+    }
+
+    private boolean parseOr(ArrayList<String> strings){
+        for(int i = 0;i<strings.size();i++){
+            if(strings.get(i).equals("TRUE")) return true;
+        }
+        return false;
     }
 }
