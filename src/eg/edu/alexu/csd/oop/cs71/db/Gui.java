@@ -16,10 +16,11 @@ public class Gui extends Application {
         launch(args);
     }
 
-    Label currentDb=new Label();
+    static Label currentDb=new Label();
     private TableView table = new TableView();
     @Override
     public void start(Stage stage) {
+        Main.startUp();
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
         stage.setWidth(300);
