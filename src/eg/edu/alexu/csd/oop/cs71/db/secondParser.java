@@ -86,6 +86,7 @@ public class secondParser {
         return ans;
     }
 
+
     public boolean parseTrueAndFalse(String expression){
         String[] stringsList = expression.split(" ");
         ArrayList<String> arrayListOfExpression = new ArrayList<>();
@@ -134,9 +135,9 @@ public class secondParser {
         return answerList;
     }
 
-    private boolean parseOr(ArrayList<String> strings){
-        for(int i = 0;i<strings.size();i++){
-            if(strings.get(i).equals("TRUE")) return true;
+    private boolean parseOr(ArrayList<String> strings) {
+        for (int i = 0;i<strings.size();i++) {
+            if (strings.get(i).equals("TRUE")) return true;
         }
         return false;
     }
