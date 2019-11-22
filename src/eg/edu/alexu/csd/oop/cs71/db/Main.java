@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Main implements Database{
-    secondParser secondparser = new secondParser();
+public class Main implements Database {
+    Parser secondparser = new Parser();
     static ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
 
@@ -134,7 +134,7 @@ public class Main implements Database{
                 }
             }
         }
-        if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")){
+        if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")) {
             if(currentDatabase.equals(""))
             {
                 Gui.success=false;
@@ -185,11 +185,8 @@ public class Main implements Database{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
-        else if(checker.contains("DROP")&&secondChecker.contains("TABLE"))
-        {
+        else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
             Path currentRelativePath = Paths.get("");
             String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
@@ -199,8 +196,8 @@ public class Main implements Database{
                 Gui.success=false;
                 return false;
             }
-
         }
+
         Gui.success=true;
         return true;
     }
