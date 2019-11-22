@@ -91,7 +91,9 @@ class Parser {
     void parse(String query) {
         String checker;
         String[] command=query.split(" ");
-        checker = query.substring(0,8);
+        String query2=query;
+        query2+="01274713607";
+        checker = query2.substring(0,8);
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
@@ -127,7 +129,7 @@ class Parser {
             }
         }else if(checker.contains("USE"))
         {
-            engine.createDatabase(command[2],false);
+            engine.createDatabase(command[1],false);
         }
     }
 }

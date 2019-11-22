@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.w3c.dom.*;
@@ -10,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -18,13 +20,35 @@ import java.util.HashMap;
 
 
 public class Main implements Database{
-    ArrayList<String> databases=new ArrayList<>();
+    secondParser secondparser = new secondParser();
+    static ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
+
     ArrayList<HashMap<String,Object>> tableData = new ArrayList<HashMap<String,Object>>();
     HashMap<String,String> tableColumns = new HashMap<String, String>();
     ArrayList<String> cNames= new ArrayList<>();
     ArrayList<String> cTypes= new ArrayList<>();
     Gui gui=new Gui();
+
+
+    public static void startUp()
+    {
+         File file = new File("Databases/");
+        for( File child : file.listFiles()) {
+            databases.add(child.getName());
+        }
+        try {
+            Path currentRelativePath = Paths.get("");
+            String s = currentRelativePath.toAbsolutePath().toString();
+            s+="\\Databases";
+            file = new File(s);
+            boolean flag = file.mkdir();
+            // System.out.print("Directory created? " + flag);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
@@ -32,6 +56,8 @@ public class Main implements Database{
             try {
                 executeStructureQuery("drop database "+databaseName);
                 executeStructureQuery("create database "+databaseName);
+                currentDatabase=databaseName;
+                Gui.currentDb.setText("Database: "+currentDatabase);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -40,8 +66,9 @@ public class Main implements Database{
         if (!dropIfExists){
             boolean exist = false;
             for (int i=0; i<databases.size(); i++){
-                if (databases.get(i)==databaseName){
+                if (databases.get(i).equals(databaseName)) {
                     exist = true;
+                    break;
                 }
             }
             if (!exist){
@@ -50,6 +77,10 @@ public class Main implements Database{
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
+            else {
+                currentDatabase=databaseName;
+                Gui.currentDb.setText("Database: "+currentDatabase);
             }
 
         }
@@ -103,6 +134,7 @@ public class Main implements Database{
                     }
                     boolean flag=dir.delete();
                     databases.remove(foundat);
+                    Gui.currentDb.setText("Database: ");
                     if (flag)
                         System.out.println("dir Deleted ");
                 }
@@ -163,6 +195,7 @@ public class Main implements Database{
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
+        ArrayList <String> parsedQuery = secondparser.parseSelect(query);
         return new Object[0][];
     }
 
@@ -327,3 +360,4 @@ public class Main implements Database{
 
     }
 }
+
