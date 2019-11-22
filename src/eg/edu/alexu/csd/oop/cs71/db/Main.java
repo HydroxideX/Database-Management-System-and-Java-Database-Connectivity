@@ -28,7 +28,6 @@ public class Main implements Database{
     HashMap<String,String> tableColumns = new HashMap<String, String>();
     ArrayList<String> cNames= new ArrayList<>();
     ArrayList<String> cTypes= new ArrayList<>();
-    Gui gui=new Gui();
 
 
     public static void startUp()
@@ -67,22 +66,11 @@ public class Main implements Database{
             boolean exist = false;
             for (int i=0; i<databases.size(); i++){
                 if (databases.get(i).equals(databaseName)) {
-                    exist = true;
+                    currentDatabase=databaseName;
+                    Gui.currentDb.setText("Database: "+currentDatabase);
                     break;
                 }
             }
-            if (!exist){
-                try {
-                    executeStructureQuery("create database "+databaseName);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                currentDatabase=databaseName;
-                Gui.currentDb.setText("Database: "+currentDatabase);
-            }
-
         }
         currentDatabase=databaseName;
         Path currentRelativePath = Paths.get("");
