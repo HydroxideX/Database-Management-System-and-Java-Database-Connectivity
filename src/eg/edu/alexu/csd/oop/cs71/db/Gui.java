@@ -28,14 +28,14 @@ public class Gui extends Application {
         stage.setHeight(500);
         TextField textField =new TextField();
         Button button =new Button("Run");
-        Parser parser=new Parser();
+        facade facade =new facade();
         button.setOnAction(e->{
             String query=textField.getText();
             query = query.replaceAll("( )+", " ");
             query=query.replaceAll(";","");
-            if(parser.validateQuery(query))
+            if(facade.validateQuery(query))
             {
-                parser.parse(query);
+                facade.parse(query);
                 if(!success)
                 {
                     success=true;
