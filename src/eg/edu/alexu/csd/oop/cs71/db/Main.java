@@ -128,6 +128,10 @@ public class Main implements Database{
                     if (flag)
                         System.out.println("dir Deleted ");
                 }
+                else {
+                    Gui.success=false;
+                    return false;
+                }
             }
         }
         if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")){
@@ -184,7 +188,20 @@ public class Main implements Database{
 
 
         }
+        else if(checker.contains("DROP")&&secondChecker.contains("TABLE"))
+        {
+            String tableName = command[2];
+            Path currentRelativePath = Paths.get("");
+            String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            File file =new File(tablePath);
 
+            if(!file.delete()){
+                Gui.success=false;
+                return false;
+            }
+
+        }
+        Gui.success=true;
         return true;
     }
 
