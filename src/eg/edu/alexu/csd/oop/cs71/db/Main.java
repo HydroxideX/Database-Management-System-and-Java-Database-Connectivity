@@ -204,7 +204,6 @@ public class Main implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        ArrayList <String> parsedQuery = secondparser.parseSelect(query);
         return new Object[0][];
     }
 
@@ -355,7 +354,7 @@ public class Main implements Database {
         a.tableColumns.put("subject","string");
         a.tableColumns.put("age","int");
         a.tableColumns.put("name","string");
-        a.createDatabase("5", false);
+        a.createDatabase("w", false);
         a.writeInFile("fine");
         System.out.println("first done");
         HashMap<String,Object> row2 = new HashMap<String,Object>();
