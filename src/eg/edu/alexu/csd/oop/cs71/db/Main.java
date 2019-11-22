@@ -209,6 +209,33 @@ public class Main implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
+        String[] commad=query.split(" ",2);
+        commad[0]=commad[0].toLowerCase();
+        Parser parser=new Parser();
+        //Read file here using table name
+        switch (commad[0]){
+            case "select":{
+                parser.select(query,cNames,cTypes,tableData);
+            }
+            break;
+            case "update":{
+                parser.update(query,cNames,cTypes,tableData);
+            }
+            break;
+            case "delete":{
+                parser.delete(query,cNames,cTypes,tableData);
+            }
+            break;
+            case "alter":{
+                parser.alter(query,cNames,cTypes,tableData);
+            }
+            break;
+            default:{
+                Gui.success=false;
+                return 0;
+            }
+        }
+        Gui.success=true;
         return 0;
     }
 

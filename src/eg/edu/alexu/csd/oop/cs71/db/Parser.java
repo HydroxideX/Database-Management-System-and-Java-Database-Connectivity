@@ -386,6 +386,9 @@ public class Parser {
         return false;
     }
 
+    public void alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
+
+    }
     /*public static void  main(String[] args) {
         Main2 e = new Main2();
         ArrayList<HashMap<String,Object>> table =new ArrayList<HashMap<String,Object>>();
