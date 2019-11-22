@@ -5,11 +5,11 @@ import java.util.HashMap;
 
 public class Parser {
 
-    private ArrayList <String> columnNames= new ArrayList<>();
-    private ArrayList <String> operationNames = new ArrayList<>();
-    private ArrayList <String>  logicOperator =  new ArrayList<>();
-    private ArrayList <String> answers = new ArrayList<>();
-    private ArrayList <ArrayList<String >> oPParameters = new ArrayList<>();
+    ArrayList <String> columnNames= new ArrayList<>();
+    ArrayList <String> operationNames = new ArrayList<>();
+    ArrayList <String>  logicOperator =  new ArrayList<>();
+    ArrayList <String> answers = new ArrayList<>();
+    ArrayList <ArrayList<String >> oPParameters = new ArrayList<>();
 
     /*
     private String[] keywordArrayEquals = {"SELECT","FROM","*","WHERE","AND","OR","NOT", "'","ORDER", "BY",
@@ -43,13 +43,6 @@ public class Parser {
             if(s.contains(keywordArrayContains[i])) return true;
         }
         return false;
-
-       private String getColumnType(String columnName,ArrayList<String > colNames, ArrayList<String> colTypes){
-        for(int i = 0;i <colNames.size();i++){
-            if(columnName.equals(colNames.get(i))) return colTypes.get(i);
-        }
-        return "";
-        }
     }*/
 
     public ArrayList<ArrayList<String>> select(String query, ArrayList<String > colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
@@ -139,7 +132,7 @@ public class Parser {
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i),colNames,colTypes,table)) {
                     HashMap<String, Object> row = table.get(i);
-                    for (int j = 0; j < changes.length; j += 2) row.put(changes[j], changes[j + 1]);
+                    for (int j = 0; j < changes.length; j += 2) row.put(changes[j], changes[j + 1].replaceAll("\'",""));
                 }
             }
         } else
@@ -202,7 +195,7 @@ public class Parser {
             oPParameters.add(temp);
         }
     }
-    private void operationPerformer (ArrayList<String > colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
+    public void operationPerformer (ArrayList<String > colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
         for (int i = 0; i < table.size(); i++) {
             String ans = "";
             HashMap<String, Object> t = table.get(i);
@@ -308,14 +301,14 @@ public class Parser {
         }
     }
 
-    private String getColumnType(String columnName,ArrayList<String > colNames, ArrayList<String> colTypes){
+    String getColumnType(String columnName,ArrayList<String > colNames, ArrayList<String> colTypes){
         for(int i = 0;i <colNames.size();i++){
             if(columnName.equals(colNames.get(i))) return colTypes.get(i);
         }
         return "";
     }
 
-    private Boolean isTrue (String ans, ArrayList<String > colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
+    public Boolean isTrue (String ans, ArrayList<String > colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
         String a = "",b = "" ;
         boolean negative;
         int j = 0 ;
@@ -393,8 +386,7 @@ public class Parser {
         return false;
     }
 
-    /*
-    public static void  main(String[] args) {
+    /*public static void  main(String[] args) {
         Main2 e = new Main2();
         ArrayList<HashMap<String,Object>> table =new ArrayList<HashMap<String,Object>>();
         HashMap<String, Object> row = new HashMap<String, Object>();
@@ -415,11 +407,11 @@ public class Parser {
         colTypes.add("varchar");
         colTypes.add("int");
         colTypes.add("varchar");
-        e.select("seLect * from table1 where age >= 5 and name = 'omar' order by subject",colNames,colTypes,table);
+        e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
         }
-        e.update("UPDATE table_name SET subject = value1, age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'",colNames,colTypes,table);
+        e.update("UPDATE table_name SET subject = 'value1', age = '-2' WHERE not subject IN (Maths, 'Science') and not age >= '15' or not name = compu",colNames,colTypes,table);
         System.out.println("\nAfter Update_1");
 
         for (int i = 0; i < table.size(); i++) {
