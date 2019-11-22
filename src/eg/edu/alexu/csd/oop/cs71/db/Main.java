@@ -32,10 +32,7 @@ public class Main implements Database{
 
     public static void startUp()
     {
-         File file = new File("Databases/");
-        for( File child : file.listFiles()) {
-            databases.add(child.getName());
-        }
+         File file ;
         try {
             Path currentRelativePath = Paths.get("");
             String s = currentRelativePath.toAbsolutePath().toString();
@@ -43,6 +40,10 @@ public class Main implements Database{
             file = new File(s);
             boolean flag = file.mkdir();
             // System.out.print("Directory created? " + flag);
+            file = new File("Databases/");
+            for( File child : file.listFiles()) {
+                databases.add(child.getName());
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -123,12 +124,18 @@ public class Main implements Database{
                     boolean flag=dir.delete();
                     databases.remove(foundat);
                     Gui.currentDb.setText("Database: ");
+                    currentDatabase="";
                     if (flag)
                         System.out.println("dir Deleted ");
                 }
             }
         }
         if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")){
+            if(currentDatabase.equals(""))
+            {
+                Gui.success=false;
+                return false;
+            }
             String tableName = command[2];
             Path currentRelativePath = Paths.get("");
             String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
@@ -178,7 +185,7 @@ public class Main implements Database{
 
         }
 
-        return false;
+        return true;
     }
 
     @Override

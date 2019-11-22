@@ -18,6 +18,7 @@ public class Gui extends Application {
 
     static Label currentDb=new Label();
     private TableView table = new TableView();
+    static boolean success=true;
     @Override
     public void start(Stage stage) {
         Main.startUp();
@@ -35,6 +36,15 @@ public class Gui extends Application {
             if(parser.validateQuery(query))
             {
                 parser.parse(query);
+                if(!success)
+                {
+                    success=true;
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Invalid query");
+                    alert.setContentText("Please try again!");
+                    alert.showAndWait();
+                }
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
