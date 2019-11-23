@@ -212,6 +212,7 @@ public class Main implements Database {
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
         Parser parser=new Parser();
+        int rows=-1;
         //Read file here using table name
         switch (commad[0]){
             case "insert":{
@@ -219,24 +220,25 @@ public class Main implements Database {
             }
             break;
             case "update":{
-                parser.update(query,tableData,cNames,cTypes);
+               rows= parser.update(query,tableData,cNames,cTypes);
             }
             break;
             case "delete":{
-                parser.delete(query,tableData,cNames,cTypes);
+               rows= parser.delete(query,tableData,cNames,cTypes);
             }
             break;
             case "alter":{
                 parser.alter(query,cNames,cTypes,tableData);
+                rows=-7;
             }
             break;
             default:{
                 Gui.success=false;
-                return 0;
+                return rows;
             }
         }
         Gui.success=true;
-        return 0;
+        return rows;
     }
 
     public void writeInFile (String tableName){
