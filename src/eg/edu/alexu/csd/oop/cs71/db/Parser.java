@@ -172,7 +172,7 @@ public class Parser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames,oPParameters,XDS_1,XDS_2);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames,oPParameters,colNames,colTypes);
             operationPerformer(colNames, colTypes, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
