@@ -214,16 +214,16 @@ public class Main implements Database {
         Parser parser=new Parser();
         //Read file here using table name
         switch (commad[0]){
-            case "select":{
+            case "insert":{
                 parser.select(query,cNames,cTypes,tableData);
             }
             break;
             case "update":{
-                parser.update(query,cNames,cTypes,tableData);
+                parser.update(query,tableData,cNames,cTypes);
             }
             break;
             case "delete":{
-                parser.delete(query,cNames,cTypes,tableData);
+                parser.delete(query,tableData,cNames,cTypes);
             }
             break;
             case "alter":{
