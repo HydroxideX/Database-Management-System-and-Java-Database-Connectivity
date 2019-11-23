@@ -129,7 +129,7 @@ public class Main implements Database {
                         System.out.println("dir Deleted ");
                 }
                 else {
-                    Gui.success=false;
+                    Gui.success="Database doesn't exist!";
                     return false;
                 }
             }
@@ -137,7 +137,7 @@ public class Main implements Database {
         if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")) {
             if(currentDatabase.equals(""))
             {
-                Gui.success=false;
+                Gui.success="Please select the desired database using \"use x\"";
                 return false;
             }
             String tableName = command[2];
@@ -193,12 +193,11 @@ public class Main implements Database {
             File file =new File(tablePath);
 
             if(!file.delete()){
-                Gui.success=false;
+                Gui.success="Table doesn't exist!";
                 return false;
             }
         }
-
-        Gui.success=true;
+        Gui.success="";
         return true;
     }
 
@@ -232,12 +231,8 @@ public class Main implements Database {
                 rows=-7;
             }
             break;
-            default:{
-                Gui.success=false;
-                return rows;
-            }
         }
-        Gui.success=true;
+        Gui.success="";
         return rows;
     }
 
