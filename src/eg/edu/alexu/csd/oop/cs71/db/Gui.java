@@ -1,6 +1,8 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,9 +18,9 @@ public class Gui extends Application {
         launch(args);
     }
 
-    static Label currentDb=new Label();
     private TableView table = new TableView();
     static String success="";
+   public static Label currentDb=new Label();
     @Override
     public void start(Stage stage) {
         Main.startUp();
