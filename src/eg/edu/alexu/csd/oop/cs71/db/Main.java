@@ -20,10 +20,9 @@ import java.util.HashMap;
 
 
 public class Main implements Database {
-    Parser secondparser = new Parser();
     static ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
-
+    Parser parser = new Parser();
     ArrayList<HashMap<String,Object>> tableData = new ArrayList<HashMap<String,Object>>();
     HashMap<String,String> tableColumns = new HashMap<String, String>();
     ArrayList<String> cNames= new ArrayList<>();
@@ -203,14 +202,63 @@ public class Main implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        return new Object[0][];
+        cNames.add("subject");
+        cNames.add("age");
+        cNames.add("name");
+        cTypes.add("varchar");
+        cTypes.add("int");
+        cTypes.add("varchar");
+        ArrayList<ArrayList<String>> result = parser.select(query,cNames,cTypes,tableData);
+        ArrayList<String> colNames =  new ArrayList<>();
+        for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
+        ArrayList<String> printColumns = result.get(0);
+        ArrayList<String> selectedRows = result.get(1);
+        ArrayList<String> orderColumns = result.get(2);
+        ArrayList <ArrayList<Object> >table = new ArrayList<>();
+        ArrayList <Object> singleRow = new ArrayList<>();
+        int row;
+        for(int j = 0;j<selectedRows.size();j++){
+            singleRow = new ArrayList<>();
+            for (int i = 0;i < cNames.size();i++) {
+                singleRow.add(tableData.get(Integer.valueOf(selectedRows.get(j)).intValue()).get(cNames.get(i)));
+            }
+            table.add(singleRow);
+        }
+
+
+        /*
+        if(!orderColumns.get(0).equals("noOrder")){
+            for(int i = 0;i<orderColumns.size();i++){
+
+            }
+        }
+        */
+        Object [][] finalTable = new Object[selectedRows.size()][printColumns.size()];
+        row = 0;
+        int col = 0;
+        for (int i = 0;i<colNames.size();i++) {
+            for (int j = 0;j<printColumns.size();j++) {
+                if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
+                    for (int k = 0;k < table.size();k++) {
+                        finalTable[row++][col] = table.get(k).get(i);
+                    }
+                    col++;
+                    row = 0;
+                }
+            }
+        }
+        System.out.println(finalTable);
+        return finalTable;
     }
+
+   /* private void swapCols (ArrayList<String>, ArrayList<ArrayList<Object>>,ArrayList<String> colNames,int cur) {
+
+    }*/
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
-        Parser parser=new Parser();
         int rows=-1;
         //Read file here using table name
         switch (commad[0]){
@@ -350,7 +398,7 @@ public class Main implements Database {
     }
 
 
-    public static void  main(String[] args){
+    public static void  main(String[] args) throws SQLException {
         Main a =new Main();
         try {
             Path currentRelativePath = Paths.get("");
@@ -387,9 +435,8 @@ public class Main implements Database {
         row2.put("name","mo");
         a.tableData.add(row2);
         a.writeInFile("fine");
-        a.readFile("fine");
-
-
+        //a.readFile("fine");
+        a.executeQuery("Select * from fine where name != 'omar'");
     }
 }
 
