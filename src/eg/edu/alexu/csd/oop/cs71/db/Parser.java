@@ -67,7 +67,9 @@ public class Parser {
             ans.add(collection[1]);
             ans.add(collection[2]);
             i = 3;
-            printColumns.add("*");
+            for (int col = 0;col<colNames.size();col++){
+                printColumns.add(colNames.get(col));
+            }
         } else {
             while (!collection[i].toUpperCase().equals("FROM")) {
                 if (collection[i].charAt(collection[i].length() - 1) == ',') {
@@ -94,7 +96,9 @@ public class Parser {
                 }
             }
         } else {
-            selectedRows.add("-1");
+            for (int row = 0; row < table.size(); row++) {
+                selectedRows.add(String.valueOf(row));
+            }
         }
 
         if (i < collection.length && collection[i].toUpperCase().contains("ORDER")) {
@@ -247,6 +251,7 @@ public class Parser {
             HashMap<String, Object> t = table.get(i);
             for (int j = 0; j < operationNames.size(); j++) {
                 ArrayList<String> pp = oPParameters.get(j);
+                for(int ppIterator = 0;ppIterator <pp.size();ppIterator++) pp.set(ppIterator,pp.get(ppIterator).replaceAll("'",""));
                 String columnName = columnNames.get(j);
                 String type = getColumnType(columnName, colNames, colTypes);
                 if (type.equals("varchar")) {
@@ -269,6 +274,7 @@ public class Parser {
                             else ans += "0";
                             break;
                         case "=":
+                            String s = t.get(columnName).toString();
                             if (t.get(columnName).toString().equals(pp.get(0))) ans += "1";
                             else ans += "0";
                             break;

@@ -92,7 +92,7 @@ class facade {
         String checker;
         String[] command=query.split(" ");
         String query2=query;
-        query2+="01274713607";
+        query2 += "01274713607";
         checker = query2.substring(0,8);
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
