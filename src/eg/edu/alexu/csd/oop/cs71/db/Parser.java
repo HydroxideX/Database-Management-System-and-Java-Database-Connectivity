@@ -67,7 +67,7 @@ public class Parser {
             ans.add(collection[1]);
             ans.add(collection[2]);
             i = 3;
-            for (int col = 0;col<colNames.size();col++){
+            for (int col = 0; col < colNames.size(); col++) {
                 printColumns.add(colNames.get(col));
             }
         } else {
@@ -123,7 +123,7 @@ public class Parser {
     }
 
 
-    public int update(String query, ArrayList<HashMap<String, Object>> table ,ArrayList<String>XDS_1, ArrayList<String> XDS_2) {
+    public int update(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
         logicOperator.clear();
         operationNames.clear();
         answers.clear();
@@ -133,25 +133,25 @@ public class Parser {
         query = query.split("(\\w+\\s*)+(?i)(set)\\s*")[1];
         String ch = query.split("\\s*(?i)(where)\\s*")[0];
         String[] changes = ch.split("(\\s*\\=\\s*)|(\\s*\\,\\s*)");
-      ArrayList<String> chColumn = new ArrayList<String>();
+        ArrayList<String> chColumn = new ArrayList<String>();
         ArrayList<ArrayList<String>> chValue = new ArrayList<ArrayList<String>>();
         for (int i = 0; i < changes.length; i += 2) {
-            ArrayList<String>temp  = new ArrayList<String>();
+            ArrayList<String> temp = new ArrayList<String>();
             chColumn.add(changes[i]);
-            temp.add(changes[i+1]);
+            temp.add(changes[i + 1]);
             chValue.add(temp);
-            System.out.println(changes[i] + " " + changes[i + 1]);
+            // System.out.println(changes[i] + " " + changes[i + 1]);
         }
-        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn,chValue,XDS_1,XDS_2);
+        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn, chValue, XDS_1, XDS_2);
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, XDS_1, XDS_2, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames,oPParameters,XDS_1,XDS_2);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
             operationPerformer(XDS_1, XDS_2, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), XDS_1, XDS_2, table)) {
                     HashMap<String, Object> row = table.get(i);
-                    for (int j = 0; j < chColumn.size(); j ++) row.put(chColumn.get(j), chValue.get(j).get(0));
+                    for (int j = 0; j < chColumn.size(); j++) row.put(chColumn.get(j), chValue.get(j).get(0));
                     counter++;
 
                 }
@@ -159,14 +159,14 @@ public class Parser {
         } else
             for (int i = 0; i < table.size(); i++) {
                 HashMap<String, Object> row = table.get(i);
-                for (int j = 0; j < chColumn.size(); j ++) row.put(chColumn.get(j), chValue.get(j).get(0));
+                for (int j = 0; j < chColumn.size(); j++) row.put(chColumn.get(j), chValue.get(j).get(0));
                 counter++;
 
             }
         return counter;
     }
 
-    public int delete(String query,  ArrayList<HashMap<String, Object>> table,ArrayList<String> colNames, ArrayList<String> colTypes) {
+    public int delete(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
         logicOperator.clear();
         operationNames.clear();
         answers.clear();
@@ -176,7 +176,7 @@ public class Parser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames,oPParameters,colNames,colTypes);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             operationPerformer(colNames, colTypes, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
@@ -193,6 +193,42 @@ public class Parser {
                 i--;
             }
         return counter;
+    }
+
+    public void insert(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
+        query = query.split("(?i)(\\s*into\\s*\\w+)")[1];
+        String[] s = query.split("(?i)(\\s*values\\s*)");
+        ArrayList<String> insColNames = new ArrayList<String>();
+        if (s[0].contains("(")) {
+            String[] temp_1 = s[0].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
+            for (int i = 0; i < temp_1.length; i++) {
+                if (temp_1[i].equals("")) continue;
+                //System.out.println(valuesTemp[i]);
+                insColNames.add(temp_1[i]);
+            }
+
+        } else insColNames = colNames;
+        if (insColNames.size() > colNames.size())
+            throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
+        String[] valuesTemp = s[1].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
+        ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
+        for (int i = 0; i < valuesTemp.length; i++) {
+            ArrayList<String> t = new ArrayList<String>();
+            if (valuesTemp[i].equals("")) continue;
+            t.add(valuesTemp[i]);
+            values.add(t);
+        }
+        if (insColNames.size() != values.size())
+            throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
+
+        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
+
+        HashMap<String, Object> temp = new HashMap<>();
+        for (int i = 0; i < values.size(); i++) {
+            temp.put(insColNames.get(i), values.get(i).get(0));
+        }
+        table.add(temp);
+
     }
 
     private void logicOperatorParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
@@ -228,15 +264,16 @@ public class Parser {
             System.out.println();
         }*/
     }
+
     public void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
         for (int i = 0; i < Column.size(); i++) {
             int idx = XDS_1.indexOf(Column.get(i));
             if (idx == -1) throw new NullPointerException("Column Name Doesn't Exist ,WTF ?! ");
-            for (int j=0 ;j<Value.get(i).size() ; j++) {
-                System.out.println(i + " " +j);
-                System.out.println(Column.get(i) + " " +Value.get(i).get(j));
+            for (int j = 0; j < Value.get(i).size(); j++) {
+                System.out.println(i + " " + j);
+                System.out.println(Column.get(i) + " " + Value.get(i).get(j));
                 if (XDS_2.get(idx).toLowerCase().equals("int") && Value.get(i).get(j).contains("'"))
-                    throw new RuntimeException("Query is Wrong You Fool" + Column.get(i) + "isn't an Int");
+                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + "isn't an Int");
                 if (XDS_2.get(idx).toLowerCase().equals("varchar") && !Value.get(i).get(j).contains("'"))
                     throw new RuntimeException("Query is Wrong You Stubid , in " + Column.get(i) + " column value '' is missing ");
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
@@ -251,7 +288,8 @@ public class Parser {
             HashMap<String, Object> t = table.get(i);
             for (int j = 0; j < operationNames.size(); j++) {
                 ArrayList<String> pp = oPParameters.get(j);
-                for(int ppIterator = 0;ppIterator <pp.size();ppIterator++) pp.set(ppIterator,pp.get(ppIterator).replaceAll("'",""));
+                for (int ppIterator = 0; ppIterator < pp.size(); ppIterator++)
+                    pp.set(ppIterator, pp.get(ppIterator).replaceAll("'", ""));
                 String columnName = columnNames.get(j);
                 String type = getColumnType(columnName, colNames, colTypes);
                 if (type.equals("varchar")) {
@@ -440,9 +478,10 @@ public class Parser {
     public void alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
 
     }
-    public static void  main(String[] args) {
+
+    public static void main(String[] args) {
         Parser e = new Parser();
-        ArrayList<HashMap<String,Object>> table =new ArrayList<HashMap<String,Object>>();
+        ArrayList<HashMap<String, Object>> table = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> row = new HashMap<String, Object>();
         row.put("subject", "Maths");
         row.put("age", 1);
@@ -453,7 +492,7 @@ public class Parser {
         row.put("age", 19);
         row.put("name", "omar");
         table.add(row);
-        ArrayList<String > colNames = new ArrayList<>();
+        ArrayList<String> colNames = new ArrayList<>();
         ArrayList<String> colTypes = new ArrayList<>();
         colNames.add("subject");
         colNames.add("age");
@@ -462,19 +501,20 @@ public class Parser {
         colTypes.add("int");
         colTypes.add("varchar");
         //e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
-        for (int i = 0; i < table.size(); i++) {
+       /* for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
         }
-        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'",table,colNames,colTypes);
+        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'", table, colNames, colTypes);
         System.out.println("\nAfter Update_1");
 
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }
-        /*System.out.println("\nBefore Update_2");
+        }*/
+        e.insert("INSERT INTO table_name (subject, name, age) VALUES ('Habd', 'Discrete', -10);", table, colNames, colTypes);
+        System.out.println("\nAfter Insert");
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }
+        }/*
         e.update("UPDATE table_name SET subject = value1, age = -2",colNames,colTypes,table);
         System.out.println("\nAfter Update_2");
 
