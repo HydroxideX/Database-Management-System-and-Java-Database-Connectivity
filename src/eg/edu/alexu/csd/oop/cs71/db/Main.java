@@ -15,8 +15,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class Main implements Database {
@@ -199,15 +198,11 @@ public class Main implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        cNames.add("subject");
-        cNames.add("age");
-        cNames.add("name");
-        cTypes.add("varchar");
-        cTypes.add("int");
-        cTypes.add("varchar");
         ArrayList<ArrayList<String>> result = parser.select(query,cNames,cTypes,tableData);
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
+        ArrayList<String> colTypes =  new ArrayList<>();
+        for(int i = 0;i<cTypes.size();i++) colTypes.add(cTypes.get(i));
         ArrayList<String> printColumns = result.get(0);
         ArrayList<String> selectedRows = result.get(1);
         ArrayList<String> orderColumns = result.get(2);
@@ -222,14 +217,58 @@ public class Main implements Database {
             table.add(singleRow);
         }
 
-
-        /*
         if(!orderColumns.get(0).equals("noOrder")){
-            for(int i = 0;i<orderColumns.size();i++){
-
+            int cur = 0;
+            for (int i = 0;i<orderColumns.size();i++) {
+                swapColumns(orderColumns.get(i),table,colNames,colTypes,cur++);
+            }
+            if(orderColumns.get(orderColumns.size()-1).toUpperCase().equals("DESC")){
+                Collections.sort(table, new Comparator<List<Object>> () {
+                    @Override
+                    public int compare(List<Object> a, List<Object> b) {
+                        int comparator = 0;
+                        for(int i = 0;i<a.size();i++) {
+                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
+                            if (cTypes.get(i).equals("int")) {
+                                Integer x = Integer.valueOf(a.get(i).toString());
+                                Integer y = Integer.valueOf(b.get(i).toString());
+                                if( x.compareTo(y) > 0 && comparator == 0) {comparator = -1; break;}
+                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = 1; break;}
+                            } else {
+                                String s1 = a.get(i).toString();
+                                String s2 = b.get(i).toString();
+                                if( s1.compareTo(s2)> 0 && comparator == 0) {comparator = -1; break;}
+                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = 1; break;}
+                            }
+                        }
+                        return comparator;
+                    }
+                });
+            } else {
+                Collections.sort(table, new Comparator<List<Object>> () {
+                    @Override
+                    public int compare(List<Object> a, List<Object> b) {
+                        int comparator = 0;
+                        for(int i = 0;i<a.size();i++) {
+                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
+                            if (cTypes.get(i).equals("int")) {
+                                Integer x = Integer.valueOf(a.get(i).toString());
+                                Integer y = Integer.valueOf(b.get(i).toString());
+                                if( x.compareTo(y) > 0 && comparator == 0) { comparator = 1;break;}
+                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = -1; break;}
+                            } else {
+                                String s1 = a.get(i).toString();
+                                String s2 = b.get(i).toString();
+                                if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
+                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
+                            }
+                        }
+                        return comparator;
+                    }
+                });
             }
         }
-        */
+
         Object [][] finalTable = new Object[selectedRows.size()][printColumns.size()];
         row = 0;
         int col = 0;
@@ -244,13 +283,31 @@ public class Main implements Database {
                 }
             }
         }
-        System.out.println(finalTable);
         return finalTable;
     }
 
-   /* private void swapCols (ArrayList<String>, ArrayList<ArrayList<Object>>,ArrayList<String> colNames,int cur) {
+    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur) {
+        int index = 0;
+        for (int i = 0;i<colNames.size();i++) {
+            if(Name.toUpperCase().equals(colNames.get(i).toUpperCase())){
+                index = i;
+                colNames.set(i,colNames.get(cur));
+                colNames.set(cur,Name);
+                String temp = colTypes.get(i);
+                colTypes.set(i,colTypes.get(cur));
+                colTypes.set(cur,temp);
+            }
+        }
+        ArrayList<Object> temp = new ArrayList<>();
+        for (int i = 0;i<table.size();i++) {
+            temp.add(table.get(i).get(index));
+            table.get(i).set(index,table.get(i).get(cur));
+        }
+        for (int i = 0;i<table.get(index).size();i++) {
+            table.get(i).set(cur,temp.get(i));
+        }
+    }
 
-    }*/
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {

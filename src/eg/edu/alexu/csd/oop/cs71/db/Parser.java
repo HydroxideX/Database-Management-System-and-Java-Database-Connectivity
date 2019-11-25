@@ -500,8 +500,10 @@ public class Parser {
         colTypes.add("varchar");
         colTypes.add("int");
         colTypes.add("varchar");
+
         //e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
        /* for (int i = 0; i < table.size(); i++) {
+
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
         }
         e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'", table, colNames, colTypes);
