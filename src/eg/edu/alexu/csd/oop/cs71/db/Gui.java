@@ -1,6 +1,8 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,7 +18,6 @@ public class Gui extends Application {
         launch(args);
     }
 
-    static Label currentDb=new Label();
     private TableView table = new TableView();
     static String success="";
     @Override
@@ -29,6 +30,7 @@ public class Gui extends Application {
         TextField textField =new TextField();
         Button button =new Button("Run");
         facade facade =new facade();
+        Label currentDb=new Label();
         button.setOnAction(e->{
             String query=textField.getText();
             query = query.replaceAll("( )+", " ");
@@ -36,6 +38,7 @@ public class Gui extends Application {
             if(facade.validateQuery(query))
             {
                 facade.parse(query);
+                currentDb.setText("Database: "+facade.engine.currentDatabase);
                 if(!(success.equals("")))
                 {
                     success="";

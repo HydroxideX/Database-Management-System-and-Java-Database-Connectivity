@@ -55,7 +55,6 @@ public class Main implements Database {
                 executeStructureQuery("drop database "+databaseName);
                 executeStructureQuery("create database "+databaseName);
                 currentDatabase=databaseName;
-                Gui.currentDb.setText("Database: "+currentDatabase);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -66,7 +65,6 @@ public class Main implements Database {
             for (int i=0; i<databases.size(); i++){
                 if (databases.get(i).equals(databaseName)) {
                     currentDatabase=databaseName;
-                    Gui.currentDb.setText("Database: "+currentDatabase);
                     break;
                 }
             }
@@ -121,7 +119,6 @@ public class Main implements Database {
                     }
                     boolean flag=dir.delete();
                     databases.remove(foundat);
-                    Gui.currentDb.setText("Database: ");
                     currentDatabase="";
                     if (flag)
                         System.out.println("dir Deleted ");
@@ -320,7 +317,7 @@ public class Main implements Database {
         //Read file here using table name
         switch (commad[0]){
             case "insert":{
-                parser.select(query,cNames,cTypes,tableData);
+                parser.insert(query,tableData,cNames,cTypes);
             }
             break;
             case "update":{
