@@ -87,7 +87,6 @@ public class ReflectionHelper {
 
             for(int var5 = 0; var5 < var6; ++var5) {
                 File file = var7[var5];
-                if(file.getName().substring(0, file.getName().length() - 6).equals("Gui"))continue;
                 if (file.isDirectory()) {
                     assert !file.getName().contains(".");
 

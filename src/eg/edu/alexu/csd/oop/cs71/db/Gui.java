@@ -20,7 +20,6 @@ public class Gui extends Application {
 
     private TableView table = new TableView();
     static String success="";
-   public static Label currentDb=new Label();
     @Override
     public void start(Stage stage) {
         Main.startUp();
@@ -31,6 +30,7 @@ public class Gui extends Application {
         TextField textField =new TextField();
         Button button =new Button("Run");
         facade facade =new facade();
+        Label currentDb=new Label();
         button.setOnAction(e->{
             String query=textField.getText();
             query = query.replaceAll("( )+", " ");
@@ -38,6 +38,7 @@ public class Gui extends Application {
             if(facade.validateQuery(query))
             {
                 facade.parse(query);
+                currentDb.setText("Database: "+facade.engine.currentDatabase);
                 if(!(success.equals("")))
                 {
                     success="";
