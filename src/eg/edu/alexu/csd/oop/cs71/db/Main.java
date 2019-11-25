@@ -26,6 +26,7 @@ public class Main implements Database {
     HashMap<String,String> tableColumns = new HashMap<String, String>();
     ArrayList<String> cNames= new ArrayList<>();
     ArrayList<String> cTypes= new ArrayList<>();
+    FileManagement fileManagement=new FileManagement();
 
 
     public static void startUp()
@@ -198,6 +199,8 @@ public class Main implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
+        String tableName=fileManagement.getTableName(query);
+        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         ArrayList<ArrayList<String>> result = parser.select(query,cNames,cTypes,tableData);
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
@@ -269,20 +272,22 @@ public class Main implements Database {
             }
         }
 
-        Object [][] finalTable = new Object[selectedRows.size()][printColumns.size()];
-        row = 0;
+        Object [][] finalTable = new Object[selectedRows.size()+1][printColumns.size()];
+        row = 1;
         int col = 0;
         for (int i = 0;i<colNames.size();i++) {
             for (int j = 0;j<printColumns.size();j++) {
                 if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
+                    finalTable[0][col]=colNames.get(i);
                     for (int k = 0;k < table.size();k++) {
                         finalTable[row++][col] = table.get(k).get(i);
                     }
                     col++;
-                    row = 0;
+                    row = 1;
                 }
             }
         }
+        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
         return finalTable;
     }
 
@@ -313,146 +318,36 @@ public class Main implements Database {
     public int executeUpdateQuery(String query) throws SQLException {
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
-        int rows=-1;
+        int rowsNum=0;
         //Read file here using table name
+        String tableName=fileManagement.getTableName(query);
+        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         switch (commad[0]){
             case "insert":{
-                parser.insert(query,tableData,cNames,cTypes);
+               //rowsNum= parser.insert(query,tableData,cNames,cTypes);
             }
             break;
             case "update":{
-               rows= parser.update(query,tableData,cNames,cTypes);
+              rowsNum= parser.update(query,tableData,cNames,cTypes);
             }
             break;
             case "delete":{
-               rows= parser.delete(query,tableData,cNames,cTypes);
+               rowsNum= parser.delete(query,tableData,cNames,cTypes);
             }
             break;
             case "alter":{
-                parser.alter(query,cNames,cTypes,tableData);
-                rows=-7;
+                rowsNum= parser.alter(query,cNames,cTypes,tableData);
             }
             break;
         }
+        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
         Gui.success="";
-        return rows;
-    }
-
-    public void writeInFile (String tableName){
-        String[] columnTypes =new String[tableColumns.size()];
-        String[] columnNames =new String[tableColumns.size()];
-        String[] columnContents =new String[tableColumns.size()];
-        for (int i=0; i<columnContents.length; i++){
-            columnContents[i]="";
-        }
-        int index = 0;
-        for (String str : tableColumns.keySet()) {
-            columnNames[index++] = str;
-        }
-        for (int i=0; i<tableColumns.size(); i++){
-            columnTypes[i]=tableColumns.get(columnNames[i]).toString();
-        }
-        for (int i=0; i<tableData.size(); i++){
-            for (int j=0; j<tableColumns.size(); j++){
-                columnContents[j]+=tableData.get(i).get(columnNames[j]).toString()+" ";
-            }
-        }
-
-        try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder =docFactory.newDocumentBuilder();
-            Document doc = docBuilder.newDocument();
-            Element root = doc.createElement("table");
-            for (int i=0; i<columnNames.length; i++){
-                Element column =doc.createElement(columnNames[i]);
-                column.setAttribute("DataType",columnTypes[i]);
-                String temp = columnContents[i].trim();
-                Text columnContent = doc.createTextNode(temp);
-                column.appendChild(columnContent);
-                root.appendChild(column);
-            }
-            doc.appendChild(root);
-            // doc is created we need to output it and then attach it to the xml file
-            OutputFormat outputFormat =new OutputFormat(doc);
-            outputFormat.setIndenting(true);
-            Path currentRelativePath = Paths.get("");
-            String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            FileOutputStream xmlfile = new FileOutputStream(new File(tablePath));
-            // use xml serializer to serialize the xml data with the output format doc
-            XMLSerializer serializer = new XMLSerializer(xmlfile,outputFormat);
-            serializer.serialize(doc);
-            xmlfile.close();
-        } catch (ParserConfigurationException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void  readFile (String tableName){
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Path currentRelativePath = Paths.get("");
-            String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            FileInputStream fis = new FileInputStream(new File(path));
-            InputSource is = new InputSource(fis);
-            Document doc = builder.parse(is);
-            // get the first element
-            Element element = doc.getDocumentElement();
-            // get all child nodes
-            NodeList nodes = element.getChildNodes();
-
-            tableData.clear();
-            tableColumns.clear();
-            String[] columnTypes =new String[nodes.getLength()];
-            String[] columnNames =new String[nodes.getLength()];
-            String[] columnContents =new String[nodes.getLength()];
-            for (int i=0; i<columnContents.length; i++){
-                columnContents[i]="";
-            }
-            for (int i = 0; i < nodes.getLength(); i++) {
-                columnContents[i]= nodes.item(i).getTextContent();
-            }
-
-            for (int i=0; i<nodes.getLength(); i++){
-                Node p = nodes.item(i);
-                if (p.getNodeType()==Node.ELEMENT_NODE){
-                    Element column =(Element)p;
-                    columnTypes[i] =column.getAttribute("DataType");
-                    columnNames[i] =column.getTagName();
-                }
-            }
-            cNames.clear();
-            cTypes.clear();
-            for (int i=0; i<columnNames.length; i++){
-                cNames.add(columnNames[i]);
-                cTypes.add(columnTypes[i]);
-                tableColumns.put(columnNames[i],columnTypes[i]);
-            }
-            String[] lenColumn = columnContents[0].split(" ");
-            int lengthOfColumn = lenColumn.length;
-            for (int i=0; i<lengthOfColumn; i++){
-                HashMap<String, Object> row = new HashMap<String, Object>();
-                for (int j=0; j<columnContents.length; j++) {
-                    String[] columnCon = columnContents[j].split(" ");
-                    row.put(columnNames[j],columnCon[i]);
-                }
-                tableData.add(row);
-            }
-
-        } catch (ParserConfigurationException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        return rowsNum;
     }
 
 
-    public static void  main(String[] args) throws SQLException {
+
+    /*public static void  main(String[] args) throws SQLException {
         Main a =new Main();
         try {
             Path currentRelativePath = Paths.get("");
@@ -491,6 +386,6 @@ public class Main implements Database {
         a.writeInFile("fine");
         //a.readFile("fine");
         a.executeQuery("Select * from fine where name != 'omar'");
-    }
+    }*/
 }
 

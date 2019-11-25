@@ -1,9 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import jdk.nashorn.internal.codegen.CompilationException;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Parser {
@@ -475,8 +472,9 @@ public class Parser {
         return false;
     }
 
-    public void alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
+    public int alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
 
+        return 0;
     }
 
     public static void main(String[] args) {

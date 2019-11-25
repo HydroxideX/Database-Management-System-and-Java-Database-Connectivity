@@ -88,7 +88,7 @@ class facade {
         return true;
     }
 
-    void parse(String query) {
+    Object parse(String query) {
         String checker;
         String[] command=query.split(" ");
         String query2=query;
@@ -99,16 +99,16 @@ class facade {
         if (checker.contains("UPDATE") || checker.contains("INSERT")
                 || checker.contains("DELETE")||checker.contains("ALTER")) {
             try {
-                engine.executeUpdateQuery(query);
+                return engine.executeUpdateQuery(query);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {
-                engine.createDatabase(command[2],true);
+               return engine.createDatabase(command[2],true);
             } else {
                 try {
-                    engine.executeStructureQuery(query);
+                    return  engine.executeStructureQuery(query);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -116,20 +116,21 @@ class facade {
         }else if(checker.contains("DROP"))
         {
             try {
-                engine.executeStructureQuery(query);
+               return engine.executeStructureQuery(query);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         else if(checker.contains("SELECT")){
             try {
-                engine.executeQuery(query);
+               return engine.executeQuery(query);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }else if(checker.contains("USE"))
         {
-            engine.createDatabase(command[1],false);
+            return engine.createDatabase(command[1],false);
         }
+        return null;
     }
 }

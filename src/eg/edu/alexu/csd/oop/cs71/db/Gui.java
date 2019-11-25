@@ -37,9 +37,9 @@ public class Gui extends Application {
             query=query.replaceAll(";","");
             if(facade.validateQuery(query))
             {
-                facade.parse(query);
+                Object object=facade.parse(query);
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
-                if(!(success.equals("")))
+                if(!(success.equals(""))||object==null)
                 {
                     success="";
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
