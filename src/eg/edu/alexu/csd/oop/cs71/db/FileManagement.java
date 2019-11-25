@@ -13,26 +13,25 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class FileManagement {
-    public void writeInFile (String tableName, HashMap<String,String> tableColumns, ArrayList<HashMap<String,Object>> tableData,String currentDatabase){
+class FileManagement {
+    void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase){
         String[] columnTypes =new String[tableColumns.size()];
         String[] columnNames =new String[tableColumns.size()];
         String[] columnContents =new String[tableColumns.size()];
-        for (int i=0; i<columnContents.length; i++){
-            columnContents[i]="";
-        }
+        Arrays.fill(columnContents, "");
         int index = 0;
         for (String str : tableColumns.keySet()) {
             columnNames[index++] = str;
         }
         for (int i=0; i<tableColumns.size(); i++){
-            columnTypes[i]=tableColumns.get(columnNames[i]).toString();
+            columnTypes[i]= tableColumns.get(columnNames[i]);
         }
-        for (int i=0; i<tableData.size(); i++){
-            for (int j=0; j<tableColumns.size(); j++){
-                columnContents[j]+=tableData.get(i).get(columnNames[j]).toString()+" ";
+        for (HashMap<String, Object> tableDatum : tableData) {
+            for (int j = 0; j < tableColumns.size(); j++) {
+                columnContents[j] += tableDatum.get(columnNames[j]).toString() + " ";
             }
         }
 
@@ -60,14 +59,12 @@ public class FileManagement {
             XMLSerializer serializer = new XMLSerializer(xmlfile,outputFormat);
             serializer.serialize(doc);
             xmlfile.close();
-        } catch (ParserConfigurationException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void  readFile (String tableName, HashMap<String,String> tableColumns, ArrayList<HashMap<String,Object>> tableData,String currentDatabase,ArrayList<String> cNames,ArrayList<String> cTypes){
+    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -86,9 +83,7 @@ public class FileManagement {
             String[] columnTypes =new String[nodes.getLength()];
             String[] columnNames =new String[nodes.getLength()];
             String[] columnContents =new String[nodes.getLength()];
-            for (int i=0; i<columnContents.length; i++){
-                columnContents[i]="";
-            }
+            Arrays.fill(columnContents, "");
             for (int i = 0; i < nodes.getLength(); i++) {
                 columnContents[i]= nodes.item(i).getTextContent();
             }
@@ -111,7 +106,7 @@ public class FileManagement {
             String[] lenColumn = columnContents[0].split(" ");
             int lengthOfColumn = lenColumn.length;
             for (int i=0; i<lengthOfColumn; i++){
-                HashMap<String, Object> row = new HashMap<String, Object>();
+                HashMap<String, Object> row = new HashMap<>();
                 for (int j=0; j<columnContents.length; j++) {
                     String[] columnCon = columnContents[j].split(" ");
                     row.put(columnNames[j],columnCon[i]);
@@ -119,18 +114,42 @@ public class FileManagement {
                 tableData.add(row);
             }
 
-        } catch (ParserConfigurationException | FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
 
     }
 
-    public String getTableName(String query) {
+    String getTableName(String query) {
         String tableName="";
+        String[] parts=query.split(" ");
+        parts[0]=parts[0].toLowerCase();
+        switch (parts[0])
+        {
+            case "select":{
+                int index=0;
+                for (String x:parts) {
+                    x=x.toLowerCase();
+                    if(x.equals("from")){
+                        index++;
+                        break;
+                    }
+                    index++;
+                }
+                tableName=parts[index];
+            }
+            break;
+            case "insert":
+            case "alter":
+            case "delete":{
+                tableName=parts[2];
+            }
+            break;
+            case "update":{
+                tableName=parts[1];
+            }
+            break;
+        }
         return tableName;
     }
 }
