@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -28,6 +29,7 @@ public class Gui extends Application {
         Button button =new Button("Run");
         Facade facade =new Facade();
         Label currentDb=new Label();
+        Label rowNum=new Label();
         button.setOnAction(e->{
             String query=textField.getText();
             //query = query.replaceAll("( )+", " ");
@@ -39,6 +41,7 @@ public class Gui extends Application {
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
                 query=query.toLowerCase();
                 if(query.contains("select")) {
+                    rowNum.setText("");
                     table.getColumns().clear();
                     Object[][] x = (Object[][]) object;
                     for (int i = 0; i < x[0].length; i++)
@@ -47,14 +50,22 @@ public class Gui extends Application {
                         Col.setText((String)x[0][i]);
                         table.getColumns().add(Col);
                     }
-                }
-                if(!(success.equals(""))|| object == null)
+                }else if(!(query.contains("create")||query.contains("drop")||query.contains("use")))
                 {
-                    success="";
+                    if((int)object!=-1)
+                    {
+                        rowNum.setText("Rows Number: "+object.toString());
+                    }
+                }
+                else rowNum.setText("");
+
+                if(!(success.equals(""))|| object == null||(int)object==-1)
+                {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
                     alert.setHeaderText(success);
                     alert.setContentText("Please try again!");
+                    success="";
                     alert.showAndWait();
                 }
             }
@@ -77,8 +88,11 @@ public class Gui extends Application {
 
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
+        HBox hBox=new HBox();
+        hBox.setSpacing(100);
+        hBox.getChildren().addAll(currentDb,rowNum);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(currentDb,textField,button, table);
+        vbox.getChildren().addAll(hBox,textField,button, table);
 
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
 

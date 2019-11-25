@@ -315,7 +315,6 @@ public class Main implements Database {
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
         int rowsNum=0;
-        //Read file here using table name
         String tableName=fileManagement.getTableName(query);
         fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         switch (commad[0]){
@@ -336,8 +335,10 @@ public class Main implements Database {
             }
             break;
         }
-        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
-        Gui.success="";
+        if(rowsNum!=-1){
+            fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
+            Gui.success="";
+        }
         return rowsNum;
     }
 

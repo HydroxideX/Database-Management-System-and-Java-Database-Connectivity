@@ -139,11 +139,25 @@ public class Parser {
             chValue.add(temp);
             // System.out.println(changes[i] + " " + changes[i + 1]);
         }
-        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn, chValue, XDS_1, XDS_2);
+        try {
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn, chValue, XDS_1, XDS_2);
+        }
+        catch (Exception e)
+        {
+            Gui.success=e.getMessage();
+            return -1;
+        }
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, XDS_1, XDS_2, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
+            try {
+                Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
+            }
+            catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
+            }
             operationPerformer(XDS_1, XDS_2, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), XDS_1, XDS_2, table)) {
@@ -160,7 +174,7 @@ public class Parser {
                 counter++;
 
             }
-        return counter;
+        return table.size();
     }
 
     public int delete(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
@@ -173,7 +187,14 @@ public class Parser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
+            try {
+
+                Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
+            }catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
+            }
             operationPerformer(colNames, colTypes, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
@@ -218,7 +239,13 @@ public class Parser {
         if (insColNames.size() != values.size())
             throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
 
-        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
+        try{
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
+        }catch (Exception e)
+        {
+            Gui.success=e.getMessage();
+            return -1;
+        }
 
         HashMap<String, Object> temp = new HashMap<>();
         for (int i = 0; i < values.size(); i++) {
@@ -271,7 +298,7 @@ public class Parser {
                 System.out.println(i + " " + j);
                 System.out.println(Column.get(i) + " " + Value.get(i).get(j));
                 if (XDS_2.get(idx).toLowerCase().equals("int") && Value.get(i).get(j).contains("'"))
-                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + "isn't an Int");
+                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + " is an Int");
                 if (XDS_2.get(idx).toLowerCase().equals("varchar") && !Value.get(i).get(j).contains("'"))
                     throw new RuntimeException("Query is Wrong You Stubid , in " + Column.get(i) + " column value '' is missing ");
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
