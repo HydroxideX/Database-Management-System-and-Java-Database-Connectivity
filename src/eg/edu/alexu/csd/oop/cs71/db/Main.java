@@ -4,14 +4,10 @@ package eg.edu.alexu.csd.oop.cs71.db;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -19,17 +15,17 @@ import java.util.*;
 
 
 public class Main implements Database {
-    static ArrayList<String> databases=new ArrayList<>();
+    private static ArrayList<String> databases=new ArrayList<>();
     String currentDatabase= "";
-    Parser parser = new Parser();
-    ArrayList<HashMap<String,Object>> tableData = new ArrayList<HashMap<String,Object>>();
-    HashMap<String,String> tableColumns = new HashMap<String, String>();
-    ArrayList<String> cNames= new ArrayList<>();
-    ArrayList<String> cTypes= new ArrayList<>();
-    FileManagement fileManagement=new FileManagement();
+    private Parser parser = new Parser();
+    private ArrayList<HashMap<String,Object>> tableData = new ArrayList<>();
+    private HashMap<String,String> tableColumns = new HashMap<>();
+    private ArrayList<String> cNames= new ArrayList<>();
+    private ArrayList<String> cTypes= new ArrayList<>();
+    private FileManagement fileManagement=new FileManagement();
 
 
-    public static void startUp()
+    static void startUp()
     {
          File file ;
         try {
@@ -37,10 +33,10 @@ public class Main implements Database {
             String s = currentRelativePath.toAbsolutePath().toString();
             s+="\\Databases";
             file = new File(s);
-            boolean flag = file.mkdir();
+            file.mkdir();
             // System.out.print("Directory created? " + flag);
             file = new File("Databases/");
-            for( File child : file.listFiles()) {
+            for( File child : Objects.requireNonNull(file.listFiles())) {
                 databases.add(child.getName());
             }
         } catch(Exception e) {
@@ -63,18 +59,17 @@ public class Main implements Database {
 
         if (!dropIfExists){
             boolean exist = false;
-            for (int i=0; i<databases.size(); i++){
-                if (databases.get(i).equals(databaseName)) {
-                    currentDatabase=databaseName;
+            for (String database : databases) {
+                if (database.equals(databaseName)) {
+                    currentDatabase = databaseName;
                     break;
                 }
             }
         }
         currentDatabase=databaseName;
         Path currentRelativePath = Paths.get("");
-        String currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
 
-        return currentpath;
+        return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
     }
 
     @Override

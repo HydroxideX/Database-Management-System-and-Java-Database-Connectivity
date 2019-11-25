@@ -2,7 +2,7 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import java.sql.SQLException;
 
-class facade {
+class Facade {
      Main engine = new Main();
     boolean validateQuery(String q)
     {

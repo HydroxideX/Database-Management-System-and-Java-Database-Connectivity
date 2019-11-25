@@ -80,20 +80,25 @@ class FileManagement {
 
             tableData.clear();
             tableColumns.clear();
-            String[] columnTypes =new String[nodes.getLength()];
-            String[] columnNames =new String[nodes.getLength()];
-            String[] columnContents =new String[nodes.getLength()];
+            String[] columnTypes =new String[nodes.getLength()/2];
+            String[] columnNames =new String[nodes.getLength()/2];
+            String[] columnContents =new String[nodes.getLength()/2];
             Arrays.fill(columnContents, "");
+            int index=0;
             for (int i = 0; i < nodes.getLength(); i++) {
-                columnContents[i]= nodes.item(i).getTextContent();
+                if(i%2!=0) {
+                    columnContents[index]= nodes.item(i).getTextContent();
+                    index++;
+                }
             }
-
+            index=0;
             for (int i=0; i<nodes.getLength(); i++){
                 Node p = nodes.item(i);
                 if (p.getNodeType()==Node.ELEMENT_NODE){
                     Element column =(Element)p;
-                    columnTypes[i] =column.getAttribute("DataType");
-                    columnNames[i] =column.getTagName();
+                    columnTypes[index] =column.getAttribute("DataType");
+                    columnNames[index] =column.getTagName();
+                    index++;
                 }
             }
             cNames.clear();

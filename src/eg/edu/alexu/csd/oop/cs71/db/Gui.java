@@ -1,8 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
-import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,6 +8,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Gui extends Application {
@@ -29,17 +29,24 @@ public class Gui extends Application {
         stage.setHeight(500);
         TextField textField =new TextField();
         Button button =new Button("Run");
-        facade facade =new facade();
+        Facade facade =new Facade();
         Label currentDb=new Label();
+        AtomicReference<Object> object= new AtomicReference<>(new Object());
+        Object[][] tableSelected = new Object[0][];
         button.setOnAction(e->{
             String query=textField.getText();
-            query = query.replaceAll("( )+", " ");
+            //query = query.replaceAll("( )+", " ");
             query=query.replaceAll(";","");
             if(facade.validateQuery(query))
             {
-                Object object=facade.parse(query);
+                object.set(facade.parse(query));
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
-                if(!(success.equals(""))||object==null)
+                query=query.toLowerCase();
+                /*if(query.contains("select"))
+                {
+                    tableSelected=object;
+                }*/
+                if(!(success.equals(""))|| object.get() ==null)
                 {
                     success="";
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -64,11 +71,11 @@ public class Gui extends Application {
         //-LOOP ON TABLE COLUMNS-
         //https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 
-        /*TableColumn firstNameCol = new TableColumn("First Name");
-        TableColumn lastNameCol = new TableColumn("Last Name");
-        TableColumn emailCol = new TableColumn("Email");*/
 
-       // table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
+        TableColumn lastNameCol = new TableColumn("Last Name");
+        TableColumn emailCol = new TableColumn("Email");
+
+        table.getColumns().addAll( lastNameCol, emailCol);
 
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
