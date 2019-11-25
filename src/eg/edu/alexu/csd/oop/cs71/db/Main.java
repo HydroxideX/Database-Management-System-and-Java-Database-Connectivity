@@ -138,6 +138,7 @@ public class Main implements Database {
             String[] allcolumns = query.split("\\(");
             String columns = allcolumns[1];
             columns=columns.trim();
+            columns=columns.replace(")","");
             columns=columns.replaceAll(" , ",",");
             columns=columns.replaceAll(", ",",");
             columns=columns.replaceAll(" ,",",");
