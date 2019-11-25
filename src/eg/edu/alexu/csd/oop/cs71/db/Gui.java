@@ -7,8 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -31,22 +33,26 @@ public class Gui extends Application {
         Button button =new Button("Run");
         Facade facade =new Facade();
         Label currentDb=new Label();
-        AtomicReference<Object> object= new AtomicReference<>(new Object());
-        Object[][] tableSelected = new Object[0][];
         button.setOnAction(e->{
             String query=textField.getText();
             //query = query.replaceAll("( )+", " ");
             query=query.replaceAll(";","");
             if(facade.validateQuery(query))
             {
-                object.set(facade.parse(query));
+                Object object;
+                object=facade.parse(query);
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
                 query=query.toLowerCase();
-                /*if(query.contains("select"))
-                {
-                    tableSelected=object;
-                }*/
-                if(!(success.equals(""))|| object.get() ==null)
+                if(query.contains("select")) {
+                    Object[][] x = (Object[][]) object;
+                    for (int i = 0; i < x[0].length; i++)
+                    {
+                        TableColumn Col = new TableColumn();
+                        Col.setText((String)x[0][i]);
+                        table.getColumns().add(Col);
+                    }
+                }
+                if(!(success.equals(""))|| object == null)
                 {
                     success="";
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -72,10 +78,6 @@ public class Gui extends Application {
         //https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 
 
-        TableColumn lastNameCol = new TableColumn("Last Name");
-        TableColumn emailCol = new TableColumn("Email");
-
-        table.getColumns().addAll( lastNameCol, emailCol);
 
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
