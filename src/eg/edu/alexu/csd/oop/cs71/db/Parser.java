@@ -192,7 +192,7 @@ public class Parser {
         return counter;
     }
 
-    public void insert(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
+    public int insert(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
         query = query.split("(?i)(\\s*into\\s*\\w+)")[1];
         String[] s = query.split("(?i)(\\s*values\\s*)");
         ArrayList<String> insColNames = new ArrayList<String>();
@@ -225,6 +225,7 @@ public class Parser {
             temp.put(insColNames.get(i), values.get(i).get(0));
         }
         table.add(temp);
+        return table.size();
 
     }
 

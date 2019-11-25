@@ -7,11 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.omg.CORBA.OBJ_ADAPTER;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Gui extends Application {
@@ -44,6 +39,7 @@ public class Gui extends Application {
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
                 query=query.toLowerCase();
                 if(query.contains("select")) {
+                    table.getColumns().clear();
                     Object[][] x = (Object[][]) object;
                     for (int i = 0; i < x[0].length; i++)
                     {

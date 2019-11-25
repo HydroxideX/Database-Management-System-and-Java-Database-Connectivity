@@ -319,7 +319,7 @@ public class Main implements Database {
         fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         switch (commad[0]){
             case "insert":{
-               //rowsNum= parser.insert(query,tableData,cNames,cTypes);
+               rowsNum= parser.insert(query,tableData,cNames,cTypes);
             }
             break;
             case "update":{
