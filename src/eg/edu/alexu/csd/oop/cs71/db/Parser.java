@@ -240,7 +240,7 @@ public class Parser {
         }
         for (int i = values.size(); i < colNames.size() ;i++){
             ArrayList<String> t = new ArrayList<String>();
-            t.add("NULL");
+            t.add("'NULL'");
             values.add(t);
         }
         if (insColNames.size() > colNames.size())
@@ -317,16 +317,16 @@ public class Parser {
             oPParameters.add(temp);
 
         }
-        for (int i = 0; i < columnNames.size(); i++) {
+       /* for (int i = 0; i < columnNames.size(); i++) {
             System.out.print(columnNames.get(i) + " " + operationNames.get(i) + " ");
             for (int j = 0; j < oPParameters.get(i).size(); j++) System.out.print(oPParameters.get(i).get(j) + " ");
             System.out.println();
-        }
+        }*/
     }
 
 
     private void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
-        Pattern P1 = Pattern.compile("('\\w+')");
+        Pattern P1 = Pattern.compile("('\\-*\\w+')");
         Matcher M1;
         Pattern P2 = Pattern.compile("(\\d+)");
         Matcher M2;
@@ -334,11 +334,11 @@ public class Parser {
             int idx = XDS_1.indexOf(Column.get(i));
             if (idx == -1) throw new NullPointerException("Column Name Doesn't Exist ,WTF ?! ");
             for (int j = 0; j < Value.get(i).size(); j++) {
-                /*System.out.println(i + " " + j);
-                System.out.println(Column.get(i) + " " + Value.get(i).get(j));*/
+                /*System.out.println(i + " " + j);*/
+                System.out.println(Column.get(i) + " " + Value.get(i).get(j));
                 M1 = P1.matcher(Value.get(i).get(j));
                 M2 = P2.matcher(Value.get(i).get(j));
-                if (XDS_2.get(idx).toLowerCase().equals("int") && M1.matches())
+                if (XDS_2.get(idx).toLowerCase().equals("int") && (M1.matches()||!M2.matches()))
                     throw new RuntimeException("Query is Wrong You Fool " + Value.get(i).get(j) + " isn't an Int");
                 if (XDS_2.get(idx).toLowerCase().equals("varchar") && !M1.matches())
                     throw new RuntimeException("Query is Wrong You Stubid , in " + Value.get(i).get(j) + " isn't a varchar ");
@@ -573,14 +573,14 @@ public class Parser {
 
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
         }
-        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 'omar'  and 20  ", table, colNames, colTypes);
-        System.out.println("\nUPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 'omar'  and 20  ");
+        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 15  and 20  ", table, colNames, colTypes);
+        System.out.println("\nUPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 15  and 20  ");
         System.out.println("\nAfter Update_1");
 
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
         }
-        e.insert("INSERT INTO table_name VALUES ( -10);", table, colNames, colTypes);
+        e.insert("INSERT INTO table_name VALUES ( '-10');", table, colNames, colTypes);
         System.out.println("\nAfter Insert");
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
