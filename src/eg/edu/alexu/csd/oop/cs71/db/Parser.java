@@ -221,13 +221,11 @@ public class Parser {
             String[] temp_1 = s[0].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
             for (int i = 0; i < temp_1.length; i++) {
                 if (temp_1[i].equals("")) continue;
-                //System.out.println(valuesTemp[i]);
                 insColNames.add(temp_1[i]);
             }
 
         } else insColNames = colNames;
-        if (insColNames.size() > colNames.size())
-            throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
+
         String[] valuesTemp = s[1].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
         ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
         for (int i = 0; i < valuesTemp.length; i++) {
@@ -236,20 +234,36 @@ public class Parser {
             t.add(valuesTemp[i]);
             values.add(t);
         }
-        if (insColNames.size() != values.size())
+        for (int i = values.size(); i < colNames.size() ;i++){
+            ArrayList<String> t = new ArrayList<String>();
+            t.add("NULL");
+            values.add(t);
+        }
+        if (insColNames.size() > colNames.size())
+            throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
+        if (insColNames.size() < values.size())
             throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
-
+        ArrayList<String> colNamesTemp = new ArrayList<String>();
+        for (int i = 0; i < values.size(); i++) colNamesTemp.add("varchar");
+        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colNamesTemp);
+        /*
         try{
             Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
         }catch (Exception e)
         {
             Gui.success=e.getMessage();
             return -1;
-        }
-
-        HashMap<String, Object> temp = new HashMap<>();
+        HashMap<String, Object> temp = new HashMap<String, Object>();
         for (int i = 0; i < values.size(); i++) {
-            temp.put(insColNames.get(i), values.get(i).get(0));
+            String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();
+            if (values.get(i).get(0).toLowerCase().equals("null"))
+                temp.put(insColNames.get(i),values.get(i).get(0));
+            else if (type.equals("varchar"))
+                temp.put(insColNames.get(i), values.get(i).get(0));
+            else if (type.equals("int"))
+                temp.put(insColNames.get(i), Integer.parseInt(values.get(i).get(0)));
+            else if (type.equals("float"))
+                temp.put(insColNames.get(i), Float.parseFloat(values.get(i).get(0)));
         }
         table.add(temp);
         return table.size();
@@ -268,14 +282,27 @@ public class Parser {
 
     private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
         query = query.replaceAll("\\s+|\\(+|\\)|\\,|\\;", " ");
+        query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
+        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=]\\s*)[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Matcher M1;
+        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Matcher M2;
         logicOperatorParser(query, colNames, colTypes, table);
         query = query.replaceAll("(?i)(not)\\s*", "");
         String[] operation = query.split("(?i)(\\s*(and|or)\\s*)");
         for (int i = 0; i < operation.length; i++) {
-            String[] parameters = operation[i].split("\\s+");
-            String cN = parameters[0], oN = parameters[1];
-            columnNames.add(cN);
-            operationNames.add(oN.toLowerCase());
+            //System.out.println(operation[i]);
+            M1 = P1.matcher(operation[i]);
+            M2 = P2.matcher(operation[i]);
+            String[] parameters;
+            if (M1.matches()) {
+                parameters = new String[3];
+                for (int a = 1; a < 4; a++) parameters[a - 1] = M1.group(a);
+            } else if (M2.matches()) {
+                parameters = operation[i].split("\\s+");
+            } else throw new RuntimeException("Query Form invalid");
+            columnNames.add(parameters[0]);
+            operationNames.add(parameters[1].toLowerCase());
             ArrayList<String> temp = new ArrayList<String>();
             for (int j = 2; j < parameters.length; j++) {
                 if (!parameters[j].equals("")) temp.add(parameters[j]);
@@ -283,23 +310,30 @@ public class Parser {
             oPParameters.add(temp);
 
         }
-        /*for(int i=0 ;i<columnNames.size();i++){
+        /*for (int i = 0; i < columnNames.size(); i++) {
             System.out.print(columnNames.get(i) + " " + operationNames.get(i) + " ");
-            for(int j =0 ;j<oPParameters.get(i).size();j++)System.out.print(oPParameters.get(i).get(j)+" ");
+            for (int j = 0; j < oPParameters.get(i).size(); j++) System.out.print(oPParameters.get(i).get(j) + " ");
             System.out.println();
         }*/
     }
 
-    public void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
+
+    private void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
+        Pattern P1 = Pattern.compile("('\\w+')");
+        Matcher M1;
+        Pattern P2 = Pattern.compile("(\\d+)");
+        Matcher M2;
         for (int i = 0; i < Column.size(); i++) {
             int idx = XDS_1.indexOf(Column.get(i));
             if (idx == -1) throw new NullPointerException("Column Name Doesn't Exist ,WTF ?! ");
             for (int j = 0; j < Value.get(i).size(); j++) {
-                System.out.println(i + " " + j);
-                System.out.println(Column.get(i) + " " + Value.get(i).get(j));
-                if (XDS_2.get(idx).toLowerCase().equals("int") && Value.get(i).get(j).contains("'"))
-                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + " is an Int");
-                if (XDS_2.get(idx).toLowerCase().equals("varchar") && !Value.get(i).get(j).contains("'"))
+                /*System.out.println(i + " " + j);
+                System.out.println(Column.get(i) + " " + Value.get(i).get(j));*/
+                M1 = P1.matcher(Value.get(i).get(j));
+                M2 = P2.matcher(Value.get(i).get(j));
+                if (XDS_2.get(idx).toLowerCase().equals("int") && M1.matches())
+                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + "isn't an Int");
+                if (XDS_2.get(idx).toLowerCase().equals("varchar") && M2.matches() && !M1.matches())
                     throw new RuntimeException("Query is Wrong You Stubid , in " + Column.get(i) + " column value '' is missing ");
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
 
