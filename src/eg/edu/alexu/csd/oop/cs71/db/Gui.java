@@ -1,10 +1,13 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,11 +20,13 @@ public class Gui extends Application {
         launch(args);
     }
 
-    private TableView table = new TableView();
+    private TableView<Object> table = new TableView();
+
     static String success="";
     @Override
     public void start(Stage stage) {
         Main.startUp();
+        table.setEditable(true);
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
         stage.setWidth(300);
@@ -45,12 +50,22 @@ public class Gui extends Application {
                     rowNum.setText("");
                     table.getColumns().clear();
                     Object[][] x = (Object[][]) object;
+                    final ObservableList<Object> data = FXCollections.observableArrayList();
+                    for(int i  =1 ; i < x.length;i++){
+                        for(int j=0;j<x[i].length;j++)
+                        {
+
+                        }
+                        data.add(x[i]);
+                    }
                     for (int i = 0; i < x[0].length; i++)
                     {
                         TableColumn Col = new TableColumn();
                         Col.setText((String)x[0][i]);
+                        Col.setCellValueFactory(new PropertyValueFactory<Object, Object>(x[0][i].toString()));
                         table.getColumns().add(Col);
                     }
+                    table.setItems(data);
                 }else if(!(query.contains("create")||query.contains("drop")||query.contains("use")))
                 {
                     if((int)object!=-1)
@@ -80,7 +95,6 @@ public class Gui extends Application {
         });
 
 
-        table.setEditable(true);
 
         //-LOOP ON TABLE COLUMNS-
         //https://docs.oracle.com/javafx/2/ui_controls/table-view.htm

@@ -50,6 +50,7 @@ public class Main implements Database {
         if (dropIfExists) {
             try {
                 executeStructureQuery("drop database "+databaseName);
+                Gui.success="";
                 executeStructureQuery("create database "+databaseName);
                 currentDatabase=databaseName;
             } catch (SQLException e) {
@@ -57,7 +58,7 @@ public class Main implements Database {
             }
         }
 
-        boolean exist = false;
+        boolean exist = true;
         if (!dropIfExists){
             for (String database : databases) {
                 if (database.equals(databaseName)) {
@@ -65,6 +66,7 @@ public class Main implements Database {
                     exist=true;
                     break;
                 }
+                exist=false;
             }
         }
         if(exist){
