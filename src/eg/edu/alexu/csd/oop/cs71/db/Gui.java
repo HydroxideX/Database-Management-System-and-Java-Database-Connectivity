@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -59,7 +60,7 @@ public class Gui extends Application {
                 }
                 else rowNum.setText("");
 
-                if(!(success.equals(""))|| object == null||(int)object==-1)
+                if(!(success.equals(""))|| object == null)
                 {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
@@ -98,6 +99,12 @@ public class Gui extends Application {
 
         stage.setScene(scene);
         stage.show();
-
+        scene.setOnKeyPressed(ke -> {
+            KeyCode kc = ke.getCode();
+            if(kc.equals(KeyCode.ENTER))
+            {
+                button.fire();
+            }
+        });
     }
 }
