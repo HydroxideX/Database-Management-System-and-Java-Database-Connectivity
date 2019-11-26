@@ -152,14 +152,15 @@ public class Parser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, XDS_1, XDS_2, table);
-            try {
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
+            /*try {
                 Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
             }
             catch (Exception e)
             {
                 Gui.success=e.getMessage();
                 return -1;
-            }
+            }*/
             operationPerformer(XDS_1, XDS_2, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), XDS_1, XDS_2, table)) {
@@ -189,14 +190,15 @@ public class Parser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            try {
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
+           /* try {
 
                 Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
                 return -1;
-            }
+            }*/
             operationPerformer(colNames, colTypes, table);
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
@@ -285,7 +287,7 @@ public class Parser {
     }
 
     private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        query = query.replaceAll("\\s+|\\(+|\\)|\\,|\\;", " ");
+        query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|\\d))|\\;", " ");
         query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
         query = query.replaceAll("\\s+(?=\\=)", "");
         Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=])[\\s]*([']?\\w+[']?)[\\s]*\\z");
@@ -337,9 +339,9 @@ public class Parser {
                 M1 = P1.matcher(Value.get(i).get(j));
                 M2 = P2.matcher(Value.get(i).get(j));
                 if (XDS_2.get(idx).toLowerCase().equals("int") && M1.matches())
-                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + "isn't an Int");
-                if (XDS_2.get(idx).toLowerCase().equals("varchar") && M2.matches() && !M1.matches())
-                    throw new RuntimeException("Query is Wrong You Stubid , in " + Column.get(i) + " column value '' is missing ");
+                    throw new RuntimeException("Query is Wrong You Fool " + Value.get(i).get(j) + " isn't an Int");
+                if (XDS_2.get(idx).toLowerCase().equals("varchar") && !M1.matches())
+                    throw new RuntimeException("Query is Wrong You Stubid , in " + Value.get(i).get(j) + " isn't a varchar ");
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
 
             }
@@ -567,11 +569,12 @@ public class Parser {
         colTypes.add("varchar");
 
         //e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
-        /*for (int i = 0; i < table.size(); i++) {
+        for (int i = 0; i < table.size(); i++) {
 
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }*/
-        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >  = 15 or not name = 'compu'", table, colNames, colTypes);
+        }
+        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 'omar'  and 20  ", table, colNames, colTypes);
+        System.out.println("\nUPDATE table_name SET subject = 'value1', age = -2 WHERE not age between 'omar'  and 20  ");
         System.out.println("\nAfter Update_1");
 
         for (int i = 0; i < table.size(); i++) {
