@@ -1,6 +1,8 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,6 +14,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+
+import java.util.Arrays;
 
 
 public class Gui extends Application {
@@ -20,8 +25,7 @@ public class Gui extends Application {
         launch(args);
     }
 
-    private TableView<Object> table = new TableView();
-
+    TableView<Object[]> table = new TableView<>();
     static String success="";
     @Override
     public void start(Stage stage) {
@@ -50,20 +54,21 @@ public class Gui extends Application {
                     rowNum.setText("");
                     table.getColumns().clear();
                     Object[][] x = (Object[][]) object;
-                    final ObservableList<Object> data = FXCollections.observableArrayList();
-                    for(int i  =1 ; i < x.length;i++){
-                        for(int j=0;j<x[i].length;j++)
-                        {
-
-                        }
-                        data.add(x[i]);
-                    }
+                    ObservableList<Object[]> data = FXCollections.observableArrayList();
+                    data.addAll(Arrays.asList(x));
+                    data.remove(0);
                     for (int i = 0; i < x[0].length; i++)
                     {
-                        TableColumn Col = new TableColumn();
-                        Col.setText((String)x[0][i]);
-                        Col.setCellValueFactory(new PropertyValueFactory<Object, Object>(x[0][i].toString()));
-                        table.getColumns().add(Col);
+                        TableColumn tc = new TableColumn(x[0][i].toString());
+                        final int colNo = i;
+                        tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], String>, ObservableValue<String>>() {
+                            @Override
+                            public ObservableValue<String> call(TableColumn.CellDataFeatures<Object[], String> p) {
+                                return new SimpleStringProperty((String) p.getValue()[colNo]);
+                            }
+                        });
+                        tc.setPrefWidth(90);
+                        table.getColumns().add(tc);
                     }
                     table.setItems(data);
                 }else if(!(query.contains("create")||query.contains("drop")||query.contains("use")))
