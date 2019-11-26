@@ -2,6 +2,8 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -253,6 +255,8 @@ public class Parser {
         {
             Gui.success=e.getMessage();
             return -1;
+            }
+         */
         HashMap<String, Object> temp = new HashMap<String, Object>();
         for (int i = 0; i < values.size(); i++) {
             String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();
