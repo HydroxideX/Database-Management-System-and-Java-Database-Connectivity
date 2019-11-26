@@ -287,15 +287,16 @@ public class Parser {
     private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
         query = query.replaceAll("\\s+|\\(+|\\)|\\,|\\;", " ");
         query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
-        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=]\\s*)[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        query = query.replaceAll("\\s+(?=\\=)", "");
+        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=])[\\s]*([']?\\w+[']?)[\\s]*\\z");
         Matcher M1;
-        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?\\w+[']?)[\\s]*)+\\z");
         Matcher M2;
         logicOperatorParser(query, colNames, colTypes, table);
         query = query.replaceAll("(?i)(not)\\s*", "");
         String[] operation = query.split("(?i)(\\s*(and|or)\\s*)");
         for (int i = 0; i < operation.length; i++) {
-            //System.out.println(operation[i]);
+           // System.out.println(operation[i]);
             M1 = P1.matcher(operation[i]);
             M2 = P2.matcher(operation[i]);
             String[] parameters;
@@ -314,11 +315,11 @@ public class Parser {
             oPParameters.add(temp);
 
         }
-        /*for (int i = 0; i < columnNames.size(); i++) {
+        for (int i = 0; i < columnNames.size(); i++) {
             System.out.print(columnNames.get(i) + " " + operationNames.get(i) + " ");
             for (int j = 0; j < oPParameters.get(i).size(); j++) System.out.print(oPParameters.get(i).get(j) + " ");
             System.out.println();
-        }*/
+        }
     }
 
 
@@ -566,17 +567,17 @@ public class Parser {
         colTypes.add("varchar");
 
         //e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
-       /* for (int i = 0; i < table.size(); i++) {
+        /*for (int i = 0; i < table.size(); i++) {
 
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }
-        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'", table, colNames, colTypes);
+        }*/
+        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >  = 15 or not name = 'compu'", table, colNames, colTypes);
         System.out.println("\nAfter Update_1");
 
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }*/
-        e.insert("INSERT INTO table_name (subject, name, age) VALUES ('Habd', 'Discrete', -10);", table, colNames, colTypes);
+        }
+        e.insert("INSERT INTO table_name VALUES ( -10);", table, colNames, colTypes);
         System.out.println("\nAfter Insert");
         for (int i = 0; i < table.size(); i++) {
             System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
