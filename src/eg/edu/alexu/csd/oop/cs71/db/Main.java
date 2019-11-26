@@ -57,19 +57,22 @@ public class Main implements Database {
             }
         }
 
+        boolean exist = false;
         if (!dropIfExists){
-            boolean exist = false;
             for (String database : databases) {
                 if (database.equals(databaseName)) {
                     currentDatabase = databaseName;
+                    exist=true;
                     break;
                 }
             }
         }
-        currentDatabase=databaseName;
-        Path currentRelativePath = Paths.get("");
-
-        return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+        if(exist){
+            Path currentRelativePath = Paths.get("");
+            return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+        }
+        Gui.success="Database doesn't exist";
+        return null;
     }
 
     @Override
@@ -172,9 +175,7 @@ public class Main implements Database {
                 XMLSerializer serializer = new XMLSerializer(xmlfile,outputFormat);
                 serializer.serialize(doc);
                 xmlfile.close();
-            } catch (ParserConfigurationException | FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (ParserConfigurationException | IOException e) {
                 e.printStackTrace();
             }
         }
