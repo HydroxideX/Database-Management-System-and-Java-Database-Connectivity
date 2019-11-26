@@ -57,7 +57,6 @@ public class Main implements Database {
                 e.printStackTrace();
             }
         }
-
         boolean exist = true;
         if (!dropIfExists){
             for (String database : databases) {
@@ -322,20 +321,43 @@ public class Main implements Database {
         fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         switch (commad[0]){
             case "insert":{
-               rowsNum= parser.insert(query,tableData,cNames,cTypes);
+                try {
+                    rowsNum= parser.insert(query,tableData,cNames,cTypes);
+                }catch (Exception e)
+                {
+                    Gui.success=e.getMessage();
+                    return -1;
+                }
             }
             break;
             case "update":{
-              rowsNum= parser.update(query,tableData,cNames,cTypes);
+             try{ rowsNum= parser.update(query,tableData,cNames,cTypes);
+            }catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
+            }
             }
             break;
             case "delete":{
-               rowsNum= parser.delete(query,tableData,cNames,cTypes);
+                    try{
+                            rowsNum= parser.delete(query,tableData,cNames,cTypes);
+                        }catch (Exception e)
+                        {
+                            Gui.success=e.getMessage();
+                            return -1;
+                        }
             }
             break;
             case "alter":{
+                try{
                 rowsNum= parser.alter(query,cNames,cTypes,tableData);
+            }catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
             }
+        }
             break;
         }
         if(rowsNum!=-1){
