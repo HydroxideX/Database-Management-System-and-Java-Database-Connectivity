@@ -70,7 +70,7 @@ class Facade {
             break;
             case "insert":
             {
-                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((\\'.+\\'\\s?\\,\\s?)*(\\'.+\\'\\)){1}");
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((((\\'\\s?\\w+\\')|(\\d+))\\s?\\,\\s?)*(((\\'\\w+\\')|(\\d+))\\s?\\))");
                 if(!regex)
                     return false;
 

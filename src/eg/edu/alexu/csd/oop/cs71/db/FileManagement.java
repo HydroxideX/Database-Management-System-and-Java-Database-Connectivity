@@ -120,7 +120,7 @@ class FileManagement {
             }
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
+            Gui.success="Table doesn't exist!";
         }
 
     }

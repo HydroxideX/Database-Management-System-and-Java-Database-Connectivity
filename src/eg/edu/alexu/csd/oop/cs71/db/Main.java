@@ -285,7 +285,6 @@ public class Main implements Database {
                 }
             }
         }
-        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
         return finalTable;
     }
 
@@ -319,6 +318,9 @@ public class Main implements Database {
         int rowsNum=0;
         String tableName=fileManagement.getTableName(query);
         fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
+        if(!Gui.success.equals("")) {
+            return -1;
+        }
         switch (commad[0]){
             case "insert":{
                 try {
