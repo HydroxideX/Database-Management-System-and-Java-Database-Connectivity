@@ -22,16 +22,9 @@ class Facade {
                     break;
                     case "table":
                     {
-                        if(command.length<3)
-                            return false;
-                        if(command[0].equals("drop")&&command.length>3)return false;
-                        if(command.length==3)return true;
-                        if(!command[3].contains("("))
-                            return false;
-                        if(dataSplit.length !=2)
-                            return false;
-                        boolean regex= dataSplit[1].matches("(\\s?\\w+\\s(int|varchar)+\\s?\\,\\s?)*(\\s?\\w+\\s(int|varchar)+\\s?\\))");
-                        if(!regex)
+                        boolean regex= q.matches("create\\stable\\s\\w+\\s?\\((\\s?\\w+\\s(int|varchar)+\\s?\\,\\s?)*(\\s?\\w+\\s(int|varchar)+\\s?\\))");
+                        boolean regex1= q.matches("drop\\stable\\s\\w+");
+                        if(!regex&&!regex1)
                         {
                             return false;
                         }
