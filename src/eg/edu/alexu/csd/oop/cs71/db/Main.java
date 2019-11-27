@@ -3,6 +3,7 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import javafx.util.Pair;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -217,56 +218,38 @@ public class Main implements Database {
             }
             table.add(singleRow);
         }
-
+        ArrayList <Pair<Integer,Integer>> swapped = new ArrayList<>();
         if(!orderColumns.get(0).equals("noOrder")){
             int cur = 0;
             for (int i = 0;i<orderColumns.size();i++) {
-                swapColumns(orderColumns.get(i),table,colNames,colTypes,cur++);
+                if(orderColumns.get(i).toUpperCase().equals("DESC") || orderColumns.get(i).toUpperCase().equals("ASC")) continue;
+                swapColumns(orderColumns.get(i),table,colNames,colTypes,cur,swapped,true);
+                cur++;
             }
-            if(orderColumns.get(orderColumns.size()-1).toUpperCase().equals("DESC")){
-                Collections.sort(table, new Comparator<List<Object>> () {
-                    @Override
-                    public int compare(List<Object> a, List<Object> b) {
-                        int comparator = 0;
-                        for(int i = 0;i<a.size();i++) {
-                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
-                            if (cTypes.get(i).equals("int")) {
-                                Integer x = Integer.valueOf(a.get(i).toString());
-                                Integer y = Integer.valueOf(b.get(i).toString());
-                                if( x.compareTo(y) > 0 && comparator == 0) {comparator = -1; break;}
-                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = 1; break;}
-                            } else {
-                                String s1 = a.get(i).toString();
-                                String s2 = b.get(i).toString();
-                                if( s1.compareTo(s2)> 0 && comparator == 0) {comparator = -1; break;}
-                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = 1; break;}
-                            }
+            Collections.sort(table, new Comparator<List<Object>> () {
+                @Override
+                public int compare(List<Object> a, List<Object> b) {
+                    int comparator = 0;
+                    for(int i = 0;i<a.size();i++) {
+                        if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
+                        if (cTypes.get(i).equals("int")) {
+                            Integer x = Integer.valueOf(a.get(i).toString());
+                            Integer y = Integer.valueOf(b.get(i).toString());
+                            if( x.compareTo(y) > 0 && comparator == 0) { comparator = 1;break;}
+                            else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = -1; break;}
+                        } else {
+                            String s1 = a.get(i).toString();
+                            String s2 = b.get(i).toString();
+                            if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
+                            else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
                         }
-                        return comparator;
                     }
-                });
-            } else {
-                Collections.sort(table, new Comparator<List<Object>> () {
-                    @Override
-                    public int compare(List<Object> a, List<Object> b) {
-                        int comparator = 0;
-                        for(int i = 0;i<a.size();i++) {
-                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
-                            if (cTypes.get(i).equals("int")) {
-                                Integer x = Integer.valueOf(a.get(i).toString());
-                                Integer y = Integer.valueOf(b.get(i).toString());
-                                if( x.compareTo(y) > 0 && comparator == 0) { comparator = 1;break;}
-                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = -1; break;}
-                            } else {
-                                String s1 = a.get(i).toString();
-                                String s2 = b.get(i).toString();
-                                if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
-                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
-                            }
-                        }
-                        return comparator;
-                    }
-                });
+                    if(orderColumns.get(orderColumns.size()-1).toUpperCase().equals("DESC")) comparator = comparator*-1;
+                    return comparator;
+                }
+            });
+            for (int i = swapped.size()-1;i>=0;i--) {
+                swapColumns(colNames.get(swapped.get(i).getKey().intValue()),table,colNames,colTypes,swapped.get(i).getValue().intValue(),swapped,false);
             }
         }
 
@@ -288,10 +271,10 @@ public class Main implements Database {
         return finalTable;
     }
 
-    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur) {
+    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur,ArrayList <Pair<Integer,Integer>> swapped,boolean addtoswapped) {
         int index = 0;
         for (int i = 0;i<colNames.size();i++) {
-            if(Name.toUpperCase().equals(colNames.get(i).toUpperCase())){
+            if (Name.toUpperCase().equals(colNames.get(i).toUpperCase())) {
                 index = i;
                 colNames.set(i,colNames.get(cur));
                 colNames.set(cur,Name);
@@ -308,6 +291,9 @@ public class Main implements Database {
         for (int i = 0;i<table.get(index).size();i++) {
             table.get(i).set(cur,temp.get(i));
         }
+        Pair <Integer,Integer> p = new Pair<>(index,cur);
+        if(addtoswapped)
+        swapped.add(p);
     }
 
 
