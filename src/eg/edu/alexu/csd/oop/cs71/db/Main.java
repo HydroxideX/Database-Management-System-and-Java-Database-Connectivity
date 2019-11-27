@@ -3,6 +3,7 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.util.Pair;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -187,7 +188,7 @@ public class Main implements Database {
             String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
             File file =new File(tablePath);
 
-            if(!file.delete()){
+            if (!file.delete()) {
                 Gui.success="Table doesn't exist!";
                 return false;
             }
@@ -220,6 +221,25 @@ public class Main implements Database {
         }
         ArrayList <Pair<Integer,Integer>> swapped = new ArrayList<>();
         if(!orderColumns.get(0).equals("noOrder")){
+            ArrayList <Boolean> orderAscOrDesc = new ArrayList<>();
+            for(int i = 0;i<orderColumns.size();i++){
+                if(orderColumns.get(i).toUpperCase().equals("ASC")){
+                    orderAscOrDesc.add(false);
+                }
+                else if(orderColumns.get(i).toUpperCase().equals("DESC") ){
+                    orderAscOrDesc.add(true);
+                } else {
+                    if(i < orderColumns.size()-1){
+                        if(orderColumns.get(i).toUpperCase().equals("DESC") ){
+                            orderAscOrDesc.add(true);
+                        } else {
+                            orderAscOrDesc.add(false);
+                        }
+                    } else {
+                        orderAscOrDesc.add(false);
+                    }
+                }
+            }
             int cur = 0;
             for (int i = 0;i<orderColumns.size();i++) {
                 if(orderColumns.get(i).toUpperCase().equals("DESC") || orderColumns.get(i).toUpperCase().equals("ASC")) continue;
@@ -243,8 +263,12 @@ public class Main implements Database {
                             if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
                             else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
                         }
+                        if(i < orderAscOrDesc.size()){
+                            if(orderAscOrDesc.get(i)){
+                                comparator *= -1;
+                            }
+                        }
                     }
-                    if(orderColumns.get(orderColumns.size()-1).toUpperCase().equals("DESC")) comparator = comparator*-1;
                     return comparator;
                 }
             });
