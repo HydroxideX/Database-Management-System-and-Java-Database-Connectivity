@@ -223,21 +223,18 @@ public class Main implements Database {
         if(!orderColumns.get(0).equals("noOrder")){
             ArrayList <Boolean> orderAscOrDesc = new ArrayList<>();
             for(int i = 0;i<orderColumns.size();i++){
-                if(orderColumns.get(i).toUpperCase().equals("ASC")){
-                    orderAscOrDesc.add(false);
-                }
-                else if(orderColumns.get(i).toUpperCase().equals("DESC") ){
-                    orderAscOrDesc.add(true);
-                } else {
-                    if(i < orderColumns.size()-1){
-                        if(orderColumns.get(i).toUpperCase().equals("DESC") ){
-                            orderAscOrDesc.add(true);
-                        } else {
-                            orderAscOrDesc.add(false);
-                        }
+                if(i < orderColumns.size()-1){
+                    if(orderColumns.get(i+1).toUpperCase().equals("DESC") ){
+                        orderAscOrDesc.add(true);
+                        i++;
+                    } else if(orderColumns.get(i+1).toUpperCase().equals("ASC") ){
+                        orderAscOrDesc.add(false);
+                        i++;
                     } else {
                         orderAscOrDesc.add(false);
                     }
+                } else {
+                    orderAscOrDesc.add(false);
                 }
             }
             int cur = 0;
@@ -255,17 +252,28 @@ public class Main implements Database {
                         if (cTypes.get(i).equals("int")) {
                             Integer x = Integer.valueOf(a.get(i).toString());
                             Integer y = Integer.valueOf(b.get(i).toString());
-                            if( x.compareTo(y) > 0 && comparator == 0) { comparator = 1;break;}
-                            else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = -1; break;}
+                            if( x.compareTo(y) > 0 && comparator == 0) {
+                                comparator = 1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
+                            else if ( x.compareTo(y) < 0 && comparator == 0) {
+                                comparator = -1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
                         } else {
                             String s1 = a.get(i).toString();
                             String s2 = b.get(i).toString();
-                            if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
-                            else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
-                        }
-                        if(i < orderAscOrDesc.size()){
-                            if(orderAscOrDesc.get(i)){
-                                comparator *= -1;
+                            if( s1.compareTo(s2)> 0 && comparator == 0) {
+                                comparator = 1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
+                            else if ( s1.compareTo(s2) < 0 && comparator == 0) {
+                                comparator = -1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
                             }
                         }
                     }
@@ -292,7 +300,17 @@ public class Main implements Database {
                 }
             }
         }
+        System.out.println("hello");
         return finalTable;
+    }
+
+    int getCorrectPolarity(int comparator, ArrayList <Boolean> orderAscOrDesc, int i){
+        if(i < orderAscOrDesc.size()){
+            if(orderAscOrDesc.get(i)){
+                comparator *= -1;
+            }
+        }
+        return comparator;
     }
 
     void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur,ArrayList <Pair<Integer,Integer>> swapped,boolean addtoswapped) {
@@ -381,19 +399,11 @@ public class Main implements Database {
 
 
 
-    /*public static void  main(String[] args) throws SQLException {
+   /* public static void  main(String[] args) throws SQLException {
         Main a =new Main();
-        try {
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
-            s+="\\Databases";
-            File file = new File(s);
-            boolean flag = file.mkdir();
-            // System.out.print("Directory created? " + flag);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Hello World");
+        a.createDatabase("w",false);
+        a.executeQuery("select * from fine order by name asc, subject desc");
+       /* System.out.println("Hello World");
         System.out.println("Hello World");
         System.out.println("Hello World");
         HashMap<String,Object> row = new HashMap<String,Object>();

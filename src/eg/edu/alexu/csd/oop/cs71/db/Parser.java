@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -88,6 +89,7 @@ public class Parser {
                 i++;
             }
             operationParser(s.substring(1, s.length()), colNames, colTypes, table);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             operationPerformer(colNames, colTypes, table);
             for (int row = 0; row < table.size(); row++) {
                 if (isTrue(answers.get(row), colNames, colTypes, table)) {
