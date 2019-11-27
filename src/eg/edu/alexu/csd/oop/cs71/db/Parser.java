@@ -88,6 +88,7 @@ public class Parser {
                 i++;
             }
             operationParser(s.substring(1, s.length()), colNames, colTypes, table);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             operationPerformer(colNames, colTypes, table);
             for (int row = 0; row < table.size(); row++) {
                 if (isTrue(answers.get(row), colNames, colTypes, table)) {
@@ -242,15 +243,6 @@ public class Parser {
         ArrayList<String> colNamesTemp = new ArrayList<String>();
         for (int i = 0; i < values.size(); i++) colNamesTemp.add("varchar");
         Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colNamesTemp);
-        /*
-        try{
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
-        }catch (Exception e)
-        {
-            Gui.success=e.getMessage();
-            return -1;
-            }
-         */
         HashMap<String, Object> temp = new HashMap<String, Object>();
         for (int i = 0; i < values.size(); i++) {
             String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();

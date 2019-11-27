@@ -50,7 +50,7 @@ public class Gui extends Application {
                 object=facade.parse(query);
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
                 query=query.toLowerCase();
-                if(query.contains("select")) {
+                if(query.contains("select")&&object != null) {
                     rowNum.setText("");
                     table.getColumns().clear();
                     Object[][] x = (Object[][]) object;
@@ -71,7 +71,7 @@ public class Gui extends Application {
                         table.getColumns().add(tc);
                     }
                     table.setItems(data);
-                }else if(!(query.contains("create")||query.contains("drop")||query.contains("use")))
+                }else if(!(query.contains("create")||query.contains("drop")||query.contains("use"))&&object != null)
                 {
                     if((int)object!=-1)
                     {

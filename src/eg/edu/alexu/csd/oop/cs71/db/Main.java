@@ -201,7 +201,14 @@ public class Main implements Database {
     public Object[][] executeQuery(String query) throws SQLException {
         String tableName=fileManagement.getTableName(query);
         fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
-        ArrayList<ArrayList<String>> result = parser.select(query,cNames,cTypes,tableData);
+        ArrayList<ArrayList<String>> result;
+       try {
+           result = parser.select(query, cNames, cTypes, tableData);
+       }catch (Exception e)
+       {
+           Gui.success=e.getMessage();
+           return null;
+       }
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
         ArrayList<String> colTypes =  new ArrayList<>();
