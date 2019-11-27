@@ -132,6 +132,11 @@ public class Main implements Database {
                 return false;
             }
             String tableName = command[2];
+            if (tableName.contains("(")){
+                String[] temp1 = tableName.split("\\(");
+                tableName=temp1[0];
+                tableName=tableName.toLowerCase();
+            }
             Path currentRelativePath = Paths.get("");
             String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
 
@@ -139,6 +144,7 @@ public class Main implements Database {
             String columns = allcolumns[1];
             columns=columns.trim();
             columns=columns.replace(")","");
+            columns=columns.trim();
             columns=columns.replaceAll(" , ",",");
             columns=columns.replaceAll(", ",",");
             columns=columns.replaceAll(" ,",",");
@@ -147,8 +153,8 @@ public class Main implements Database {
             String[] columnType = new String[splitcolumns.length];
             for (int i=0; i<splitcolumns.length; i++){
                 String[] temp = splitcolumns[i].split(" ");
-                columnName[i]=temp[0];
-                columnType[i]=temp[1];
+                columnName[i]=temp[0].toLowerCase();
+                columnType[i]=temp[1].toLowerCase();
             }
 
             try {
