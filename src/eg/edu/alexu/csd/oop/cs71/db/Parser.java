@@ -48,7 +48,7 @@ public class Parser {
         return false;
     }*/
 
-    public ArrayList<ArrayList<String>> select(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
+    public ArrayList<ArrayList<String>> select(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) throws Exception {
         logicOperator.clear();
         operationNames.clear();
         answers.clear();
@@ -120,9 +120,26 @@ public class Parser {
         result.add(printColumns);
         result.add(selectedRows);
         result.add(orderColumns);
+        checkColumnNames(colNames,printColumns);
+        checkColumnNames(colNames,orderColumns);
         return result;
     }
 
+    boolean checkColumnNames(ArrayList <String> columnNames, ArrayList<String> toCheckOn) throws Exception {
+        boolean found = false;
+        for (int i = 0;i<toCheckOn.size();i++) {
+            if(toCheckOn.get(i).toUpperCase().equals("DESC") || toCheckOn.get(i).toUpperCase().equals("ASC")
+                    || toCheckOn.get(i).toUpperCase().equals("*") || toCheckOn.get(i).toUpperCase().equals("NOORDER")) continue;
+            found  = false;
+            for (int j = 0; j < columnNames.size();j++) {
+                if (toCheckOn.get(i).toUpperCase().equals(columnNames.get(j).toUpperCase())) {
+                    found = true;
+                }
+            }
+            if (!found) throw new Exception("Wrong column name: " + toCheckOn.get(i).toString());
+        }
+        return true;
+    }
 
     public int update(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
         logicOperator.clear();
