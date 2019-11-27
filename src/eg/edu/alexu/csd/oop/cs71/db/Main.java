@@ -307,7 +307,6 @@ public class Main implements Database {
                 }
             }
         }
-        System.out.println("hello");
         return finalTable;
     }
 
