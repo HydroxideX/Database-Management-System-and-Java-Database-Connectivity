@@ -334,7 +334,7 @@ public class Parser {
         Matcher M2;
         for (int i = 0; i < Column.size(); i++) {
             int idx = XDS_1.indexOf(Column.get(i));
-            if (idx == -1) throw new NullPointerException("Column Name Doesn't Exist ,WTF ?! ");
+            if (idx == -1) throw new NullPointerException("Column Name : "+ Column.get(i) + " Doesn't Exist ,WTF ?! ");
             for (int j = 0; j < Value.get(i).size(); j++) {
                 /*System.out.println(i + " " + j);*/
                 System.out.println(Column.get(i) + " " + Value.get(i).get(j));
