@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;

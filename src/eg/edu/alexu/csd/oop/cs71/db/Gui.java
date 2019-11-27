@@ -44,8 +44,8 @@ public class Gui extends Application {
             String query=textField.getText();
             //query = query.replaceAll("( )+", " ");
             query=query.replaceAll(";","");
-            if(facade.validateQuery(query))
-            {
+            /*if(facade.validateQuery(query))
+            {*/
                 Object object;
                 object=facade.parse(query);
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
@@ -89,14 +89,14 @@ public class Gui extends Application {
                     success="";
                     alert.showAndWait();
                 }
-            }
+            /*}
             else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid query");
                 alert.setContentText("Please try again!");
                 alert.showAndWait();
-            }
+            }*/
         });
 
 
