@@ -66,7 +66,12 @@ class FileManagement {
 
     void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
+        if(currentDatabase.equals(""))
+        {
+            Gui.success="Please select the desired database using \"use x\"";
+            return;
+        }
+            try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Path currentRelativePath = Paths.get("");
             String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
