@@ -66,6 +66,7 @@ class FileManagement {
 
     void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        tableName=tableName.toLowerCase();
         if(currentDatabase.equals(""))
         {
             throw new FileNotFoundException("Please select the desired database using \"use x\"");
