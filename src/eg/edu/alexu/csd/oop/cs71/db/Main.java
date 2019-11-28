@@ -206,9 +206,9 @@ public class Main implements Database {
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
         String tableName=fileManagement.getTableName(query);
-        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
         ArrayList<ArrayList<String>> result;
-       try {
+        try {
+           fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
            result = parser.select(query, cNames, cTypes, tableData);
        }catch (Exception e)
        {
@@ -357,8 +357,11 @@ public class Main implements Database {
         commad[0]=commad[0].toLowerCase();
         int rowsNum=0;
         String tableName=fileManagement.getTableName(query);
-        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
-        if(!Gui.success.equals("")) {
+        try {
+            fileManagement.readFile(tableName, tableColumns, tableData, currentDatabase, cNames, cTypes);
+        }catch (Exception e)
+        {
+            Gui.success=e.getMessage();
             return -1;
         }
         switch (commad[0]){

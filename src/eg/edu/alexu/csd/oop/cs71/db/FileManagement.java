@@ -64,12 +64,11 @@ class FileManagement {
         }
     }
 
-    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes){
+    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         if(currentDatabase.equals(""))
         {
-            Gui.success="Please select the desired database using \"use x\"";
-            return;
+            throw new FileNotFoundException("Please select the desired database using \"use x\"");
         }
             try {
             DocumentBuilder builder = factory.newDocumentBuilder();
