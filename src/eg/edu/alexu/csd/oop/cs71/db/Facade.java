@@ -49,21 +49,21 @@ class Facade {
             break;
             case "delete":
             {
-                boolean regex=q.matches("(delete\\sfrom)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                boolean regex=q.matches("(delete\\sfrom)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?");
                 if(!regex)
                     return false;
             }
             break;
             case "update":
             {
-                boolean regex=q.matches("(update)\\s\\w+\\s(set)\\s\\w+\\s?\\=\\s?((\\'\\s?\\w+\\s?\\')|(\\d+))(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                boolean regex=q.matches("(update)\\s\\w+\\s(set)\\s\\w+\\s?\\=\\s?((\\'\\s?\\w+\\s?\\')|(\\-?\\d+))(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?");
                 if(!regex)
                     return false;
             }
             break;
             case "insert":
             {
-                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((((\\'\\s?\\w+\\')|(\\d+))\\s?\\,\\s?)*(((\\'\\w+\\')|(\\d+))\\s?\\))");
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\(\\s?((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\,\\s?)*((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\))");
                 if(!regex)
                     return false;
 
@@ -71,7 +71,7 @@ class Facade {
             break;
             case "select":
             {
-                boolean regex=q.matches("(select)\\s(\\*\\s|(\\w+\\s?\\,\\s?)*(\\w+\\s))(from)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?(\\sorder\\sby\\s(\\w+(\\sasc|\\sdesc)?(\\s?\\,\\s?\\w+(\\sasc|\\sdesc)?)*))?");
+                boolean regex=q.matches("(select)\\s(\\*\\s|(\\w+\\s?\\,\\s?)*(\\w+\\s))(from)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?(\\sorder\\sby\\s(\\w+(\\sasc|\\sdesc)?(\\s?\\,\\s?\\w+(\\sasc|\\sdesc)?)*))?");
                 if(!regex)
                     return false;
             }
