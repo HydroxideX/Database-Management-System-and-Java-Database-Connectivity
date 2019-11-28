@@ -374,7 +374,7 @@ public class Main implements Database {
             temp.add(table.get(i).get(index));
             table.get(i).set(index,table.get(i).get(cur));
         }
-        for (int i = 0;i<table.get(index).size();i++) {
+        for (int i = 0;table.size() != 0 && i<table.get(index).size();i++) {
             table.get(i).set(cur,temp.get(i));
         }
         Pair <Integer,Integer> p = new Pair<>(index,cur);
