@@ -70,6 +70,18 @@ public class Main implements Database {
                 exist=false;
             }
         }
+        currentDatabase=databaseName;
+        String currentpath="";
+        if (databaseName.contains("\\")){
+            currentpath=databaseName;
+        }
+        else {
+            Path currentRelativePath = Paths.get("");
+            currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+        }
+
+       
+
         if(exist){
             Path currentRelativePath = Paths.get("");
             return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
@@ -87,11 +99,15 @@ public class Main implements Database {
         if (checker.contains("CREATE")) {
             if (secondChecker.contains("DATABASE")) {
                 String s="";
-                try {
+                if (command[2].contains("\\")){
+                    s=command[2];
+                }else{
                     Path currentRelativePath = Paths.get("");
                     s = currentRelativePath.toAbsolutePath().toString();
                     s+="\\Databases\\";
                     s+=command[2];
+                }
+                try {
                     File file = new File(s);
                     boolean flag = file.mkdir();
                     databases.add(command[2]);
@@ -112,8 +128,16 @@ public class Main implements Database {
                     }
                 }
                 if (exist) {
-                    Path currentRelativePath = Paths.get("");
-                    File dir = new File(currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" +command[2]);
+                    String s11 = "";
+                    if (command[2].contains("\\")){
+                        s11=command[2];
+                    }else{
+                        Path currentRelativePath = Paths.get("");
+                        s11= currentRelativePath.toAbsolutePath().toString();
+                        s11+="\\Databases\\";
+                        s11+=command[2];
+                    }
+                    File dir = new File(s11);
                     File[] listFiles = dir.listFiles();
                     for (File file : listFiles) {
                         //System.out.println("Deleting " + file.getName());
@@ -143,8 +167,13 @@ public class Main implements Database {
                 tableName=temp1[0];
                 tableName=tableName.toLowerCase();
             }
-            Path currentRelativePath = Paths.get("");
-            String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            String tablePath="";
+            if (currentDatabase.contains("\\")){
+                tablePath=currentDatabase+"\\"+tableName+".xml";
+            }else{
+                Path currentRelativePath = Paths.get("");
+                tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            }
 
             String[] allcolumns = query.split("\\(");
             String columns = allcolumns[1];
@@ -190,8 +219,13 @@ public class Main implements Database {
         }
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
-            Path currentRelativePath = Paths.get("");
-            String tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            String tablePath="";
+            if (currentDatabase.contains("\\")){
+                tablePath=currentDatabase+"\\"+tableName+".xml";
+            }else{
+                Path currentRelativePath = Paths.get("");
+                tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            }
             File file =new File(tablePath);
 
             if (!file.delete()) {
