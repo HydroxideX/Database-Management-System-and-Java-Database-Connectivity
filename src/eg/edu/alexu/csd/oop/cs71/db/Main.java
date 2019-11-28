@@ -3,6 +3,8 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.util.Pair;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,20 +52,22 @@ public class Main implements Database {
         if (dropIfExists) {
             try {
                 executeStructureQuery("drop database "+databaseName);
+                Gui.success="";
                 executeStructureQuery("create database "+databaseName);
                 currentDatabase=databaseName;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
+        boolean exist = true;
         if (!dropIfExists){
-            boolean exist = false;
             for (String database : databases) {
                 if (database.equals(databaseName)) {
                     currentDatabase = databaseName;
+                    exist=true;
                     break;
                 }
+                exist=false;
             }
         }
         currentDatabase=databaseName;
@@ -76,7 +80,14 @@ public class Main implements Database {
             currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
         }
 
-        return currentpath;
+       
+
+        if(exist){
+            Path currentRelativePath = Paths.get("");
+            return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+        }
+        Gui.success="Database doesn't exist";
+        return null;
     }
 
     @Override
@@ -202,9 +213,7 @@ public class Main implements Database {
                 XMLSerializer serializer = new XMLSerializer(xmlfile,outputFormat);
                 serializer.serialize(doc);
                 xmlfile.close();
-            } catch (ParserConfigurationException | FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (ParserConfigurationException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -219,7 +228,7 @@ public class Main implements Database {
             }
             File file =new File(tablePath);
 
-            if(!file.delete()){
+            if (!file.delete()) {
                 Gui.success="Table doesn't exist!";
                 return false;
             }
@@ -231,8 +240,15 @@ public class Main implements Database {
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
         String tableName=fileManagement.getTableName(query);
-        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
-        ArrayList<ArrayList<String>> result = parser.select(query,cNames,cTypes,tableData);
+        ArrayList<ArrayList<String>> result;
+        try {
+           fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
+           result = parser.select(query, cNames, cTypes, tableData);
+       }catch (Exception e)
+       {
+           Gui.success=e.getMessage();
+           return null;
+       }
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
         ArrayList<String> colTypes =  new ArrayList<>();
@@ -250,56 +266,69 @@ public class Main implements Database {
             }
             table.add(singleRow);
         }
-
+        ArrayList <Pair<Integer,Integer>> swapped = new ArrayList<>();
         if(!orderColumns.get(0).equals("noOrder")){
+            ArrayList <Boolean> orderAscOrDesc = new ArrayList<>();
+            for(int i = 0;i<orderColumns.size();i++){
+                if(i < orderColumns.size()-1){
+                    if(orderColumns.get(i+1).toUpperCase().equals("DESC") ){
+                        orderAscOrDesc.add(true);
+                        i++;
+                    } else if(orderColumns.get(i+1).toUpperCase().equals("ASC") ){
+                        orderAscOrDesc.add(false);
+                        i++;
+                    } else {
+                        orderAscOrDesc.add(false);
+                    }
+                } else {
+                    orderAscOrDesc.add(false);
+                }
+            }
             int cur = 0;
             for (int i = 0;i<orderColumns.size();i++) {
-                swapColumns(orderColumns.get(i),table,colNames,colTypes,cur++);
+                if(orderColumns.get(i).toUpperCase().equals("DESC") || orderColumns.get(i).toUpperCase().equals("ASC")) continue;
+                swapColumns(orderColumns.get(i),table,colNames,colTypes,cur,swapped,true);
+                cur++;
             }
-            if(orderColumns.get(orderColumns.size()-1).toUpperCase().equals("DESC")){
-                Collections.sort(table, new Comparator<List<Object>> () {
-                    @Override
-                    public int compare(List<Object> a, List<Object> b) {
-                        int comparator = 0;
-                        for(int i = 0;i<a.size();i++) {
-                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
-                            if (cTypes.get(i).equals("int")) {
-                                Integer x = Integer.valueOf(a.get(i).toString());
-                                Integer y = Integer.valueOf(b.get(i).toString());
-                                if( x.compareTo(y) > 0 && comparator == 0) {comparator = -1; break;}
-                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = 1; break;}
-                            } else {
-                                String s1 = a.get(i).toString();
-                                String s2 = b.get(i).toString();
-                                if( s1.compareTo(s2)> 0 && comparator == 0) {comparator = -1; break;}
-                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = 1; break;}
+            Collections.sort(table, new Comparator<List<Object>> () {
+                @Override
+                public int compare(List<Object> a, List<Object> b) {
+                    int comparator = 0;
+                    for(int i = 0;i<a.size();i++) {
+                        if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
+                        if (cTypes.get(i).equals("int")) {
+                            Integer x = Integer.valueOf(a.get(i).toString());
+                            Integer y = Integer.valueOf(b.get(i).toString());
+                            if( x.compareTo(y) > 0 && comparator == 0) {
+                                comparator = 1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
+                            else if ( x.compareTo(y) < 0 && comparator == 0) {
+                                comparator = -1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
+                        } else {
+                            String s1 = a.get(i).toString();
+                            String s2 = b.get(i).toString();
+                            if( s1.compareTo(s2)> 0 && comparator == 0) {
+                                comparator = 1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
+                            }
+                            else if ( s1.compareTo(s2) < 0 && comparator == 0) {
+                                comparator = -1;
+                                comparator = getCorrectPolarity(comparator,orderAscOrDesc,i);
+                                break;
                             }
                         }
-                        return comparator;
                     }
-                });
-            } else {
-                Collections.sort(table, new Comparator<List<Object>> () {
-                    @Override
-                    public int compare(List<Object> a, List<Object> b) {
-                        int comparator = 0;
-                        for(int i = 0;i<a.size();i++) {
-                            if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
-                            if (cTypes.get(i).equals("int")) {
-                                Integer x = Integer.valueOf(a.get(i).toString());
-                                Integer y = Integer.valueOf(b.get(i).toString());
-                                if( x.compareTo(y) > 0 && comparator == 0) { comparator = 1;break;}
-                                else if ( x.compareTo(y) < 0 && comparator == 0) {comparator = -1; break;}
-                            } else {
-                                String s1 = a.get(i).toString();
-                                String s2 = b.get(i).toString();
-                                if( s1.compareTo(s2)> 0 && comparator == 0) { comparator = 1; break;}
-                                else if ( s1.compareTo(s2) < 0 && comparator == 0) {comparator = -1; break;}
-                            }
-                        }
-                        return comparator;
-                    }
-                });
+                    return comparator;
+                }
+            });
+            for (int i = swapped.size()-1;i>=0;i--) {
+                swapColumns(colNames.get(swapped.get(i).getKey().intValue()),table,colNames,colTypes,swapped.get(i).getValue().intValue(),swapped,false);
             }
         }
 
@@ -318,14 +347,22 @@ public class Main implements Database {
                 }
             }
         }
-        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
         return finalTable;
     }
 
-    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur) {
+    int getCorrectPolarity(int comparator, ArrayList <Boolean> orderAscOrDesc, int i){
+        if(i < orderAscOrDesc.size()){
+            if(orderAscOrDesc.get(i)){
+                comparator *= -1;
+            }
+        }
+        return comparator;
+    }
+
+    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur,ArrayList <Pair<Integer,Integer>> swapped,boolean addtoswapped) {
         int index = 0;
         for (int i = 0;i<colNames.size();i++) {
-            if(Name.toUpperCase().equals(colNames.get(i).toUpperCase())){
+            if (Name.toUpperCase().equals(colNames.get(i).toUpperCase())) {
                 index = i;
                 colNames.set(i,colNames.get(cur));
                 colNames.set(cur,Name);
@@ -342,6 +379,9 @@ public class Main implements Database {
         for (int i = 0;i<table.get(index).size();i++) {
             table.get(i).set(cur,temp.get(i));
         }
+        Pair <Integer,Integer> p = new Pair<>(index,cur);
+        if(addtoswapped)
+        swapped.add(p);
     }
 
 
@@ -350,47 +390,69 @@ public class Main implements Database {
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
         int rowsNum=0;
-        //Read file here using table name
         String tableName=fileManagement.getTableName(query);
-        fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
+        try {
+            fileManagement.readFile(tableName, tableColumns, tableData, currentDatabase, cNames, cTypes);
+        }catch (Exception e)
+        {
+            Gui.success=e.getMessage();
+            return -1;
+        }
         switch (commad[0]){
             case "insert":{
-               rowsNum= parser.insert(query,tableData,cNames,cTypes);
+                try {
+                    rowsNum= parser.insert(query,tableData,cNames,cTypes);
+                }catch (Exception e)
+                {
+                    Gui.success=e.getMessage();
+                    return -1;
+                }
             }
             break;
             case "update":{
-              rowsNum= parser.update(query,tableData,cNames,cTypes);
+             try{ rowsNum= parser.update(query,tableData,cNames,cTypes);
+            }catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
+            }
             }
             break;
             case "delete":{
-               rowsNum= parser.delete(query,tableData,cNames,cTypes);
+                    try{
+                            rowsNum= parser.delete(query,tableData,cNames,cTypes);
+                        }catch (Exception e)
+                        {
+                            Gui.success=e.getMessage();
+                            return -1;
+                        }
             }
             break;
             case "alter":{
+                try{
                 rowsNum= parser.alter(query,cNames,cTypes,tableData);
+            }catch (Exception e)
+            {
+                Gui.success=e.getMessage();
+                return -1;
             }
+        }
             break;
         }
-        fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
-        Gui.success="";
+        if(rowsNum!=-1){
+            fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
+            Gui.success="";
+        }
         return rowsNum;
     }
 
 
 
-    /*public static void  main(String[] args) throws SQLException {
+   /* public static void  main(String[] args) throws SQLException {
         Main a =new Main();
-        try {
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
-            s+="\\Databases";
-            File file = new File(s);
-            boolean flag = file.mkdir();
-            // System.out.print("Directory created? " + flag);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Hello World");
+        a.createDatabase("w",false);
+        a.executeQuery("select * from fine order by name asc, subject desc");
+       /* System.out.println("Hello World");
         System.out.println("Hello World");
         System.out.println("Hello World");
         HashMap<String,Object> row = new HashMap<String,Object>();

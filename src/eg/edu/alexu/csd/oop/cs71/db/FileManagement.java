@@ -64,9 +64,14 @@ class FileManagement {
         }
     }
 
-    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes){
+    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
+        tableName=tableName.toLowerCase();
+        if(currentDatabase.equals(""))
+        {
+            throw new FileNotFoundException("Please select the desired database using \"use x\"");
+        }
+            try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Path currentRelativePath = Paths.get("");
             String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
@@ -120,7 +125,7 @@ class FileManagement {
             }
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
+            Gui.success="Table doesn't exist!";
         }
 
     }

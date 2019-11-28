@@ -1,7 +1,12 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -45,12 +50,8 @@ public class Parser {
         return false;
     }*/
 
-    public ArrayList<ArrayList<String>> select(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        logicOperator.clear();
-        operationNames.clear();
-        answers.clear();
-        columnNames.clear();
-        oPParameters.clear();
+    public ArrayList<ArrayList<String>> select(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) throws Exception {
+        clearMemory();
         ArrayList<String> printColumns = new ArrayList<>();
         ArrayList<String> selectedRows = new ArrayList<>();
         ArrayList<String> orderColumns = new ArrayList<>();
@@ -86,6 +87,7 @@ public class Parser {
                 i++;
             }
             operationParser(s.substring(1, s.length()), colNames, colTypes, table);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             operationPerformer(colNames, colTypes, table);
             for (int row = 0; row < table.size(); row++) {
                 if (isTrue(answers.get(row), colNames, colTypes, table)) {
@@ -116,65 +118,92 @@ public class Parser {
         result.add(printColumns);
         result.add(selectedRows);
         result.add(orderColumns);
+        checkColumnNames(colNames, printColumns);
+        checkColumnNames(colNames, orderColumns);
         return result;
     }
-
-
-    public int update(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
-        logicOperator.clear();
-        operationNames.clear();
-        answers.clear();
-        columnNames.clear();
-        oPParameters.clear();
+    /**
+     * Update Certain rows in table if it satisfies requirments
+     * @param  query query taken from user
+     * @param  table contains elements of the table .
+     * @param  colNames Column Names in {@code table} .
+     * @param  colTypes Column Types in {@code table} .
+     *
+     * @return no of elements in {@code table} after update.
+     *
+     * @throws NullPointerException {@code query} Syntax invalid
+     */
+    public int update(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
+        clearMemory();
         int counter = 0;
         query = query.split("(\\w+\\s*)+(?i)(set)\\s*")[1];
         String ch = query.split("\\s*(?i)(where)\\s*")[0];
+
+        //Parses The new updates
         String[] changes = ch.split("(\\s*\\=\\s*)|(\\s*\\,\\s*)");
         ArrayList<String> chColumn = new ArrayList<String>();
         ArrayList<ArrayList<String>> chValue = new ArrayList<ArrayList<String>>();
         for (int i = 0; i < changes.length; i += 2) {
             ArrayList<String> temp = new ArrayList<String>();
-            chColumn.add(changes[i]);
+            chColumn.add(changes[i].toLowerCase());
             temp.add(changes[i + 1]);
             chValue.add(temp);
             // System.out.println(changes[i] + " " + changes[i + 1]);
         }
-        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn, chValue, XDS_1, XDS_2);
+        // checks if Column names and values provided to be updated ae written correctly and all columns does exist
+        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(chColumn, chValue, colNames, colTypes);
+
+        //if where statement exist , parses requirements
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
-            operationParser(query, XDS_1, XDS_2, table);
-            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, XDS_1, XDS_2);
-            operationPerformer(XDS_1, XDS_2, table);
+
+            operationParser(query, colNames, colTypes, table);
+            Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
+            operationPerformer(colNames, colTypes, table);
+
+            //if row (i) satsifies requirements update it
             for (int i = 0; i < table.size(); i++) {
-                if (isTrue(answers.get(i), XDS_1, XDS_2, table)) {
+                if (isTrue(answers.get(i), colNames, colTypes, table)) {
                     HashMap<String, Object> row = table.get(i);
                     for (int j = 0; j < chColumn.size(); j++) row.put(chColumn.get(j), chValue.get(j).get(0));
                     counter++;
 
                 }
             }
-        } else
+        } else // if not updates all rows
+        {
             for (int i = 0; i < table.size(); i++) {
                 HashMap<String, Object> row = table.get(i);
                 for (int j = 0; j < chColumn.size(); j++) row.put(chColumn.get(j), chValue.get(j).get(0));
                 counter++;
 
             }
-        return counter;
+        }
+        return table.size();
     }
-
+    /**
+     * Deletes Certain rows in table if it satisfies requirments
+     * @param  query query taken from user
+     * @param  table contains elements of the table .
+     * @param  colNames Column Names in {@code table} .
+     * @param  colTypes Column Types in {@code table} .
+     *
+     * @return no of elements in {@code table} after delete.
+     *
+     * @throws NullPointerException {@code query} Syntax invalid .
+     */
     public int delete(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
-        logicOperator.clear();
-        operationNames.clear();
-        answers.clear();
-        columnNames.clear();
-        oPParameters.clear();
+        clearMemory();
         int counter = 0;
         if (query.toLowerCase().contains("where")) {
-            query = query.split("\\s*(?i)(where)\\s*")[1];
+
+            query = query.split("\\s*(?i)(where)\\s*")[1]; // what matters is what exists after where
+
             operationParser(query, colNames, colTypes, table);
             Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(columnNames, oPParameters, colNames, colTypes);
             operationPerformer(colNames, colTypes, table);
+
+            //if row (i) satsifies requirements delete it
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
                     answers.remove(i);
@@ -183,7 +212,7 @@ public class Parser {
                     i--;
                 }
             }
-        } else
+        } else // if where doesn't exist in query it deletes all rows
             for (int i = 0; i < table.size(); i++) {
                 table.remove(i);
                 counter++;
@@ -191,42 +220,80 @@ public class Parser {
             }
         return counter;
     }
-
+    /**
+     * insert new rows in table
+     * @param  query query taken from user
+     * @param  table contains elements of the table .
+     * @param  colNames Column Names in {@code table} .
+     * @param  colTypes Column Types in {@code table} .
+     *
+     * @return no of elements in {@code table} after insertion.
+     *
+     * @throws NullPointerException {@code query} Syntax invalid .
+     */
     public int insert(String query, ArrayList<HashMap<String, Object>> table, ArrayList<String> colNames, ArrayList<String> colTypes) {
         query = query.split("(?i)(\\s*into\\s*\\w+)")[1];
         String[] s = query.split("(?i)(\\s*values\\s*)");
-        ArrayList<String> insColNames = new ArrayList<String>();
-        if (s[0].contains("(")) {
-            String[] temp_1 = s[0].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
-            for (int i = 0; i < temp_1.length; i++) {
-                if (temp_1[i].equals("")) continue;
-                //System.out.println(valuesTemp[i]);
-                insColNames.add(temp_1[i]);
-            }
+        ArrayList<String> insColNames = new ArrayList<String>(); // Saves Column Names in query
+        ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>(); // Saves values in query
+        HashMap<String, Object> columnMap = new HashMap<String, Object>(); // Template Row that will be addded
+        String[] temp_1;
 
-        } else insColNames = colNames;
-        if (insColNames.size() > colNames.size())
-            throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
-        String[] valuesTemp = s[1].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
-        ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
-        for (int i = 0; i < valuesTemp.length; i++) {
+        for (int i = 0; i < colNames.size(); i++) columnMap.put(colNames.get(i).toLowerCase(), "NULL");
+
+        //Parsing Values
+        temp_1 = s[1].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
+        for (int i = 0; i < temp_1.length; i++) {
+            if (temp_1[i].equals("")) continue;
             ArrayList<String> t = new ArrayList<String>();
-            if (valuesTemp[i].equals("")) continue;
-            t.add(valuesTemp[i]);
+            t.add(temp_1[i]);
             values.add(t);
         }
+        //Parsing Column Names
+        if (s[0].contains("(")) {
+            temp_1 = s[0].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
+            for (int i = 0; i < temp_1.length; i++) {
+                if (temp_1[i].equals("") /*|| columnSet.contains((Object) temp_1[i])*/) continue;
+                insColNames.add(temp_1[i].toLowerCase());
+            }
+
+        } else { // if Query doesn't have Column names use column names as much as values provided in query
+            for (int i = 0; i < values.size(); i++) insColNames.add(colNames.get(i));
+        }
+        // if No. of Columns in query greater than those exist
+        if (insColNames.size() > colNames.size())
+            throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
+        // if no of values and column in query not equal
         if (insColNames.size() != values.size())
             throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
 
-        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypes);
+        //Because all Values in insert query must be in the form 'Value'
+        ArrayList<String> colTypesTemp = new ArrayList<String>();
+        for (int i = 0; i < values.size(); i++) colTypesTemp.add("varchar");
 
-        HashMap<String, Object> temp = new HashMap<>();
+        Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(insColNames, values, colNames, colTypesTemp);
+
+        //Updating values in ColumnMap with what we parsed from query according to each column type
         for (int i = 0; i < values.size(); i++) {
-            temp.put(insColNames.get(i), values.get(i).get(0));
+            String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();
+            String iCN = insColNames.get(i).toLowerCase();
+            if (values.get(i).get(0).toLowerCase().equals("null"))
+                columnMap.put(iCN, values.get(i).get(0));
+            else if (type.equals("varchar"))
+                columnMap.put(iCN, values.get(i).get(0));
+            else if (type.equals("int"))
+                columnMap.put(iCN, Integer.parseInt(values.get(i).get(0)));
+            else if (type.equals("float"))
+                columnMap.put(iCN, Float.parseFloat(values.get(i).get(0)));
         }
-        table.add(temp);
+        table.add(columnMap);
         return table.size();
 
+    }
+
+    public int alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
+
+        return 0;
     }
 
     private void logicOperatorParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
@@ -240,15 +307,29 @@ public class Parser {
     }
 
     private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        query = query.replaceAll("\\s+|\\(+|\\)|\\,|\\;", " ");
+        query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|\\d))|\\;", " ");
+        query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
+        query = query.replaceAll("\\s+(?=\\=)", "");
+        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=])[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Matcher M1;
+        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?\\w+[']?)[\\s]*)+\\z");
+        Matcher M2;
         logicOperatorParser(query, colNames, colTypes, table);
         query = query.replaceAll("(?i)(not)\\s*", "");
         String[] operation = query.split("(?i)(\\s*(and|or)\\s*)");
         for (int i = 0; i < operation.length; i++) {
-            String[] parameters = operation[i].split("\\s+");
-            String cN = parameters[0], oN = parameters[1];
-            columnNames.add(cN);
-            operationNames.add(oN.toLowerCase());
+            // System.out.println(operation[i]);
+            M1 = P1.matcher(operation[i]);
+            M2 = P2.matcher(operation[i]);
+            String[] parameters;
+            if (M1.matches()) {
+                parameters = new String[3];
+                for (int a = 1; a < 4; a++) parameters[a - 1] = M1.group(a);
+            } else if (M2.matches()) {
+                parameters = operation[i].split("\\s+");
+            } else throw new RuntimeException("Query Form invalid");
+            columnNames.add(parameters[0].toLowerCase());
+            operationNames.add(parameters[1].toLowerCase());
             ArrayList<String> temp = new ArrayList<String>();
             for (int j = 2; j < parameters.length; j++) {
                 if (!parameters[j].equals("")) temp.add(parameters[j]);
@@ -256,28 +337,52 @@ public class Parser {
             oPParameters.add(temp);
 
         }
-        /*for(int i=0 ;i<columnNames.size();i++){
+       /* for (int i = 0; i < columnNames.size(); i++) {
             System.out.print(columnNames.get(i) + " " + operationNames.get(i) + " ");
-            for(int j =0 ;j<oPParameters.get(i).size();j++)System.out.print(oPParameters.get(i).get(j)+" ");
+            for (int j = 0; j < oPParameters.get(i).size(); j++) System.out.print(oPParameters.get(i).get(j) + " ");
             System.out.println();
         }*/
     }
 
-    public void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
+
+    private void Validation_Tany_3shan_5ater_sh3rawy_2lvalidation_bta3th_mbt3mlsh_7aga(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
+        Pattern P1 = Pattern.compile("('\\-*\\w+')");
+        Matcher M1;
+        Pattern P2 = Pattern.compile("(\\-*\\d+)");
+        Matcher M2;
         for (int i = 0; i < Column.size(); i++) {
-            int idx = XDS_1.indexOf(Column.get(i));
-            if (idx == -1) throw new NullPointerException("Column Name Doesn't Exist ,WTF ?! ");
+            int idx = XDS_1.indexOf(Column.get(i).toLowerCase());
+            if (idx == -1) throw new NullPointerException("Column Name : " + Column.get(i) + " Doesn't Exist ,WTF ?! ");
             for (int j = 0; j < Value.get(i).size(); j++) {
-                System.out.println(i + " " + j);
-                System.out.println(Column.get(i) + " " + Value.get(i).get(j));
-                if (XDS_2.get(idx).toLowerCase().equals("int") && Value.get(i).get(j).contains("'"))
-                    throw new RuntimeException("Query is Wrong You Fool " + Column.get(i) + "isn't an Int");
-                if (XDS_2.get(idx).toLowerCase().equals("varchar") && !Value.get(i).get(j).contains("'"))
-                    throw new RuntimeException("Query is Wrong You Stubid , in " + Column.get(i) + " column value '' is missing ");
+                /*System.out.println(i + " " + j);*/
+                //System.out.println(Column.get(i) + " " + Value.get(i).get(j));
+                M1 = P1.matcher(Value.get(i).get(j));
+                M2 = P2.matcher(Value.get(i).get(j));
+                if (XDS_2.get(idx).toLowerCase().equals("int") && (M1.matches() || !M2.matches()))
+                    throw new RuntimeException("Query is Wrong You Fool " + Value.get(i).get(j) + " isn't an Int");
+                if (XDS_2.get(idx).toLowerCase().equals("varchar") && !M1.matches())
+                    throw new RuntimeException("Query is Wrong You Stubid , in " + Value.get(i).get(j) + " isn't a varchar ");
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
 
             }
         }
+    }
+
+    private boolean checkColumnNames(ArrayList<String> columnNames, ArrayList<String> toCheckOn) throws Exception {
+        boolean found = false;
+        for (int i = 0; i < toCheckOn.size(); i++) {
+            if (toCheckOn.get(i).toUpperCase().equals("DESC") || toCheckOn.get(i).toUpperCase().equals("ASC")
+                    || toCheckOn.get(i).toUpperCase().equals("*") || toCheckOn.get(i).toUpperCase().equals("NOORDER"))
+                continue;
+            found = false;
+            for (int j = 0; j < columnNames.size(); j++) {
+                if (toCheckOn.get(i).toUpperCase().equals(columnNames.get(j).toUpperCase())) {
+                    found = true;
+                }
+            }
+            if (!found) throw new Exception("Wrong column name: " + toCheckOn.get(i).toString());
+        }
+        return true;
     }
 
     public void operationPerformer(ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
@@ -473,9 +578,21 @@ public class Parser {
         return false;
     }
 
-    public int alter(String query, ArrayList<String> cNames, ArrayList<String> cTypes, ArrayList<HashMap<String, Object>> tableData) {
+    private void clearMemory() {
+        logicOperator.clear();
+        operationNames.clear();
+        answers.clear();
+        columnNames.clear();
+        oPParameters.clear();
+    }
 
-        return 0;
+    private void printTable(ArrayList<String> colNames, ArrayList<HashMap<String, Object>> table) {
+        for (int i = 0; i < table.size(); i++) {
+            System.out.println("\nRow No. " + i);
+            for (int j = 0; j < colNames.size(); j++) {
+                System.out.println(colNames.get(j) + " = " + table.get(i).get(colNames.get(j)).toString());
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -501,33 +618,33 @@ public class Parser {
         colTypes.add("varchar");
 
         //e.select("seLect * from table1 where age >= '5' and name = omar order by subject",colNames,colTypes,table);
-       /* for (int i = 0; i < table.size(); i++) {
+        System.out.println("Before Update_1");
+        e.printTable(colNames, table);
 
-            System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }
-        e.update("UPDATE table_name SET subject = 'value1', age = -2 WHERE not subject IN ('Maths', 'Science') and not age >= 15 or not name = 'compu'", table, colNames, colTypes);
+        e.update("UPDATE table_name SET SUBJECT = 'value1', AGE = -2 WHERE not AGE between 15  and 20  ", table, colNames, colTypes);
         System.out.println("\nAfter Update_1");
+        e.printTable(colNames, table);
 
-        for (int i = 0; i < table.size(); i++) {
-            System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }*/
-        e.insert("INSERT INTO table_name (subject, name, age) VALUES ('Habd', 'Discrete', -10);", table, colNames, colTypes);
-        System.out.println("\nAfter Insert");
-        for (int i = 0; i < table.size(); i++) {
-            System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }/*
-        e.update("UPDATE table_name SET subject = value1, age = -2",colNames,colTypes,table);
+        e.insert("INSERT INTO table_name (SubJect, AgE) VALUES ('Lovely_Statistics', '2');", table, colNames, colTypes);
+        System.out.println("\nAfter Insert_1");
+        e.printTable(colNames, table);
+
+        e.insert("INSERT INTO table_name VALUES ( '-10');", table, colNames, colTypes);
+        System.out.println("\nAfter Insert_2");
+        e.printTable(colNames, table);
+
+        e.update("UPDATE table_name SET subject = 'value1', age = -2", table, colNames, colTypes);
         System.out.println("\nAfter Update_2");
+        e.printTable(colNames, table);
 
-        for (int i = 0; i < table.size(); i++) {
-            System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }
-        e.delete("DELETE From table_name WHERE nOt subject IN ('Maths', 'Science') AnD not age between (15, 18) oR not name = 'compu'; ",colNames,colTypes,table);
+        e.delete("DELETE From table_name WHERE  subject IN ('Maths', 'Science') AnD age between 5 and 18 oR name='compu'; ", table, colNames, colTypes);
+        System.out.println(" \nAfter Delete_1");
+        e.printTable(colNames, table);
 
-        System.out.println(" \nAfter Delete");
-        for (int i = 0; i < table.size(); i++) {
-            System.out.println(table.get(i).get("name").toString() + " " + table.get(i).get("age").toString() + " " + table.get(i).get("subject").toString());
-        }*/
+        e.delete("DELETE From table_name ; ", table, colNames, colTypes);
+        System.out.println(" \nAfter Delete_2");
+        e.printTable(colNames, table);
+
     }
 
 

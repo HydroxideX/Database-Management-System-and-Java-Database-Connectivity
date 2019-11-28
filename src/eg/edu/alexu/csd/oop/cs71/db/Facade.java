@@ -22,16 +22,9 @@ class Facade {
                     break;
                     case "table":
                     {
-                        if(command.length<3)
-                            return false;
-                        if(command[0].equals("drop")&&command.length>3)return false;
-                        if(command.length==3)return true;
-                        if(!command[3].contains("("))
-                            return false;
-                        if(dataSplit.length !=2)
-                            return false;
-                        boolean regex= dataSplit[1].matches("(\\s?\\w+\\s(int|varchar)+\\s?\\,\\s?)*(\\s?\\w+\\s(int|varchar)+\\s?\\))");
-                        if(!regex)
+                        boolean regex= q.matches("create\\stable\\s\\w+\\s?\\((\\s?\\w+\\s(int|varchar)+\\s?\\,\\s?)*(\\s?\\w+\\s(int|varchar)+\\s?\\))");
+                        boolean regex1= q.matches("drop\\stable\\s\\w+");
+                        if(!regex&&!regex1)
                         {
                             return false;
                         }
@@ -49,28 +42,28 @@ class Facade {
             break;
             case "alter":
             {
-                boolean regex=q.matches("(alter)\\s(table)\\s\\w+\\s(((add)\\s\\w+\\s(int|varchar))|((modify)\\s\\w+\\s(int|varchar))|((change)\\s\\w+\\s\\w+\\s(int|varchar))|((drop)\\s(column)\\s\\w+))");
+                boolean regex=q.matches("(alter)\\s(table)\\s\\w+\\s(((add)\\s\\w+\\s(int|varchar))|((modify)(column)?\\s\\w+\\s(int|varchar))|((drop)\\s(column)\\s\\w+))");
                 if(!regex)
                     return false;
             }
             break;
             case "delete":
             {
-                boolean regex=q.matches("(delete\\sfrom)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                boolean regex=q.matches("(delete\\sfrom)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?");
                 if(!regex)
                     return false;
             }
             break;
             case "update":
             {
-                boolean regex=q.matches("(update)\\s\\w+\\s(set)\\s\\w+\\s?\\=\\s?\\'\\s?\\w+\\s?\\'(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?");
+                boolean regex=q.matches("(update)\\s\\w+\\s(set)\\s\\w+\\s?\\=\\s?((\\'\\s?\\w+\\s?\\')|(\\-?\\d+))(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?");
                 if(!regex)
                     return false;
             }
             break;
             case "insert":
             {
-                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\((\\'.+\\'\\s?\\,\\s?)*(\\'.+\\'\\)){1}");
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\(\\s?((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\,\\s?)*((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\))");
                 if(!regex)
                     return false;
 
@@ -78,7 +71,7 @@ class Facade {
             break;
             case "select":
             {
-                boolean regex=q.matches("(select)\\s(\\*\\s|(\\w+\\s?\\,\\s?)*(\\w+\\s))(from)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\d+))*)?|(\\sorder\\sby\\s(\\*\\s|(\\w+\\s?\\,\\s?(asc|desc)?)*(\\w+\\s(asc|desc)?)))");
+                boolean regex=q.matches("(select)\\s(\\*\\s|(\\w+\\s?\\,\\s?)*(\\w+\\s))(from)\\s\\w+(\\s(where)\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+)(\\sand\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*(\\sor\\s(not\\s)?\\w+\\s?(\\=|\\>\\=|\\<\\=|\\<\\>|\\<|\\>|\\!\\=|between|like|in)\\s?(\\'\\s?\\w+\\s?\\'|\\-?\\d+))*)?(\\sorder\\sby\\s(\\w+(\\sasc|\\sdesc)?(\\s?\\,\\s?\\w+(\\sasc|\\sdesc)?)*))?");
                 if(!regex)
                     return false;
             }
