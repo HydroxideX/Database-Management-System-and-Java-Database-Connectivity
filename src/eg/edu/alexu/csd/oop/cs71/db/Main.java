@@ -70,21 +70,18 @@ public class Main implements Database {
                 exist=false;
             }
         }
-        currentDatabase=databaseName;
-        String currentpath="";
-        if (databaseName.contains("\\")){
-            currentpath=databaseName;
-        }
-        else {
-            Path currentRelativePath = Paths.get("");
-            currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
-        }
-
-       
 
         if(exist){
-            Path currentRelativePath = Paths.get("");
-            return currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+            currentDatabase=databaseName;
+            String currentpath="";
+            if (databaseName.contains("\\")){
+                currentpath=databaseName;
+            }
+            else {
+                Path currentRelativePath = Paths.get("");
+                currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
+            }
+            return currentpath;
         }
         Gui.success="Database doesn't exist";
         return null;
