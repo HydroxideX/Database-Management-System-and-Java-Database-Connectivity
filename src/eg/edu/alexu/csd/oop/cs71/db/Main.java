@@ -74,13 +74,13 @@ public class Main implements Database {
         if(exist){
             currentDatabase=databaseName;
             String currentpath="";
-            if (databaseName.contains("\\")){
+            /*if (databaseName.contains("\\")){
                 currentpath=databaseName;
             }
-            else {
+            else {*/
                 Path currentRelativePath = Paths.get("");
                 currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
-            }
+           // }
             return currentpath;
         }
         Gui.success="Database doesn't exist";
@@ -96,16 +96,17 @@ public class Main implements Database {
         if (checker.contains("CREATE")) {
             if (secondChecker.contains("DATABASE")) {
                 String s="";
-                if (command[2].contains("\\")){
+               // if (command[2].contains("\\")){
                     s=command[2];
-                }else{
+               // }else{
                     Path currentRelativePath = Paths.get("");
                     s = currentRelativePath.toAbsolutePath().toString();
                     s+="\\Databases\\";
                     s+=command[2];
-                }
+              //  }
                 try {
                     File file = new File(s);
+                    file.getParentFile().mkdirs();
                     boolean flag = file.mkdir();
                     databases.add(command[2]);
                     System.out.print("Directory created? " + flag);
