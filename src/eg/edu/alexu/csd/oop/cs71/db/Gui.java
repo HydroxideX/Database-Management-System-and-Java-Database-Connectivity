@@ -42,7 +42,6 @@ public class Gui extends Application {
         Label rowNum=new Label();
         button.setOnAction(e->{
             String query=textField.getText();
-            //query = query.replaceAll("( )+", " ");
             query=query.replaceAll(";","");
             if(facade.validateQuery(query))
             {
@@ -98,13 +97,6 @@ public class Gui extends Application {
                 alert.showAndWait();
             }
         });
-
-
-
-        //-LOOP ON TABLE COLUMNS-
-        //https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
-
-
 
         final VBox vbox = new VBox();
         vbox.setSpacing(5);

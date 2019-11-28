@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.oop.cs71.db;
 import java.sql.SQLException;
 
 class Facade {
-     Main engine = new Main();
+    Main engine = new Main();
     boolean validateQuery(String q)
     {
         q=q.toLowerCase();
@@ -85,7 +85,7 @@ class Facade {
         String checker;
         String[] command=query.split(" ");
         String query2=query;
-        query2 += "01274713607";
+        query2 += "NullValueToPassUse";
         checker = query2.substring(0,8);
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
