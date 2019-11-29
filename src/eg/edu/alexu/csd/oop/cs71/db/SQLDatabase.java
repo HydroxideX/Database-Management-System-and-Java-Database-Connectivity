@@ -27,7 +27,7 @@ public class SQLDatabase implements Database {
         return cNames;
     }
 
-    private ArrayList<String> cNames;
+    public ArrayList<String> cNames;
     private ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
     private ValidationInterface SQLvalidation;
@@ -293,6 +293,10 @@ public class SQLDatabase implements Database {
 
         if(!orderColumns.get(0).equals("noOrder")){
             orderTable(orderColumns, colTypes,colNames , table);
+        }
+        cNames.clear();
+        for(int i = 0;i<colNames.size();i++){
+            cNames.add(colNames.get(i));
         }
         Object [][] finalTable = transformToTable(colNames,printColumns,selectedRows,table,colTypes);
         return finalTable;
