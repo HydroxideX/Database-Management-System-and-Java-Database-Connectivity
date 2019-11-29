@@ -30,6 +30,7 @@ public class Gui extends Application {
     public void start(Stage stage) {
         SQLDatabase.startUp();
         table.setEditable(true);
+        ValidationInterface SQLvalidation = new SQLBasicValidation();
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
         stage.setWidth(300);
@@ -42,7 +43,7 @@ public class Gui extends Application {
         button.setOnAction(e->{
             String query=textField.getText();
             query=query.replaceAll(";","");
-            if(facade.validateQuery(query))
+            if(SQLvalidation.validateQuery(query))
             {
                 Object object;
                 object=facade.parse(query);
