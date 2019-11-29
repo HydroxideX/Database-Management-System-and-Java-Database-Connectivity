@@ -26,7 +26,7 @@ public class IntegerConditionalParser implements ConditionalParser {
                             break;
                         }
                     }
-                    if (x) continue;
+                    if (x) break;
                     else ans += "0";
                     break;
                 case "=":
