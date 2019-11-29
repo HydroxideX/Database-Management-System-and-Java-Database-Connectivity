@@ -165,7 +165,7 @@ public class SQLDatabase implements Database {
             if(currentDatabase.equals(""))
             {
                 Gui.success="Please select the desired database using \"use x\"";
-                return false;
+               throw new SQLException();
             }
             String tableName = command[2];
             if (tableName.contains("(")){
