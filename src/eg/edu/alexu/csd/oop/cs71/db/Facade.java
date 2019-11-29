@@ -3,7 +3,10 @@ package eg.edu.alexu.csd.oop.cs71.db;
 import java.sql.SQLException;
 
 class Facade {
-    Main engine = new Main();
+    public SQLDatabase engine;
+    public Facade (){
+        engine = SQLDatabase.getInstance();
+    }
     boolean validateQuery(String q)
     {
         q=q.toLowerCase();

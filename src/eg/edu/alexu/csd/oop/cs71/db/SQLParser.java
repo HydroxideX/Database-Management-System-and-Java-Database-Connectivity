@@ -1,20 +1,36 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parser {
+public class SQLParser {
 
-    private ArrayList<String> columnNames = new ArrayList<>();
-    private ArrayList<String> operationNames = new ArrayList<>();
-    private ArrayList<String> logicOperator = new ArrayList<>();
-    private ArrayList<String> answers = new ArrayList<>();
-    private ArrayList<ArrayList<String>> oPParameters = new ArrayList<>();
+    private ArrayList<String> columnNames;
+    private ArrayList<String> operationNames;
+    private ArrayList<String> logicOperator;
+    private ArrayList<String> answers;
+    private ArrayList<ArrayList<String>> oPParameters;
+    ConditionalParser stringConditionalParser;
+    ConditionalParser integerConditionalParser;
+
+    private static SQLParser uniqueSQLParserInstance;
+    private SQLParser() {
+        columnNames = new ArrayList<>();
+        operationNames = new ArrayList<>();
+        logicOperator = new ArrayList<>();
+        answers = new ArrayList<>();
+        oPParameters = new ArrayList<>();
+        stringConditionalParser = new StringConditionalParser();
+        integerConditionalParser = new IntegerConditionalParser();
+    }
+    public static synchronized SQLParser getInstance() {
+        if (uniqueSQLParserInstance == null) {
+            uniqueSQLParserInstance = new SQLParser();
+        }
+        return uniqueSQLParserInstance;
+    }
 
     public ArrayList<ArrayList<String>> select(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) throws Exception {
         clearMemory();
@@ -54,7 +70,20 @@ public class Parser {
             }
             operationParser(s.substring(1, s.length()), colNames, colTypes, table);
             ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
-            operationPerformer(colNames, colTypes, table);
+            for(int iterator = 0;iterator<table.size();iterator++){
+                answers.add("");
+            }
+            for (int j = 0; j < operationNames.size(); j++) {
+                ArrayList<String> pp = oPParameters.get(j);
+                String columnName = columnNames.get(j);
+                String type = getColumnType(columnName, colNames, colTypes);
+                if(type.equals("varchar")){
+                    stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                } else if (type.equals("int")){
+                    integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                }
+            }
+
             for (int row = 0; row < table.size(); row++) {
                 if (isTrue(answers.get(row), colNames, colTypes, table)) {
                     selectedRows.add(String.valueOf(row));
@@ -136,7 +165,19 @@ public class Parser {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
             ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
-            operationPerformer(colNames, colTypes, table);
+            for(int iterator = 0;iterator<table.size();iterator++){
+                answers.add("");
+            }
+            for (int j = 0; j < operationNames.size(); j++) {
+                ArrayList<String> pp = oPParameters.get(j);
+                String columnName = columnNames.get(j);
+                String type = getColumnType(columnName, colNames, colTypes);
+                if(type.equals("varchar")){
+                    stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                } else if (type.equals("int")){
+                    integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                }
+            }
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
                     HashMap<String, Object> row = table.get(i);
@@ -174,7 +215,19 @@ public class Parser {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
             ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
-            operationPerformer(colNames, colTypes, table);
+            for(int iterator = 0;iterator<table.size();iterator++){
+                answers.add("");
+            }
+            for (int j = 0; j < operationNames.size(); j++) {
+                ArrayList<String> pp = oPParameters.get(j);
+                String columnName = columnNames.get(j);
+                String type = getColumnType(columnName, colNames, colTypes);
+                if(type.equals("varchar")){
+                    stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                } else if (type.equals("int")){
+                    integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
+                }
+            }
             for (int i = 0; i < table.size(); i++) {
                 if (isTrue(answers.get(i), colNames, colTypes, table)) {
                     answers.remove(i);
@@ -326,114 +379,7 @@ public class Parser {
         }
     }
 
-    public void operationPerformer(ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        for (int i = 0; i < table.size(); i++) {
-            String ans = "";
-            HashMap<String, Object> t = table.get(i);
-            for (int j = 0; j < operationNames.size(); j++) {
-                ArrayList<String> pp = oPParameters.get(j);
-                for (int ppIterator = 0; ppIterator < pp.size(); ppIterator++)
-                    pp.set(ppIterator, pp.get(ppIterator).replaceAll("'", ""));
-                String columnName = columnNames.get(j);
-                String type = getColumnType(columnName, colNames, colTypes);
-                if (type.equals("varchar")) {
-                    switch (operationNames.get(j)) {
-                        case "between":
-                            if ((t.get(columnName)).toString().compareTo(pp.get(0)) >= 0 && (t.get(columnName)).toString().compareTo(pp.get(1)) <= 0) {
-                                ans += "1";
-                            } else ans += "0";
-                            break;
-                        case "in":
-                            Boolean x = false;
-                            for (int a = 0; a < pp.size(); a++) {
-                                if ((t.get(columnName)).toString().equals(pp.get(a))) {
-                                    ans += "1";
-                                    x = true;
-                                    break;
-                                }
-                            }
-                            if (x) continue;
-                            else ans += "0";
-                            break;
-                        case "=":
-                            String s = t.get(columnName).toString();
-                            if (t.get(columnName).toString().equals(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case ">=":
-                            String sr = t.get(columnName).toString();
-                            if (t.get(columnName).toString().compareTo(pp.get(0)) >= 0) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "<=":
-                            if (t.get(columnName).toString().compareTo(pp.get(0)) <= 0) ans += "1";
-                            else ans += "0";
-                            break;
-                        case ">":
-                            if (t.get(columnName).toString().compareTo(pp.get(0)) > 0) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "<":
-                            if (t.get(columnName).toString().compareTo(pp.get(0)) < 0) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "!=":
-                        case "<>":
-                            if (t.get(columnName).toString().compareTo(pp.get(0)) != 0) ans += "1";
-                            else ans += "0";
-                            break;
-                    }
-                } else {
-                    switch (operationNames.get(j)) {
-                        case "between":
-                            if (Integer.valueOf(t.get(columnName).toString()) >= Integer.valueOf(pp.get(0)) && Integer.valueOf(t.get(columnName).toString()) <= Integer.valueOf(pp.get(1))) {
-                                ans += "1";
-                            } else ans += "0";
-                            break;
-                        case "in":
-                            Boolean x = false;
-                            for (int a = 0; a < pp.size(); a++) {
-                                if (Integer.valueOf(t.get(columnName).toString()) == Integer.valueOf(pp.get(a))) {
-                                    ans += "1";
-                                    x = true;
-                                    break;
-                                }
-                            }
-                            if (x) continue;
-                            else ans += "0";
-                            break;
-                        case "=":
-                            if (Integer.valueOf(t.get(columnName).toString()) == Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case ">=":
-                            String sr = t.get(columnName).toString();
-                            if (Integer.valueOf(t.get(columnName).toString()) >= Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "<=":
-                            if (Integer.valueOf(t.get(columnName).toString()) <= Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case ">":
-                            if (Integer.valueOf(t.get(columnName).toString()) > Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "<":
-                            if (Integer.valueOf(t.get(columnName).toString()) < Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                        case "!=":
-                        case "<>":
-                            if (Integer.valueOf(t.get(columnName).toString()) != Integer.valueOf(pp.get(0))) ans += "1";
-                            else ans += "0";
-                            break;
-                    }
-                }
-            }
-            answers.add(ans);
-        }
-    }
+
 
     public Boolean isTrue(String ans, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
         String a = "", b = "";

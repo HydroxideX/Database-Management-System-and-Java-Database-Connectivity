@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-class FileManagement {
-    void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase){
+class FileManagement implements FileManagementInterface{
+    public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase){
         String[] columnTypes =new String[tableColumns.size()];
         String[] columnNames =new String[tableColumns.size()];
         String[] columnContents =new String[tableColumns.size()];
@@ -64,7 +64,7 @@ class FileManagement {
         }
     }
 
-    void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
+    public void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         tableName=tableName.toLowerCase();
         if(currentDatabase.equals(""))
@@ -130,7 +130,7 @@ class FileManagement {
 
     }
 
-    String getTableName(String query) {
+    public String getTableName(String query) {
         String tableName="";
         String[] parts=query.split(" ");
         parts[0]=parts[0].toLowerCase();
