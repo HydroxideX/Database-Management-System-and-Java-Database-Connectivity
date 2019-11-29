@@ -3,6 +3,9 @@ package eg.edu.alexu.csd.oop.cs71.db;
 public class SQLBasicValidation implements ValidationInterface {
     public boolean validateQuery(String q)
     {
+        q=q.trim();
+        q=q.replaceAll("\\s+"," ");
+        q=q.replaceAll(";","");
         q=q.toLowerCase();
         String[] dataSplit=q.split("\\(");
         String[] command=q.split(" ");

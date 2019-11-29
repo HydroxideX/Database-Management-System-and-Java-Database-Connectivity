@@ -167,6 +167,7 @@ public class SQLDatabase implements Database {
             }
         }
         if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")) {
+
             if(currentDatabase.equals(""))
             {
                 Gui.success="Please select the desired database using \"use x\"";
@@ -250,9 +251,9 @@ public class SQLDatabase implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        if(!SQLvalidation.validateQuery(query)){
+       /* if(!SQLvalidation.validateQuery(query)){
             throw new SQLException("Wrong Query");
-        }
+        }*/
         String tableName=fileManagement.getTableName(query);
         ArrayList<ArrayList<String>> result;
         try {
@@ -421,9 +422,9 @@ public class SQLDatabase implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
-        if(!SQLvalidation.validateQuery(query)){
+        /*if(!SQLvalidation.validateQuery(query)){
             throw new SQLException("Wrong Query");
-        }
+        }*/
         query= query.toLowerCase();
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
