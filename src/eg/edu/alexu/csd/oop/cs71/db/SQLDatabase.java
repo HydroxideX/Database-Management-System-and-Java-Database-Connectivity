@@ -26,6 +26,7 @@ public class SQLDatabase implements Database {
     private ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
 
+
     private SQLDatabase() {
         SQLParser = SQLParser.getInstance();
         tableData = new ArrayList<>();
@@ -179,6 +180,8 @@ public class SQLDatabase implements Database {
                 Path currentRelativePath = Paths.get("");
                 tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
             //}
+            File test =new File(tablePath);
+            if(test.exists())return false;
 
             String[] allcolumns = query.split("\\(");
             String columns = allcolumns[1];
