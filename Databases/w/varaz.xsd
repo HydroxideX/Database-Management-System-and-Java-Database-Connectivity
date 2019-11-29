@@ -7,17 +7,9 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-    <xs:complexType name="ageType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="DataType" type="xs:string"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
     <xs:complexType name="tableType">
         <xs:sequence>
             <xs:element name="name" type="nameType"/>
-            <xs:element name="age" type="ageType"/>
         </xs:sequence>
     </xs:complexType>
     <xs:element name="table" type="tableType"/>

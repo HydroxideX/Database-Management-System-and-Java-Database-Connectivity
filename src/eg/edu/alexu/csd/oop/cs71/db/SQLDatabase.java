@@ -141,7 +141,6 @@ public class SQLDatabase implements Database {
                     file.getParentFile().mkdirs();
                     boolean flag = file.mkdir();
                     databases.add(command[2]);
-                    //System.out.print("Directory created? " + flag);
                     currentDatabase=command[2];
                 } catch(Exception e) {
                     e.printStackTrace();
@@ -176,8 +175,6 @@ public class SQLDatabase implements Database {
                     boolean flag=dir.delete();
                     databases.remove(foundat);
                     currentDatabase="";
-                   // if (flag)
-                       // System.out.println("dir Deleted ");
                 }
                 else {
                     Gui.success="Database doesn't exist!";
@@ -269,7 +266,7 @@ public class SQLDatabase implements Database {
                 Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
                 transformer.transform(domSource, new StreamResult(new File(Path)));
                 //to print to console use this:
-                transformer.transform(domSource, new StreamResult(System.out));
+
             }
             catch (FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
                 //handle exception
@@ -298,7 +295,6 @@ public class SQLDatabase implements Database {
                 e.printStackTrace();
             }
             boolean flag = validateXMLSchema(Path,tablePath);
-            System.out.println(flag);
         }
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
@@ -333,7 +329,6 @@ public class SQLDatabase implements Database {
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(new File(xmlPath)));
         } catch (IOException | SAXException e) {
-            System.out.println("Exception: "+e.getMessage());
             return false;
         }
         return true;
