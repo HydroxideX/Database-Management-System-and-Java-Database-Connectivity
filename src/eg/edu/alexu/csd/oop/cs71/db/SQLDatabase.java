@@ -25,10 +25,11 @@ public class SQLDatabase implements Database {
     private ArrayList<String> cNames;
     private ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
-
+    private ValidationInterface SQLvalidation;
 
     private SQLDatabase() {
         SQLParser = SQLParser.getInstance();
+        SQLvalidation = new SQLBasicValidation();
         tableData = new ArrayList<>();
         tableColumns = new HashMap<>();
         cNames= new ArrayList<>();
@@ -64,6 +65,7 @@ public class SQLDatabase implements Database {
 
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
+
        databaseName=databaseName.toLowerCase();
         if (dropIfExists) {
             try {
@@ -100,6 +102,9 @@ public class SQLDatabase implements Database {
 
     @Override
     public boolean executeStructureQuery(String query) throws SQLException {
+        if(!SQLvalidation.validateQuery(query)){
+            throw new SQLException("Wrong Query");
+        }
         query=query.toLowerCase();
         String[] command=query.split(" ");
         String checker = query.substring(0, 8);
@@ -245,7 +250,9 @@ public class SQLDatabase implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        //query=query.toLowerCase();
+        if(!SQLvalidation.validateQuery(query)){
+            throw new SQLException("Wrong Query");
+        }
         String tableName=fileManagement.getTableName(query);
         ArrayList<ArrayList<String>> result;
         try {
@@ -414,6 +421,9 @@ public class SQLDatabase implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
+        if(!SQLvalidation.validateQuery(query)){
+            throw new SQLException("Wrong Query");
+        }
         query= query.toLowerCase();
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
