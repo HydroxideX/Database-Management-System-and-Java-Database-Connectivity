@@ -57,19 +57,17 @@ class Facade {
     }
     Object[][] getFullTable(Object[][] incompleteTable)
     {
-        Object[][] newTable = new Object[incompleteTable.length][];
         ArrayList<String> cNames=engine.cNames;
+        Object[][] newTable = new Object[incompleteTable.length+1][cNames.size()];
+
+        for(int i = 0;i<cNames.size();i++){
+            newTable[0][i] = cNames.get(i);
+        }
         for(int i=0;i<incompleteTable.length;i++)
         {
-            for(int j=0;j<incompleteTable[i].length;i++)
+            for(int j=0;j<incompleteTable[i].length;j++)
             {
-                if(i==0)
-                {
-                    newTable[i][j]= cNames.get(j);
-                }
-                else {
-                    newTable[i][j]=incompleteTable[i-1][j];
-                }
+                newTable[i+1][j]=incompleteTable[i][j];
             }
         }
         return newTable;
