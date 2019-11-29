@@ -254,7 +254,10 @@ public class SQLDatabase implements Database {
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 DOMSource domSource = new DOMSource(doc);
                 //to create a file use something like this:
-                transformer.transform(domSource, new StreamResult(new File("mySchema.xsd")));
+                Path currentRelativePath1 = Paths.get("");
+                String Path;
+                Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
+                transformer.transform(domSource, new StreamResult(new File(Path)));
                 //to print to console use this:
                 transformer.transform(domSource, new StreamResult(System.out));
             }
