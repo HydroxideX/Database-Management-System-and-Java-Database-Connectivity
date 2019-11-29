@@ -36,6 +36,11 @@ public class Gui extends Application {
         stage.setHeight(500);
         TextField textField =new TextField();
         Button button =new Button("Run");
+        Button clear =new Button("Clear");
+        clear.setOnAction(e->{
+            textField.clear();
+            textField.requestFocus();
+        });
         Facade facade = new Facade();
         Label currentDb=new Label();
         Label rowNum=new Label();
@@ -65,8 +70,12 @@ public class Gui extends Application {
                                 return new SimpleStringProperty((String) p.getValue()[colNo]);
                             }
                         });
-                        tc.setPrefWidth(90);
                         table.getColumns().add(tc);
+                        table.setPrefWidth(450);
+                        table.setPrefHeight(300);
+                        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+                        stage.setWidth(500);
+                        stage.setHeight(475);
                     }
                     table.setItems(data);
                 }else if(!(query.contains("create")||query.contains("drop")||query.contains("use"))&&object != null)
@@ -100,10 +109,13 @@ public class Gui extends Application {
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         HBox hBox=new HBox();
+        HBox buttons=new HBox();
         hBox.setSpacing(100);
+        buttons.setSpacing(stage.getWidth()-130);
+        buttons.getChildren().addAll(button,clear);
         hBox.getChildren().addAll(currentDb,rowNum);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(hBox,textField,button, table);
+        vbox.getChildren().addAll(hBox,textField,buttons, table);
 
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
 
