@@ -5,9 +5,18 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import javafx.util.Pair;
 import org.w3c.dom.*;
+
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -206,6 +215,53 @@ public class SQLDatabase implements Database {
                 columnType[i]=temp[1].toLowerCase();
             }
 
+            String NS_PREFIX = "xs:";
+            try {
+                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+                Document doc = docBuilder.newDocument();
+                Element schemaRoot = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, NS_PREFIX + "schema");
+                doc.appendChild(schemaRoot);
+                NameTypeElementMaker elMaker = new NameTypeElementMaker(NS_PREFIX, doc);
+
+                for (int i=0; i<columnName.length; i++) {
+                    Element colType = elMaker.createElement("complexType", columnName[i]+"Type");
+                    schemaRoot.appendChild(colType);
+                    Element colcontent = elMaker.createElement("simpleContent");
+                    Element extension = elMaker.createElement("extension");
+                    extension.setAttribute("base", NS_PREFIX + "string");
+                    colType.appendChild(colcontent);
+                    colcontent.appendChild(extension);
+                    Element attribute = elMaker.createElement("attribute", "DataType", NS_PREFIX + "string");
+                    extension.appendChild(attribute);
+                }
+
+                Element tableType = elMaker.createElement("complexType", "tableType");
+                schemaRoot.appendChild(tableType);
+                Element sequence = elMaker.createElement("sequence");
+                tableType.appendChild(sequence);
+                for (int i=0; i<columnName.length; i++) {
+                    Element colNameElement = elMaker.createElement("element", columnName[i], columnName[i]+"Type");
+                    sequence.appendChild(colNameElement);
+                }
+                Element table = elMaker.createElement("element", "table", "tableType");
+                schemaRoot.appendChild(table);
+
+                // till now fine
+                TransformerFactory tFactory = TransformerFactory.newInstance();
+                Transformer transformer = tFactory.newTransformer();
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                DOMSource domSource = new DOMSource(doc);
+                //to create a file use something like this:
+                transformer.transform(domSource, new StreamResult(new File("mySchema.xsd")));
+                //to print to console use this:
+                transformer.transform(domSource, new StreamResult(System.out));
+            }
+            catch (FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
+                //handle exception
+                e.printStackTrace();
+            }
             try {
                 DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder =docFactory.newDocumentBuilder();
@@ -483,6 +539,32 @@ public class SQLDatabase implements Database {
             Gui.success="";
         }
         return rowsNum;
+    }
+    private class NameTypeElementMaker {
+        private String nsPrefix;
+        private Document doc;
+
+        public NameTypeElementMaker(String nsPrefix, Document doc) {
+            this.nsPrefix = nsPrefix;
+            this.doc = doc;
+        }
+
+        public Element createElement(String elementName, String nameAttrVal, String typeAttrVal) {
+            Element element = doc.createElementNS(XMLConstants.W3C_XML_SCHEMA_NS_URI, nsPrefix + elementName);
+            if (nameAttrVal != null)
+                element.setAttribute("name", nameAttrVal);
+            if (typeAttrVal != null)
+                element.setAttribute("type", typeAttrVal);
+            return element;
+        }
+
+        public Element createElement(String elementName, String nameAttrVal) {
+            return createElement(elementName, nameAttrVal, null);
+        }
+
+        public Element createElement(String elementName) {
+            return createElement(elementName, null, null);
+        }
     }
 }
 
