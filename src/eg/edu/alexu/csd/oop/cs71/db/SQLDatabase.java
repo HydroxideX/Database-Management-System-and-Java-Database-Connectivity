@@ -240,13 +240,17 @@ public class SQLDatabase implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        query=query.toLowerCase();
+        //query=query.toLowerCase();
         String tableName=fileManagement.getTableName(query);
         ArrayList<ArrayList<String>> result;
         try {
            fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
            result = SQLParser.select(query, cNames, cTypes, tableData);
-       }catch (Exception e)
+       }catch (FileNotFoundException e)
+        {
+            throw new SQLException();
+        }
+        catch (Exception e)
        {
            Gui.success=e.getMessage();
            return null;
@@ -412,7 +416,7 @@ public class SQLDatabase implements Database {
         }catch (Exception e)
         {
             Gui.success=e.getMessage();
-            return -1;
+            throw new SQLException();
         }
         switch (commad[0]){
             case "insert":{

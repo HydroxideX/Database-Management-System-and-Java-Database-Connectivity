@@ -64,14 +64,13 @@ class FileManagement implements FileManagementInterface{
         }
     }
 
-    public void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws FileNotFoundException {
+    public void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws IOException, ParserConfigurationException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         tableName=tableName.toLowerCase();
         if(currentDatabase.equals(""))
         {
             throw new FileNotFoundException("Please select the desired database using \"use x\"");
         }
-            try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Path currentRelativePath = Paths.get("");
             String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
@@ -126,9 +125,7 @@ class FileManagement implements FileManagementInterface{
                 tableData.add(row);
             }
 
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            Gui.success="Table doesn't exist!";
-        }
+
 
     }
 
