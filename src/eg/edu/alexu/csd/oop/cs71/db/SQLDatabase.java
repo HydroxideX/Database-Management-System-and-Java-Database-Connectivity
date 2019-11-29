@@ -132,14 +132,14 @@ public class SQLDatabase implements Database {
                 }
                 if (exist) {
                     String s11 = new String();
-                    if (command[2].contains("\\")){
+                   /* if (command[2].contains("\\")){
                         s11=command[2];
-                    }else{
+                    }else{*/
                         Path currentRelativePath = Paths.get("");
                         s11= currentRelativePath.toAbsolutePath().toString();
                         s11+="\\Databases\\";
                         s11+=command[2];
-                    }
+                    //}
                     File dir = new File(s11);
                     File[] listFiles = dir.listFiles();
                     for (File file : listFiles) {
@@ -170,12 +170,12 @@ public class SQLDatabase implements Database {
                 tableName=tableName.toLowerCase();
             }
             String tablePath="";
-            if (currentDatabase.contains("\\")){
+           /* if (currentDatabase.contains("\\")){
                 tablePath=currentDatabase+"\\"+tableName+".xml";
-            }else{
+            }else{*/
                 Path currentRelativePath = Paths.get("");
                 tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            }
+            //}
 
             String[] allcolumns = query.split("\\(");
             String columns = allcolumns[1];

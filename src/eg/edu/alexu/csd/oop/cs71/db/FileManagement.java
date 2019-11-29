@@ -119,8 +119,10 @@ class FileManagement implements FileManagementInterface{
                 HashMap<String, Object> row = new HashMap<>();
                 for (int j=0; j<columnContents.length; j++) {
                     String[] columnCon = columnContents[j].split(" ");
+                    if(columnCon[i]!="")
                     row.put(columnNames[j],columnCon[i]);
                 }
+                if(row.size()>0)
                 tableData.add(row);
             }
 
@@ -153,6 +155,8 @@ class FileManagement implements FileManagementInterface{
             case "alter":
             case "delete":{
                 tableName=parts[2];
+                parts=tableName.split("\\(" );
+                tableName=parts[0];
             }
             break;
             case "update":{
