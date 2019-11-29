@@ -32,10 +32,10 @@ public class Gui extends Application {
         table.setEditable(true);
         ValidationInterface SQLvalidation = new SQLBasicValidation();
         Scene scene = new Scene(new Group());
-        stage.setTitle("Table View Sample");
+        stage.setTitle("SQL Database");
         table.setPrefWidth(1150);
         table.setPrefHeight(550);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        //table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         stage.setWidth(1200);
         stage.setHeight(700);
         stage.setResizable(false);
@@ -68,6 +68,7 @@ public class Gui extends Application {
                     for (int i = 0; i < x[0].length; i++)
                     {
                         TableColumn tc = new TableColumn(x[0][i].toString());
+                        tc.setMinWidth(150);
                         final int colNo = i;
                         tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], Object>, SimpleStringProperty>() {
                             @Override
