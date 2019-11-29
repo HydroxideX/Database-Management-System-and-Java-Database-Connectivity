@@ -63,6 +63,7 @@ public class SQLDatabase implements Database {
 
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
+       databaseName=databaseName.toLowerCase();
         if (dropIfExists) {
             try {
                 executeStructureQuery("drop database "+databaseName);
@@ -98,6 +99,7 @@ public class SQLDatabase implements Database {
 
     @Override
     public boolean executeStructureQuery(String query) throws SQLException {
+        query=query.toLowerCase();
         String[] command=query.split(" ");
         String checker = query.substring(0, 8);
         checker = checker.toUpperCase();
