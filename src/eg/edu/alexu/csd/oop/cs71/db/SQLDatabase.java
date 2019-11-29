@@ -240,6 +240,7 @@ public class SQLDatabase implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
+        query=query.toLowerCase();
         String tableName=fileManagement.getTableName(query);
         ArrayList<ArrayList<String>> result;
         try {
@@ -401,6 +402,7 @@ public class SQLDatabase implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
+        query= query.toLowerCase();
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();
         int rowsNum=0;

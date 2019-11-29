@@ -195,7 +195,7 @@ public class SQLParser {
 
             }
         }
-        return table.size();
+        return counter;
     }
     /**
      * Deletes Certain rows in table if it satisfies requirments
@@ -301,7 +301,7 @@ public class SQLParser {
                 columnMap.put(iCN, Float.parseFloat(values.get(i).get(0)));
         }
         table.add(columnMap);
-        return table.size();
+        return 1;
 
     }
 
