@@ -321,7 +321,7 @@ public class SQLParser {
         query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|\\d))|\\;", " ");
         query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
         query = query.replaceAll("\\s+(?=\\=)", "");
-        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*([><!]?\\s*[=])[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*(<|>|>\\s*=|<\\s*=|!\\s*=|=)[\\s]*([']?\\w+[']?)[\\s]*\\z");
         Matcher M1;
         Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?\\w+[']?)[\\s]*)+\\z");
         Matcher M2;
@@ -334,7 +334,7 @@ public class SQLParser {
             String[] parameters;
             if (M1.matches()) {
                 parameters = new String[3];
-                for (int a = 1; a < 4; a++) parameters[a - 1] = M1.group(a);
+                for (int a = 1; a < 4; a++) parameters[a - 1] = M1.group(a).replaceAll("\\s+","");
             } else if (M2.matches()) {
                 parameters = operation[i].split("\\s+");
             } else throw new RuntimeException("Query Form invalid");
