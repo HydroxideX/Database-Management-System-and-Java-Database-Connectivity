@@ -115,6 +115,7 @@ public class SQLDatabase implements Database {
                     boolean flag = file.mkdir();
                     databases.add(command[2]);
                     System.out.print("Directory created? " + flag);
+                    currentDatabase=command[2];
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
