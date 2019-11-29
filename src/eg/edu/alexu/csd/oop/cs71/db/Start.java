@@ -28,18 +28,28 @@ public class Start extends Application {
     public void start(Stage stage) {
         stage.setTitle("SQL Database");
         stage.setWidth(300);
-        stage.setHeight(100);
+        stage.setHeight(60);
         stage.setResizable(false);
         TextField textField =new TextField();
         HBox hBox = new HBox();
+
         Button commandLineInterface =new Button("Command Line Interface");
         Button GUIinterface =new Button("GUI Interface");
+
         hBox.getChildren().addAll(commandLineInterface,GUIinterface);
         hBox.setSpacing(50);
         commandLineInterface.setOnAction(e->{
             String[] arguments = new String[] {"123"};
             stage.close();
-            CLI cli = new CLI();
+            try
+            {
+                Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"java -cp Database-Management-System.jar eg.edu.alexu.csd.oop.cs71.db.CLI");
+            }
+            catch (Exception er)
+            {
+                System.out.println("HEY Buddy ! U r Doing Something Wrong ");
+                er.printStackTrace();
+            }
         });
         GUIinterface.setOnAction(e->{
             String[] arguments = new String[] {"123"};

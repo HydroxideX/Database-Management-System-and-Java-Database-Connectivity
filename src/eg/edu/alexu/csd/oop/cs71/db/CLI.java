@@ -8,6 +8,7 @@ public class CLI {
     public static void main(String [] args){
         Scanner input = new Scanner(System.in);
         while(true) {
+            System.out.printf("SQL Command: ");
             String query = input.nextLine();
             ValidationInterface SQLvalidation = new SQLBasicValidation();
             Facade facade = new Facade();
