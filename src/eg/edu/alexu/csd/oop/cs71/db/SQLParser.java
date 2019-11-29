@@ -284,8 +284,8 @@ public class SQLParser {
             throw new NullPointerException("Columns in query greater than Columns that exist , Can't You count right ?");
         if (insColNames.size() != values.size())
             throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
-       // ArrayList<String> colTypesTemp = new ArrayList<String>();
-       // for (int i = 0; i < values.size(); i++) colTypesTemp.add("varchar");
+        //ArrayList<String> colTypesTemp = new ArrayList<String>();
+        //for (int i = 0; i < values.size(); i++) colTypesTemp.add("varchar");
         ValidateColumnNames(insColNames, values, colNames, colTypes);
         columnMap.clear();
         for (int i = 0; i < values.size(); i++) {
