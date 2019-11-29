@@ -22,6 +22,11 @@ public class SQLDatabase implements Database {
     private SQLParser SQLParser;
     private ArrayList<HashMap<String,Object>> tableData;
     private HashMap<String,String> tableColumns;
+
+    public ArrayList<String> getcNames() {
+        return cNames;
+    }
+
     private ArrayList<String> cNames;
     private ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;

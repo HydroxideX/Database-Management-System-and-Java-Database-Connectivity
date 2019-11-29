@@ -1,6 +1,8 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 class Facade {
     public SQLDatabase engine;
@@ -52,5 +54,24 @@ class Facade {
             return engine.createDatabase(command[1],false);
         }
         return null;
+    }
+    Object[][] getFullTable(Object[][] incompleteTable)
+    {
+        Object[][] newTable = new Object[incompleteTable.length][];
+        ArrayList<String> cNames=engine.getcNames();
+        for(int i=0;i<incompleteTable.length;i++)
+        {
+            for(int j=0;j<incompleteTable[i].length;i++)
+            {
+                if(i==0)
+                {
+                    newTable[i][j]= cNames.get(j);
+                }
+                else {
+                    newTable[i][j]=incompleteTable[i-1][j];
+                }
+            }
+        }
+        return newTable;
     }
 }

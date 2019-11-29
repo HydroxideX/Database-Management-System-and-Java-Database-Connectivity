@@ -52,7 +52,7 @@ public class Gui extends Application {
                 if(query.contains("select")&&object != null) {
                     rowNum.setText("");
                     table.getColumns().clear();
-                    Object[][] x = (Object[][]) object;
+                    Object[][] x = facade.getFullTable((Object[][]) object);
                     ObservableList<Object[]> data = FXCollections.observableArrayList();
                     data.addAll(Arrays.asList(x));
                     data.remove(0);
