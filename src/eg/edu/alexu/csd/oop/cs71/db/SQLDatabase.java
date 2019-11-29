@@ -3,7 +3,6 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.util.Pair;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -16,16 +15,32 @@ import java.sql.SQLException;
 import java.util.*;
 
 
-public class Main implements Database {
-    private static ArrayList<String> databases=new ArrayList<>();
-    String currentDatabase= "";
-    private Parser parser = new Parser();
-    private ArrayList<HashMap<String,Object>> tableData = new ArrayList<>();
-    private HashMap<String,String> tableColumns = new HashMap<>();
-    private ArrayList<String> cNames= new ArrayList<>();
-    private ArrayList<String> cTypes= new ArrayList<>();
-    private FileManagement fileManagement=new FileManagement();
+public class SQLDatabase implements Database {
+    private static SQLDatabase uniqueSQLDatabaseInstance;
+    private static ArrayList<String> databases = new ArrayList<>();
+    String currentDatabase;
+    private SQLParser SQLParser;
+    private ArrayList<HashMap<String,Object>> tableData;
+    private HashMap<String,String> tableColumns;
+    private ArrayList<String> cNames;
+    private ArrayList<String> cTypes;
+    private FileManagementInterface fileManagement;
 
+    private SQLDatabase() {
+        SQLParser = SQLParser.getInstance();
+        tableData = new ArrayList<>();
+        tableColumns = new HashMap<>();
+        cNames= new ArrayList<>();
+        cTypes= new ArrayList<>();
+        fileManagement=new FileManagement();
+        currentDatabase= new String();
+    }
+    public static synchronized SQLDatabase getInstance() {
+        if (uniqueSQLDatabaseInstance == null) {
+            uniqueSQLDatabaseInstance = new SQLDatabase();
+        }
+        return uniqueSQLDatabaseInstance;
+    }
 
     static void startUp()
     {
@@ -228,7 +243,7 @@ public class Main implements Database {
         ArrayList<ArrayList<String>> result;
         try {
            fileManagement.readFile(tableName,tableColumns,tableData,currentDatabase,cNames,cTypes);
-           result = parser.select(query, cNames, cTypes, tableData);
+           result = SQLParser.select(query, cNames, cTypes, tableData);
        }catch (Exception e)
        {
            Gui.success=e.getMessage();
@@ -283,7 +298,7 @@ public class Main implements Database {
             swapColumns(orderColumns.get(i),table,colNames,colTypes,cur,swapped,true);
             cur++;
         }
-        sort(table,orderAscOrDesc);
+        sort(table,orderAscOrDesc,colTypes);
         for (int i = swapped.size()-1;i>=0;i--) {
             swapColumns(colNames.get(swapped.get(i).getKey().intValue()),table,colNames,colTypes,swapped.get(i).getValue().intValue(),swapped,false);
         }
@@ -306,7 +321,7 @@ public class Main implements Database {
             temp.add(table.get(i).get(index));
             table.get(i).set(index,table.get(i).get(cur));
         }
-        for (int i = 0;table.size() != 0 && i<table.get(index).size();i++) {
+        for (int i = 0;table.size() != 0 && i<table.size();i++) {
             table.get(i).set(cur,temp.get(i));
         }
         Pair <Integer,Integer> p = new Pair<>(index,cur);
@@ -314,14 +329,14 @@ public class Main implements Database {
             swapped.add(p);
     }
 
-    private void  sort(ArrayList <ArrayList <Object> > table, ArrayList<Boolean> orderAscOrDesc){
+    private void  sort(ArrayList <ArrayList <Object> > table, ArrayList<Boolean> orderAscOrDesc,ArrayList <String> colTypes){
         Collections.sort(table, new Comparator<List<Object>> () {
             @Override
             public int compare(List<Object> a, List<Object> b) {
                 int comparator = 0;
                 for(int i = 0;i<a.size();i++) {
                     if(a.get(i).toString().equals("NULL") || b.get(i).toString().equals("NULL")) continue;
-                    if (cTypes.get(i).equals("int")) {
+                    if (colTypes.get(i).equals("int")) {
                         Integer x = Integer.valueOf(a.get(i).toString());
                         Integer y = Integer.valueOf(b.get(i).toString());
                         if( x.compareTo(y) > 0 && comparator == 0) {
@@ -399,7 +414,7 @@ public class Main implements Database {
         switch (commad[0]){
             case "insert":{
                 try {
-                    rowsNum= parser.insert(query,tableData,cNames,cTypes);
+                    rowsNum= SQLParser.insert(query,tableData,cNames,cTypes);
                 }catch (Exception e)
                 {
                     Gui.success=e.getMessage();
@@ -408,7 +423,7 @@ public class Main implements Database {
             }
             break;
             case "update":{
-             try{ rowsNum= parser.update(query,tableData,cNames,cTypes);
+             try{ rowsNum= SQLParser.update(query,tableData,cNames,cTypes);
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
@@ -418,7 +433,7 @@ public class Main implements Database {
             break;
             case "delete":{
                     try{
-                            rowsNum= parser.delete(query,tableData,cNames,cTypes);
+                            rowsNum= SQLParser.delete(query,tableData,cNames,cTypes);
                         }catch (Exception e)
                         {
                             Gui.success=e.getMessage();
@@ -428,7 +443,7 @@ public class Main implements Database {
             break;
             case "alter":{
                 try{
-                rowsNum= parser.alter(query,cNames,cTypes,tableData);
+                rowsNum= SQLParser.alter(query,cNames,cTypes,tableData);
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();

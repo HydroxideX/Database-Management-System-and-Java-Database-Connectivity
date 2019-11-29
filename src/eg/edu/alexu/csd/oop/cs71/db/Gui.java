@@ -9,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -29,7 +28,7 @@ public class Gui extends Application {
     static String success="";
     @Override
     public void start(Stage stage) {
-        Main.startUp();
+        SQLDatabase.startUp();
         table.setEditable(true);
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
@@ -37,7 +36,7 @@ public class Gui extends Application {
         stage.setHeight(500);
         TextField textField =new TextField();
         Button button =new Button("Run");
-        Facade facade =new Facade();
+        Facade facade = new Facade();
         Label currentDb=new Label();
         Label rowNum=new Label();
         button.setOnAction(e->{
