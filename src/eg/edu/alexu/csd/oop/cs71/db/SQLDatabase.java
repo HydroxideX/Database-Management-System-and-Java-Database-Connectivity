@@ -392,7 +392,7 @@ public class SQLDatabase implements Database {
             for (int j = 0;j<printColumns.size();j++) {
                 if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
                     for (int k = 0;k < table.size();k++) {
-                        if(colTypes.get(i).toLowerCase().equals("int")){
+                        if(colTypes.get(i).toLowerCase().equals("int") && !table.get(k).get(i).toString().toLowerCase().equals("null")){
                             finalTable[row++][col] = Integer.parseInt(table.get(k).get(i).toString());
                             continue;
                         }
