@@ -63,7 +63,7 @@ public class SQLBasicValidation implements ValidationInterface {
             break;
             case "insert":
             {
-                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\(\\s?((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\,\\s?)*((\\'\\s?(\\w+|-?\\d+)\\')\\s?\\))");
+                boolean regex=q.matches("(insert\\sinto)\\s\\w+\\s?(\\((\\s?\\w+\\s?\\,\\s?)*(\\w+\\s?)\\))?\\s?(values)\\s?\\(\\s?(((\\'\\s?\\w+\\s?\\')|(\\-?\\d+))\\s?\\,\\s?)*((\\'\\s?\\w+\\s?\\')|(\\-?\\d+))\\s?\\)");
                 if(!regex)
                     return false;
 
