@@ -278,7 +278,7 @@ public class SQLDatabase implements Database {
         if(!orderColumns.get(0).equals("noOrder")){
             orderTable(orderColumns, colTypes,colNames , table);
         }
-        Object [][] finalTable = transformToTable(colNames,printColumns,selectedRows,table);
+        Object [][] finalTable = transformToTable(colNames,printColumns,selectedRows,table,colTypes);
         return finalTable;
     }
 
@@ -386,19 +386,22 @@ public class SQLDatabase implements Database {
         return comparator;
     }
 
-    Object[][] transformToTable(ArrayList<String> colNames, ArrayList<String> printColumns, ArrayList <String> selectedRows, ArrayList<ArrayList <Object> > table){
-        Object[][] finalTable =  new Object[selectedRows.size()+1][printColumns.size()];
-        int row = 1;
+    Object[][] transformToTable(ArrayList<String> colNames, ArrayList<String> printColumns, ArrayList <String> selectedRows, ArrayList<ArrayList <Object> > table,ArrayList<String> colTypes){
+        Object[][] finalTable =  new Object[selectedRows.size()][printColumns.size()];
+        int row = 0;
         int col = 0;
         for (int i = 0;i<colNames.size();i++) {
             for (int j = 0;j<printColumns.size();j++) {
                 if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
-                    finalTable[0][col]=colNames.get(i);
                     for (int k = 0;k < table.size();k++) {
+                        if(colTypes.get(i).toLowerCase().equals("int")){
+                            finalTable[row++][col] = Integer.parseInt(table.get(k).get(i).toString());
+                            continue;
+                        }
                         finalTable[row++][col] = table.get(k).get(i);
                     }
                     col++;
-                    row = 1;
+                    row = 0;
                 }
             }
         }
