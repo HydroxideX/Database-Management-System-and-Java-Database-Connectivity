@@ -551,7 +551,7 @@ public class SQLDatabase implements Database {
             break;
         }
         if(rowsNum!=-1){
-            fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase);
+            fileManagement.writeInFile(tableName,tableColumns,tableData,currentDatabase, cNames, cTypes);
             Gui.success="";
         }
         return rowsNum;
