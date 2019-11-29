@@ -308,6 +308,10 @@ public class SQLDatabase implements Database {
                 Gui.success="Table doesn't exist!";
                 return false;
             }
+            Path currentRelativePath = Paths.get("");
+            tablePath=currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
+             file =new File(tablePath);
+            file.delete();
         }
         Gui.success="";
         return true;
