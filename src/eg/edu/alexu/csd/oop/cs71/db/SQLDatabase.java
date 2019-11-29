@@ -5,6 +5,7 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import javafx.util.Pair;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +18,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -221,6 +226,7 @@ public class SQLDatabase implements Database {
             }
 
             String NS_PREFIX = "xs:";
+            String Path="";
             try {
                 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -260,7 +266,6 @@ public class SQLDatabase implements Database {
                 DOMSource domSource = new DOMSource(doc);
                 //to create a file use something like this:
                 Path currentRelativePath1 = Paths.get("");
-                String Path;
                 Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
                 transformer.transform(domSource, new StreamResult(new File(Path)));
                 //to print to console use this:
@@ -292,6 +297,8 @@ public class SQLDatabase implements Database {
             } catch (ParserConfigurationException | IOException e) {
                 e.printStackTrace();
             }
+            boolean flag = validateXMLSchema(Path,tablePath);
+            System.out.println(flag);
         }
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
@@ -314,6 +321,21 @@ public class SQLDatabase implements Database {
             file.delete();
         }
         Gui.success="";
+        return true;
+    }
+
+    public static boolean validateXMLSchema(String xsdPath, String xmlPath){
+
+        try {
+            SchemaFactory factory =
+                    SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new File(xsdPath));
+            Validator validator = schema.newValidator();
+            validator.validate(new StreamSource(new File(xmlPath)));
+        } catch (IOException | SAXException e) {
+            System.out.println("Exception: "+e.getMessage());
+            return false;
+        }
         return true;
     }
 

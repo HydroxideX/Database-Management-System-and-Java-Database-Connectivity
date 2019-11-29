@@ -18,20 +18,20 @@ import java.util.HashMap;
 
 class FileManagement implements FileManagementInterface{
     public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes){
-        String[] columnTypes =new String[tableColumns.size()];
-        String[] columnNames =new String[tableColumns.size()];
+       // String[] columnTypes =new String[tableColumns.size()];
+       // String[] columnNames =new String[tableColumns.size()];
         String[] columnContents =new String[tableColumns.size()];
         Arrays.fill(columnContents, "");
         int index = 0;
-        for (String str : tableColumns.keySet()) {
+       /* for (String str : tableColumns.keySet()) {
             columnNames[index++] = str;
         }
         for (int i=0; i<tableColumns.size(); i++){
             columnTypes[i]= tableColumns.get(columnNames[i]);
-        }
+        }*/
         for (HashMap<String, Object> tableDatum : tableData) {
-            for (int j = 0; j < tableColumns.size(); j++) {
-                columnContents[j] += tableDatum.get(columnNames[j]).toString() + " ";
+            for (int j = 0; j < cNames.size(); j++) {
+                columnContents[j] += tableDatum.get(cNames.get(j)).toString() + " ";
             }
         }
 
@@ -40,9 +40,9 @@ class FileManagement implements FileManagementInterface{
             DocumentBuilder docBuilder =docFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
             Element root = doc.createElement("table");
-            for (int i=0; i<columnNames.length; i++){
-                Element column =doc.createElement(columnNames[i]);
-                column.setAttribute("DataType",columnTypes[i]);
+            for (int i=0; i<cNames.size(); i++){
+                Element column =doc.createElement(cNames.get(i));
+                column.setAttribute("DataType",cTypes.get(i));
                 String temp = columnContents[i].trim();
                 Text columnContent = doc.createTextNode(temp);
                 column.appendChild(columnContent);
