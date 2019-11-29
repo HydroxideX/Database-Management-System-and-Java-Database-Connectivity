@@ -127,7 +127,7 @@ public class SQLDatabase implements Database {
                     file.getParentFile().mkdirs();
                     boolean flag = file.mkdir();
                     databases.add(command[2]);
-                    System.out.print("Directory created? " + flag);
+                    //System.out.print("Directory created? " + flag);
                     currentDatabase=command[2];
                 } catch(Exception e) {
                     e.printStackTrace();
@@ -162,8 +162,8 @@ public class SQLDatabase implements Database {
                     boolean flag=dir.delete();
                     databases.remove(foundat);
                     currentDatabase="";
-                    if (flag)
-                        System.out.println("dir Deleted ");
+                   // if (flag)
+                       // System.out.println("dir Deleted ");
                 }
                 else {
                     Gui.success="Database doesn't exist!";

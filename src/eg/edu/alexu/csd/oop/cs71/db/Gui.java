@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -60,9 +59,9 @@ public class Gui extends Application {
                     {
                         TableColumn tc = new TableColumn(x[0][i].toString());
                         final int colNo = i;
-                        tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], String>, ObservableValue<String>>() {
+                        tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], Object>, SimpleStringProperty>() {
                             @Override
-                            public ObservableValue<String> call(TableColumn.CellDataFeatures<Object[], String> p) {
+                            public SimpleStringProperty call(TableColumn.CellDataFeatures<Object[], Object> p) {
                                 return new SimpleStringProperty((String) p.getValue()[colNo]);
                             }
                         });

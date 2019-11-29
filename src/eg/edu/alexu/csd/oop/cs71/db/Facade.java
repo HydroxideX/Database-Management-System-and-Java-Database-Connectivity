@@ -67,7 +67,7 @@ class Facade {
         {
             for(int j=0;j<incompleteTable[i].length;j++)
             {
-                newTable[i+1][j]=incompleteTable[i][j];
+                newTable[i+1][j]=incompleteTable[i][j].toString();
             }
         }
         return newTable;
