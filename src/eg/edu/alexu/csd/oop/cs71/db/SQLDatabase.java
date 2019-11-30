@@ -266,10 +266,6 @@ public class SQLDatabase implements Database {
                 Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
                 transformer.transform(domSource, new StreamResult(new File(Path)));
                 //to print to console use this:
-<<<<<<< HEAD
-=======
-
->>>>>>> 8091a4034cd72bd02078de1e35e44dba31137a53
             }
             catch (FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
                 //handle exception
