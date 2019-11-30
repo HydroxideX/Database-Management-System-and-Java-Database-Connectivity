@@ -71,9 +71,10 @@ class FileManagement implements FileManagementInterface{
         {
             throw new FileNotFoundException("Please select the desired database using \"use x\"");
         }
+        try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Path currentRelativePath = Paths.get("");
-            String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
+            String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase + "\\" + tableName + ".xml";
             FileInputStream fis = new FileInputStream(new File(path));
             InputSource is = new InputSource(fis);
             Document doc = builder.parse(is);
@@ -84,47 +85,49 @@ class FileManagement implements FileManagementInterface{
 
             tableData.clear();
             tableColumns.clear();
-            String[] columnTypes =new String[nodes.getLength()/2];
-            String[] columnNames =new String[nodes.getLength()/2];
-            String[] columnContents =new String[nodes.getLength()/2];
+            String[] columnTypes = new String[nodes.getLength() / 2];
+            String[] columnNames = new String[nodes.getLength() / 2];
+            String[] columnContents = new String[nodes.getLength() / 2];
             Arrays.fill(columnContents, "");
-            int index=0;
+            int index = 0;
             for (int i = 0; i < nodes.getLength(); i++) {
-                if(i%2!=0) {
-                    columnContents[index]= nodes.item(i).getTextContent();
+                if (i % 2 != 0) {
+                    columnContents[index] = nodes.item(i).getTextContent();
                     index++;
                 }
             }
-            index=0;
-            for (int i=0; i<nodes.getLength(); i++){
+            index = 0;
+            for (int i = 0; i < nodes.getLength(); i++) {
                 Node p = nodes.item(i);
-                if (p.getNodeType()==Node.ELEMENT_NODE){
-                    Element column =(Element)p;
-                    columnTypes[index] =column.getAttribute("DataType");
-                    columnNames[index] =column.getTagName();
+                if (p.getNodeType() == Node.ELEMENT_NODE) {
+                    Element column = (Element) p;
+                    columnTypes[index] = column.getAttribute("DataType");
+                    columnNames[index] = column.getTagName();
                     index++;
                 }
             }
             cNames.clear();
             cTypes.clear();
-            for (int i=0; i<columnNames.length; i++){
+            for (int i = 0; i < columnNames.length; i++) {
                 cNames.add(columnNames[i]);
                 cTypes.add(columnTypes[i]);
-                tableColumns.put(columnNames[i],columnTypes[i]);
+                tableColumns.put(columnNames[i], columnTypes[i]);
             }
             String[] lenColumn = columnContents[0].split(" ");
             int lengthOfColumn = lenColumn.length;
-            for (int i=0; i<lengthOfColumn; i++){
+            for (int i = 0; i < lengthOfColumn; i++) {
                 HashMap<String, Object> row = new HashMap<>();
-                for (int j=0; j<columnContents.length; j++) {
+                for (int j = 0; j < columnContents.length; j++) {
                     String[] columnCon = columnContents[j].split(" ");
-                    if(columnCon[i]!="")
-                    row.put(columnNames[j],columnCon[i]);
+                    if (columnCon[i] != "")
+                        row.put(columnNames[j], columnCon[i]);
                 }
-                if(row.size()>0)
-                tableData.add(row);
+                if (row.size() > 0)
+                    tableData.add(row);
             }
-
+        } catch (Exception e){
+            throw new IOException("No Table Exists");
+        }
 
 
     }

@@ -269,7 +269,6 @@ public class SQLDatabase implements Database {
                 Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
                 transformer.transform(domSource, new StreamResult(new File(Path)));
                 //to print to console use this:
-                transformer.transform(domSource, new StreamResult(System.out));
             }
             catch (FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
                 //handle exception
@@ -298,7 +297,6 @@ public class SQLDatabase implements Database {
                 e.printStackTrace();
             }
             boolean flag = validateXMLSchema(Path,tablePath);
-            System.out.println(flag);
         }
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
