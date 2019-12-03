@@ -12,7 +12,6 @@ import org.junit.Test;
 
 
 public class SmokeTest {
-
     public static Class<?> getSpecifications(){
         return Driver.class;
     }
