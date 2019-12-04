@@ -1,11 +1,28 @@
 package eg.edu.alexu.csd.oop.jdbc.cs71.src;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ResultSetMetaData implements java.sql.ResultSetMetaData{
-    @Override
+    public String tableName ;
+    public ArrayList <String> colTypes , colNames , colLabels ;  
+    public ResultSetMetaData(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes ,  ArrayList <String> colLabels) {
+    	this.colTypes= colTypes;
+    	this.colNames = colNames;
+    	this.colLabels= colLabels;
+    	this.tableName = tableName;
+    	
+	}
+    public ResultSetMetaData () {
+    	this("", new ArrayList<String>() ,new ArrayList<String>() ,new ArrayList<String>() );
+    }
+    public ResultSetMetaData(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes) {
+    	this(tableName,colNames ,colTypes ,new  ArrayList <String>());
+    	
+	}
+	@Override
     public int getColumnCount() throws SQLException {
-        return 0;
+        return colTypes.size();
     }
 
     @Override
