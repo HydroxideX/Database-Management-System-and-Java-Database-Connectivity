@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ResultSetMetaData implements java.sql.ResultSetMetaData {
+public class ResultSetMetaData implements java.sql.ResultSetMetaData{
     public String tableName ;
     public ArrayList <String> colTypes , colNames , colLabels ;  
     public ResultSetMetaData(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes ,  ArrayList <String> colLabels) {
