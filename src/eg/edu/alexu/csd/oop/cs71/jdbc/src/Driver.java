@@ -11,6 +11,7 @@ public class Driver implements java.sql.Driver {
     public Connection connect(String url, Properties info) throws SQLException {
         File dir = (File) info.get("path");
         String path = dir.getAbsolutePath();
+        DriverManager.registerDriver(new Driver());
         return (Connection) DriverManager.getConnection(path);
     }
 
