@@ -4,21 +4,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ResultSetMetaData implements java.sql.ResultSetMetaData{
-    public String tableName ;
-    public ArrayList <String> colTypes , colNames , colLabels ;  
-    public ResultSetMetaData(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes ,  ArrayList <String> colLabels) {
-    	this.colTypes= colTypes;
+    private String tableName ;
+    private ArrayList <String> colTypes ;  
+    private Object[] colNames;
+    public ResultSetMetaData(String tableName,Object[] colNames,ArrayList <String> colTypes ) {
     	this.colNames = colNames;
-    	this.colLabels= colLabels;
+    	this.colTypes= colTypes;
     	this.tableName = tableName;
-    	
-	}
-    public ResultSetMetaData () {
-    	this("", new ArrayList<String>() ,new ArrayList<String>() ,new ArrayList<String>() );
-    }
-    public ResultSetMetaData(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes) {
-    	this(tableName,colNames ,colTypes ,new  ArrayList <String>());
-    	
 	}
 	@Override
     public int getColumnCount() throws SQLException {
@@ -62,12 +54,12 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData{
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        return null;
+        return colNames[column].toString();
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return null;
+        return colNames[column].toString();
     }
 
     @Override
@@ -87,7 +79,7 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData{
 
     @Override
     public String getTableName(int column) throws SQLException {
-        return null;
+        return tableName;
     }
 
     @Override
@@ -97,12 +89,13 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData{
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        return 0;
+    	String type = colTypes.get(column).toLowerCase();
+        return type.equals("varchar")?2:type.equals("int")?1:-1;
     }
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        return null;
+        return colTypes.get(column).toLowerCase();
     }
 
     @Override
