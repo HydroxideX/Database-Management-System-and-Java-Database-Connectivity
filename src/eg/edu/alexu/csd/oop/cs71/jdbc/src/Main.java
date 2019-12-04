@@ -11,10 +11,9 @@ public class Main {
         File dbDir = new File("Databases/test");
         info.put("path", dbDir.getAbsoluteFile());
         try {
-            Connection connection = (Connection) driver.connect("jdbc:xmldb://localhost", info);
+            Connection connection1 = (Connection) driver.connect("jdbc:xmldb://localhost", info);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 }
