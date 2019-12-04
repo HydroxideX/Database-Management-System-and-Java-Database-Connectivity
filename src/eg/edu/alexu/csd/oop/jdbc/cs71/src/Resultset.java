@@ -8,23 +8,26 @@ import java.sql.*;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Resultset implements java.sql.ResultSet {
 	public String tableName ;
 	public ArrayList <String> colTypes , colNames , colLabels ;  
-	public Resultset(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes ,  ArrayList <String> colLabels) {
+	ArrayList<HashMap<String,Object>> tableData;
+	public Resultset(String tableName,ArrayList<HashMap<String,Object>> tableData,ArrayList <String> colNames ,ArrayList <String> colTypes ,  ArrayList <String> colLabels) {
     	this.colTypes= colTypes;
     	this.colNames = colNames;
     	this.colLabels= colLabels;
-    	this.tableName = tableName;  	
+    	this.tableName = tableName;  
+    	this.tableData = tableData;
 	}
-	 public Resultset(String tableName,ArrayList <String> colNames ,ArrayList <String> colTypes) {
-	    	this(tableName,colNames ,colTypes ,new  ArrayList <String>());
+	 public Resultset(String tableName,ArrayList<HashMap<String,Object>> tableData,ArrayList <String> colNames ,ArrayList <String> colTypes) {
+	    	this(tableName,tableData,colNames ,colTypes ,colNames);
 	    	
 	}
     public Resultset() {
-    	this("", new ArrayList<String>() ,new ArrayList<String>() ,new ArrayList<String>() );
+    	this("",new ArrayList<HashMap<String,Object>>(), new ArrayList<String>() ,new ArrayList<String>() ,new ArrayList<String>() );
     } 
 	@Override
     public boolean next() throws SQLException {
