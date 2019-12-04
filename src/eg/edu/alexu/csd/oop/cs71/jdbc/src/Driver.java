@@ -17,7 +17,7 @@ public class Driver implements java.sql.Driver {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        return false;
+        return "jdbc:xmldb://localhost".equals(url);
     }
 
     @Override
