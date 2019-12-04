@@ -1,16 +1,17 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import java.sql.Connection;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
+import java.io.File;
+import java.sql.*;
+//import java.sql.Connection;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Driver implements java.sql.Driver {
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return null;
+        File dir = (File) info.get("path");
+        String path = dir.getAbsolutePath();
+        return (Connection) DriverManager.getConnection(path);
     }
 
     @Override

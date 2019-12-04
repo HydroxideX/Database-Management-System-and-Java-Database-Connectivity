@@ -7,7 +7,7 @@ import java.sql.SQLWarning;
 
 public class Statement implements java.sql.Statement {
     @Override
-    public ResultSet executeQuery(String sql) throws SQLException {
+    public Resultset executeQuery(String sql) throws SQLException {
         return null;
     }
 
