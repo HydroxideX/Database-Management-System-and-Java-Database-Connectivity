@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args){
         Driver driver = new Driver();
         Properties info = new Properties();
-        File dbDir = new File("Databases/test");
+        File dbDir = new File("Databases");
         info.put("path", dbDir.getAbsoluteFile());
         try {
             Connection connection1 = (Connection) driver.connect("jdbc:xmldb://localhost", info);
