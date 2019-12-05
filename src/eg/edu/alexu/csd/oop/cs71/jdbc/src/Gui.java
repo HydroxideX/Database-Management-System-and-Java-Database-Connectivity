@@ -82,6 +82,26 @@ public class Gui extends Application {
                     assert finalStatement != null;
                     object = finalStatement.executeQuery(query);
                     //method to transfer result set to 2d array of Objects
+                    Resultset temp =(Resultset)object;
+                    Object[][] x=temp.tableData;
+                    ObservableList<Object[]> data = FXCollections.observableArrayList();
+                    data.addAll(Arrays.asList(x));
+                    data.remove(0);
+                    for (int i = 0; i < x[0].length; i++)
+                    {
+                        TableColumn tc = new TableColumn(x[0][i].toString());
+                        tc.setMinWidth(150);
+                        final int colNo = i;
+                        tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], Object>, SimpleStringProperty>() {
+                            @Override
+                            public SimpleStringProperty call(TableColumn.CellDataFeatures<Object[], Object> p) {
+                                return new SimpleStringProperty((String) p.getValue()[colNo]);
+                            }
+                        });
+                        table.getColumns().add(tc);
+
+                    }
+                    table.setItems(data);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }

@@ -24,7 +24,7 @@ import java.util.Map;
 public class Resultset implements java.sql.ResultSet {
 	private String tableName;
 	private ArrayList<String> colTypes;
-	private Object[][] tableData;
+	public Object[][] tableData;
 	private int idxCurrent, idxLast, idxFirst;
 
 	public Resultset(String tableName, Object[][] tableData, ArrayList<String> colTypes) {
