@@ -17,7 +17,7 @@ public class SmokeTest {
     }
     
     private Connection createDatabase(String databaseName, boolean drop) throws SQLException{
-        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.getImplementationInstanceForInterface(Driver.class);
+        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.getImplementationInstanceForInterface(Driver.class);
         Properties info = new Properties();
         File dbDir = new File("sample" + System.getProperty("file.separator") + ((int)(Math.random() * 100000)));
         info.put("path", dbDir.getAbsoluteFile());
@@ -32,7 +32,7 @@ public class SmokeTest {
     
     @Test
     public void testCreateAndOpenAndDropDatabase() throws SQLException {
-        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.getImplementationInstanceForInterface(Driver.class);
+        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.getImplementationInstanceForInterface(Driver.class);
         Properties info = new Properties();
         File dbDir = new File("sample" + System.getProperty("file.separator") + (Math.random() * 100000));
         info.put("path", dbDir.getAbsoluteFile());
@@ -67,14 +67,14 @@ public class SmokeTest {
             statement.execute("CREATE TABLE table_name1(column_name1 varchar, column_name2 int, column_name3 varchar)");
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to create table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to create table", e);
         }
         try {
             Statement statement = connection.createStatement();
             boolean created = statement.execute("CREATE TABLE table_name1(column_name1 varchar, column_name2 int, column_name3 varchar)");
             Assert.assertFalse("Create table succeed when table already exists", created);
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to create existing table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to create existing table", e);
         }
         try {
             Statement statement = connection.createStatement();
@@ -82,7 +82,7 @@ public class SmokeTest {
             Assert.fail("Create invalid table succeed");
         } catch(SQLException e){
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Unknown Exception thrown", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Unknown Exception thrown", e);
         }
         connection.close();
     }
@@ -97,7 +97,7 @@ public class SmokeTest {
             Assert.assertNotEquals("Insert returned zero rows", 0, count);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to insert into table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to insert into table", e);
         }
         connection.close();
     }
@@ -112,7 +112,7 @@ public class SmokeTest {
             Assert.assertNotEquals("Insert returned zero rows", 0, count);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to insert into table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to insert into table", e);
         }
         connection.close();
     }
@@ -161,7 +161,7 @@ public class SmokeTest {
             Assert.assertEquals("Updated returned wrong number", count1+count2+count3, count4);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to update table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to update table", e);
         }
         connection.close();
     }
@@ -182,7 +182,7 @@ public class SmokeTest {
             Assert.assertEquals("Updated returned wrong number", count1+count2, count4);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to update table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to update table", e);
         }
         connection.close();
     }
@@ -197,7 +197,7 @@ public class SmokeTest {
             Assert.assertEquals("Updated empty table retruned non-zero count!", 0, count);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to update table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to update table", e);
         }
         try {
             Statement statement = connection.createStatement();
@@ -206,7 +206,7 @@ public class SmokeTest {
             statement.close();
         } catch (SQLException e){
         } catch (Throwable e) {
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Invalid exception was thrown", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Invalid exception was thrown", e);
         }
         connection.close();
     }
@@ -227,7 +227,7 @@ public class SmokeTest {
             Assert.assertEquals("Delete returned wrong number", 3, count4);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to delete from table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to delete from table", e);
         }
         connection.close();
     }
@@ -248,7 +248,7 @@ public class SmokeTest {
             Assert.assertEquals("Delete returned wrong number", 2, count4);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to delete from table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to delete from table", e);
         }
         connection.close();
     }
@@ -275,7 +275,7 @@ public class SmokeTest {
             Assert.assertEquals("Wrong number of columns", 3, result.getMetaData().getColumnCount());
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to select from table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to select from table", e);
         }
         connection.close();
     }
@@ -302,7 +302,7 @@ public class SmokeTest {
             Assert.assertEquals("Wrong number of columns", 1, result.getMetaData().getColumnCount());
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to select from table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to select from table", e);
         }
         connection.close();
     }
@@ -327,7 +327,7 @@ public class SmokeTest {
             Assert.assertFalse("Wrong return for select non existing records", result3);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to select from table", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to select from table", e);
         }
         connection.close();
     }

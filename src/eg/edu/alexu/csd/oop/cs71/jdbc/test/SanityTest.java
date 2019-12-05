@@ -16,7 +16,7 @@ import org.junit.Test;
 public class SanityTest {
    
     private Connection createDatabase(String databaseName, boolean drop) throws SQLException{
-        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.getImplementationInstanceForInterface(Driver.class);
+        Driver driver = (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.getImplementationInstanceForInterface(Driver.class);
         Properties info = new Properties();
         File dbDir = new File("sample" + System.getProperty("file.separator") + ((int)(Math.random() * 100000)));
         info.put("path", dbDir.getAbsoluteFile());
@@ -39,7 +39,7 @@ public class SanityTest {
             statement.execute("CREATE   TABLE   table_name1(column_name1 varchar , column_name2    int,  column_name3 varchar)       ");
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to parse query with extra spaces", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to parse query with extra spaces", e);
         }
         
         try {
@@ -128,7 +128,7 @@ public class SanityTest {
             Assert.assertEquals("Updated returned wrong number", count1+count2, count4);
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to update table with mixing capital and small letters!", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to update table with mixing capital and small letters!", e);
         }
         
         connection.close();
@@ -153,7 +153,7 @@ public class SanityTest {
             boolean created2 = statement.execute("DROP TABLE table_name1");
             Assert.assertEquals("Failed to drop table", true, created2);
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to complete scenario 1", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to complete scenario 1", e);
         }
         
         try {
@@ -190,7 +190,7 @@ public class SanityTest {
             
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to complete scenario 2", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to complete scenario 2", e);
         }
         
         connection.close();
@@ -247,7 +247,7 @@ public class SanityTest {
             
             statement.close();
         } catch (Throwable e){
-            eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.fail("Failed to complete scenario 3", e);
+            eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.fail("Failed to complete scenario 3", e);
         }
         
         connection.close();

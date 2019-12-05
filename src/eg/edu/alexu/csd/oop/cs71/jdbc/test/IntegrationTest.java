@@ -13,7 +13,7 @@ public class IntegrationTest {
     
     @Test
     public void test() {
-        Assert.assertNotNull("Failed to create Driver implemenation",  (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.test.TestRunner.getImplementationInstanceForInterface(Driver.class));
+        Assert.assertNotNull("Failed to create Driver implemenation",  (Driver) eg.edu.alexu.csd.oop.cs71.jdbc.src.TestRunner.getImplementationInstanceForInterface(Driver.class));
     }
 
 }

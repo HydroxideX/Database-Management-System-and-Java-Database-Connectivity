@@ -3,12 +3,11 @@
 // (powered by Fernflower decompiler)
 //
 
-package eg.edu.alexu.csd.oop.cs71.jdbc.test;
+package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
-
 import org.junit.Assert;
 
 public class TestRunner {
@@ -39,7 +38,8 @@ public class TestRunner {
     }
 
     public static void initaiteforInterface(Class<?> interfaceToTest) {
-        List<Class<?>> candidateClasses = ReflectionHelper.findClassesImpmenenting(interfaceToTest, interfaceToTest.getPackage());
+        List<Class<?>> candidateClasses = eg.edu.alexu.csd.oop.cs71.jdbc.test.ReflectionHelper.findClassesImpmenenting(interfaceToTest, TestRunner.class.getPackage());
+        System.out.println(TestRunner.class.getPackage());
         Class<?> studentClass = (Class)candidateClasses.get(0);
         implementation = studentClass;
     }
