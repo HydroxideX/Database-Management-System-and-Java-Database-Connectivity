@@ -489,9 +489,11 @@ public class SQLDatabase implements Database {
         Object[][] finalTable =  new Object[selectedRows.size()][printColumns.size()];
         int row = 0;
         int col = 0;
+        cNames.clear();
         for (int i = 0;i<colNames.size();i++) {
             for (int j = 0;j<printColumns.size();j++) {
                 if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
+                    cNames.add(colNames.get(i));
                     for (int k = 0;k < table.size();k++) {
                         if(colTypes.get(i).toLowerCase().equals("int") && !table.get(k).get(i).toString().toLowerCase().equals("null")){
                             finalTable[row++][col] = Integer.parseInt(table.get(k).get(i).toString());

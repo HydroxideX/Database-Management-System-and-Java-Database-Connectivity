@@ -63,7 +63,15 @@ public class Gui extends Application {
                     table.getColumns().clear();
                     Object[][] x = facade.getFullTable((Object[][]) object);
                     ObservableList<Object[]> data = FXCollections.observableArrayList();
-                    data.addAll(Arrays.asList(x));
+                    Object[][] y = new Object[x.length][x[0].length];
+                    for(int i=0;i<x.length;i++)
+                    {
+                        for(int j=0;j<x[i].length;j++)
+                        {
+                            y[i][j]=x[i][j].toString();
+                        }
+                    }
+                    data.addAll(Arrays.asList(y));
                     data.remove(0);
                     for (int i = 0; i < x[0].length; i++)
                     {
