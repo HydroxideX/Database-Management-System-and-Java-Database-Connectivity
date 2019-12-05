@@ -35,16 +35,16 @@ public class DBLogger {
                 logger.warning("message");
                 break;
             case "info":
-                logger.info("message);
+                logger.info("message");
                 break;
             case "fine":
-                logger.fine("message);
+                logger.fine("message");
                 break;
             case "finer":
-                logger.finer("message);
+                logger.finer("message");
                 break;
             default:
-                logger.finest("message);
+                logger.finest("message");
         }
     }
     /*public static void main(String[] args) throws IOException{
