@@ -12,12 +12,13 @@ public class DBLogger {
     Logger logger;
 
     public DBLogger() throws IOException {
-        fh = new FileHandler("Log.txt",true);
+        fh = new FileHandler("Log.txt", true);
         fh.setFormatter(new DBLogFormatter());
         logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         logger.addHandler(fh);
         logger.setLevel(Level.ALL);
     }
+
     //Config for connection succesful
     //severe for SQLException
     //warning for connection failure (Database Not found)
@@ -28,13 +29,22 @@ public class DBLogger {
                 logger.config("message);
                 break;
             case "severe":
-                logger.severe("java.sql.SQLException "+message);
+                logger.severe(/*"java.sql.SQLException "+*/message);
                 break;
             case "warning":
                 logger.warning("message);
                 break;
+            case "info":
+                logger.info("message);
+                break;
             case "fine":
-                logger.fine(message);
+                logger.fine("message);
+                break;
+            case "finer":
+                logger.finer("message);
+                break;
+            default:
+                logger.finest("message);
         }
     }
     /*public static void main(String[] args) throws IOException{
