@@ -44,7 +44,7 @@ public class DBLogger {
                 logger.finer(message);
                 break;
             default:
-                logger.finest("message);
+                logger.finest(message);
         }
     }
     /*public static void main(String[] args) throws IOException{
