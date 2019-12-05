@@ -32,7 +32,7 @@ public class Resultset implements java.sql.ResultSet {
         this.colTypes = colTypes;
         this.tableName = tableName;
         this.tableData = tableData;
-        this.idxCurrent = 0;
+        this.idxCurrent = 1;
         this.idxLast = tableData.length-1;
         this.idxFirst = (idxLast > 1) ? 1 : 0;
     }
@@ -71,7 +71,7 @@ public class Resultset implements java.sql.ResultSet {
     public String getString(int columnIndex) throws SQLException {
         getExceptionThrower(columnIndex);
         if (colTypes.get(columnIndex).equals("varchar"))
-            return tableData[idxCurrent][columnIndex].toString();
+            return tableData[idxCurrent][columnIndex-1].toString();
         else
             throw new SQLException("Column Type is int");
     }
@@ -89,7 +89,7 @@ public class Resultset implements java.sql.ResultSet {
     public int getInt(int columnIndex) throws SQLException {
         getExceptionThrower(columnIndex);
         if (colTypes.get(columnIndex).equals("int"))
-            return (int) tableData[idxCurrent][columnIndex];
+            return (int) tableData[idxCurrent][columnIndex-1];
         else
             throw new SQLException("Column Type is varchar");
     }
@@ -237,22 +237,20 @@ public class Resultset implements java.sql.ResultSet {
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         if(isClosed())throw new SQLException("Object has been closed");
-        if (idxFirst != 1)
-            throw new SQLException("table is empty");
         return new ResultSetMetaData(tableName, tableData[0], colTypes);
     }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
         getExceptionThrower(columnIndex);
-        return tableData[idxCurrent][columnIndex];
+        return tableData[idxCurrent][columnIndex-1];
     }
 
     @Override
     public Object getObject(String columnLabel) throws SQLException {
         int columnIndex = findColumn(columnLabel);
         getExceptionThrower(columnIndex);
-        return (int) tableData[idxCurrent][columnIndex];
+        return tableData[idxCurrent][columnIndex];
     }
 
     @Override

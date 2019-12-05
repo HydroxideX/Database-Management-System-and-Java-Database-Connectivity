@@ -40,12 +40,12 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData{
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        return colNames[column].toString();
+        return colNames[column-1].toString();
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return colNames[column].toString();
+        return colNames[column-1].toString();
     }
 
     @Override
