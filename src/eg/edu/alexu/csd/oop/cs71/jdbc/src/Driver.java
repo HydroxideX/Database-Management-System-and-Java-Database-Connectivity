@@ -34,6 +34,7 @@ public class Driver implements java.sql.Driver {
             DriverPropertyInfo temp = new DriverPropertyInfo(s.getKey().toString(),s.getValue().toString());
             driverPropertyInfo[i++] = temp;
         }
+        return driverPropertyInfo;
     }
 
     @Override
