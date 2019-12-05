@@ -70,7 +70,7 @@ public class Facade {
         {
             for(int j=0;j<incompleteTable[i].length;j++)
             {
-                newTable[i+1][j]=incompleteTable[i][j].toString();
+                newTable[i+1][j]=incompleteTable[i][j];
             }
         }
         return newTable;
