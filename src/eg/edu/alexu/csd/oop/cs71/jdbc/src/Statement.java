@@ -7,6 +7,7 @@ import eg.edu.alexu.csd.oop.cs71.db.*;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Statement implements java.sql.Statement {
 
@@ -14,9 +15,11 @@ public class Statement implements java.sql.Statement {
     FileManagement fm =new FileManagement();
     Connection connection;
     ArrayList<String> Queries = new ArrayList<>();
+    Properties info;
     boolean closeState = false;
-    public Statement(Connection connection){
+    public Statement(Connection connection,Properties info){
         this.connection = connection;
+        this.info=info;
     }
 
 
@@ -121,7 +124,16 @@ public class Statement implements java.sql.Statement {
                     || checker.contains("DELETE") || checker.contains("ALTER")) {
                 return false;
             }else if (checker.contains("CREATE")||checker.contains("DROP")){
-                facade.parse(sql);
+                if(query2.contains("database")) {
+                    String[] temp = info.get("path").toString().split("JDBC-API");
+                    String sql2;
+                    if (checker.contains("CREATE"))
+                        sql2 = "create database " + temp[1] + "\\" + command[2];
+                    else
+                        sql2 = "drop database " + temp[1] + "\\" + command[2];
+                    facade.parse(sql2);
+                }
+                else facade.parse(sql);
                 return true;
             }
             return false;
