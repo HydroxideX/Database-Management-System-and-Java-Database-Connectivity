@@ -133,19 +133,23 @@ public class Statement implements java.sql.Statement {
                 if (query2.contains("database")) {
                     String a=info.get("path").toString()+command[2];
                     String[] temp = a.split("JDBC-API");
+                    if(temp[1].charAt(0)=='\\')
+                    {
+                        String tempo=temp[1].substring(1,temp[1].length()-1);
+                        temp[1]=tempo;
+                    }
                     String sql2;
                     if (checker.contains("CREATE"))
                         sql2 = "create database " + temp[1] + "\\" + command[2];
                     else
                         sql2 = "drop database " + temp[1] + "\\" + command[2];
                     facade.parse(sql2);
-                } else facade.parse(sql);
+                } else return (boolean) facade.parse(sql);
                 return true;
             }
             return false;
         } else {
-            System.out.println("Invalid Query");
-            return false;
+            throw new SQLException("Invalid Query");
         }
     }
 

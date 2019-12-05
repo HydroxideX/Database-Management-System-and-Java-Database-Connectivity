@@ -298,19 +298,19 @@ public class SQLDatabase implements Database {
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
             String tablePath="";
-            if (currentDatabase.contains("\\")){
-                tablePath=currentDatabase+"\\"+tableName+".xml";
-            }else{
+           /* if (currentDatabase.contains("\\")){
+                tablePath=currentDatabase+"\\"+tableName+".xml";*/
+            //}else{
                 Path currentRelativePath = Paths.get("");
                 tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            }
+           // }
             File file =new File(tablePath);
 
             if (!file.delete()) {
                 Gui.success="Table doesn't exist!";
                 return false;
             }
-            Path currentRelativePath = Paths.get("");
+             currentRelativePath = Paths.get("");
             tablePath=currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
              file =new File(tablePath);
             file.delete();
