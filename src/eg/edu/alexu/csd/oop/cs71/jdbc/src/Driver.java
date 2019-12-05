@@ -13,6 +13,7 @@ public class Driver implements java.sql.Driver {
     public Connection connect(String url, Properties info) throws SQLException {
         if(!acceptsURL(url)) throw new SQLException("Wrong URL");
         Connection connection = new Connection(info, this);
+        connections.add(connection);
         return connection;
     }
 
