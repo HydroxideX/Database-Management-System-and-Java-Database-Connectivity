@@ -26,6 +26,7 @@ public class DBLogger {
         switch (level.toLowerCase()) {
             case "config":
                 logger.config(message);
+
                 break;
             case "severe":
                 logger.severe(message);
