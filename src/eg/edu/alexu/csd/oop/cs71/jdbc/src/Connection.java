@@ -1,11 +1,29 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
+import com.sun.deploy.panel.JreTableModel;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class Connection implements java.sql.Connection {
+    Driver driver;
+    Properties info;
+    public Connection(Properties info, Driver driver){
+        this.driver = driver;
+        this.info = info;
+    }
+
+    @Override
+    public void close() throws SQLException {
+        for(int i = 0;i <driver.connections.size();i++){
+            if(driver.connections.get(i) == this){
+                driver.connections.remove(this);
+            }
+        }
+    }
+
     @Override
     public Statement createStatement() throws SQLException {
         return null;
@@ -46,10 +64,7 @@ public class Connection implements java.sql.Connection {
 
     }
 
-    @Override
-    public void close() throws SQLException {
 
-    }
 
     @Override
     public boolean isClosed() throws SQLException {

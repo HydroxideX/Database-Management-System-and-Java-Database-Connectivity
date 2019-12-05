@@ -3,16 +3,17 @@ package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 import java.io.File;
 import java.sql.*;
 //import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Driver implements java.sql.Driver {
+    ArrayList <Connection> connections = new ArrayList<>();
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        File dir = (File) info.get("path");
-        String path = dir.getAbsolutePath();
-        DriverManager.registerDriver(new Driver());
-        return (Connection) DriverManager.getConnection(path);
+        if(!acceptsURL(url)) throw new SQLException("Wrong URL");
+        Connection connection = new Connection(info, this);
+        return connection;
     }
 
     @Override
