@@ -1,10 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,11 +9,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Properties;
 
 
@@ -50,13 +44,13 @@ public class Gui extends Application {
             textField.clear();
             textField.requestFocus();
         });
-        Driver driver=new Driver();
+        SQLDriver SQLDriver =new SQLDriver();
         Properties info = new Properties();
         File dbDir = new File("Databases");
         info.put("path", dbDir.getAbsoluteFile());
         Statement statement=null;
         try{
-             Connection connection = driver.connect("jdbc:xmldb://localhost", info);
+             Connection connection = SQLDriver.connect("jdbc:xmldb://localhost", info);
             statement=connection.createStatement();
 
         }catch (Exception e)

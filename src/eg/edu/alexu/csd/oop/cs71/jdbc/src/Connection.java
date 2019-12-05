@@ -1,29 +1,26 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import com.sun.deploy.panel.JreTableModel;
-
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class Connection implements java.sql.Connection {
-    Driver driver;
+    SQLDriver SQLDriver;
     Properties info;
     Statement statement;
 
-    public Connection(Properties info, Driver driver){
-        this.driver = driver;
+    public Connection(Properties info, SQLDriver SQLDriver){
+        this.SQLDriver = SQLDriver;
         this.info = info;
     }
 
     @Override
     public void close() throws SQLException {
-        for(int i = 0;i <driver.connections.size();i++){
-            if(driver.connections.get(i) == this){
+        for(int i = 0; i < SQLDriver.connections.size(); i++){
+            if(SQLDriver.connections.get(i) == this){
                 statement=null;
-                driver.connections.remove(this);
+                SQLDriver.connections.remove(this);
             }
         }
     }
