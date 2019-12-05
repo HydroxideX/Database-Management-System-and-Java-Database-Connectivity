@@ -236,6 +236,7 @@ public class SanityTest {
             while(result2.previous());
             result2.next();
             Object column_2_object = result2.getObject(2);
+            System.out.println();
             if (column_2_object instanceof String)
                 fail("This should be 'Integer', but found 'String'!");
             else if (column_2_object instanceof Integer) {
