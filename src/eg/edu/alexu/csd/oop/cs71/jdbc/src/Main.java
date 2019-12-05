@@ -12,6 +12,10 @@ public class Main {
         info.put("path", dbDir.getAbsoluteFile());
         try {
             Connection connection1 = (Connection) driver.connect("jdbc:xmldb://localhost", info);
+            System.out.println("Success?");
+            connection1.close();
+            System.out.println("Success?");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -22,6 +22,7 @@ public class Connection implements java.sql.Connection {
     public void close() throws SQLException {
         for(int i = 0;i <driver.connections.size();i++){
             if(driver.connections.get(i) == this){
+                statement=null;
                 driver.connections.remove(this);
             }
         }
