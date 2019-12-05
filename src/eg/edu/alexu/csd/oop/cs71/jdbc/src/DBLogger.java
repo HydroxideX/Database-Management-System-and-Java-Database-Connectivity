@@ -26,22 +26,22 @@ public class DBLogger {
     public void addLog(String level, String message) {
         switch (level.toLowerCase()) {
             case "config":
-                logger.config("message);
+                logger.config(message);
                 break;
             case "severe":
-                logger.severe(/*"java.sql.SQLException "+*/message);
+                logger.severe(message);
                 break;
             case "warning":
-                logger.warning("message);
+                logger.warning(message);
                 break;
             case "info":
-                logger.info("message);
+                logger.info(message);
                 break;
             case "fine":
-                logger.fine("message);
+                logger.fine(message);
                 break;
             case "finer":
-                logger.finer("message);
+                logger.finer(message);
                 break;
             default:
                 logger.finest("message);
