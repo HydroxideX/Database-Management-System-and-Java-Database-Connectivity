@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public class Driver implements java.sql.Driver {
+public class SQLDriver implements java.sql.Driver {
     ArrayList <Connection> connections = new ArrayList<>();
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
