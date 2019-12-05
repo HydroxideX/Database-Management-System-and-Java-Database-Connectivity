@@ -11,6 +11,7 @@ class Facade {
     }
 
     Object parse(String query) {
+        SQLDatabase.startUp();
         String checker;
         String[] command=query.split(" ");
         String query2=query;
