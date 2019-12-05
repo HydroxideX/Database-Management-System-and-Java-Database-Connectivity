@@ -38,22 +38,14 @@ public class SQLDriver implements java.sql.Driver {
     }
 
     @Override
-    public int getMajorVersion() {
-        return 0;
-    }
+    public int getMajorVersion() {		throw new UnsupportedOperationException();}
 
     @Override
-    public int getMinorVersion() {
-        return 0;
-    }
+    public int getMinorVersion() {		throw new UnsupportedOperationException();}
 
     @Override
-    public boolean jdbcCompliant() {
-        return false;
-    }
+    public boolean jdbcCompliant() {		throw new UnsupportedOperationException();}
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return null;
-    }
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {		throw new UnsupportedOperationException();}
 }
