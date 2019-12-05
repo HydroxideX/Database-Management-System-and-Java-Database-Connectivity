@@ -3,6 +3,7 @@ package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 import com.sun.deploy.panel.JreTableModel;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -10,6 +11,8 @@ import java.util.concurrent.Executor;
 public class Connection implements java.sql.Connection {
     Driver driver;
     Properties info;
+    Statement statement;
+
     public Connection(Properties info, Driver driver){
         this.driver = driver;
         this.info = info;
@@ -26,7 +29,8 @@ public class Connection implements java.sql.Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        return null;
+        statement = new Statement(this);
+        return statement;
     }
 
     @Override

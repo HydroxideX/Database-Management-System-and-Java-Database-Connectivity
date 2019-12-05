@@ -6,6 +6,12 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 
 public class Statement implements java.sql.Statement {
+    eg.edu.alexu.csd.oop.cs71.jdbc.src.Connection connection;
+
+    public Statement(eg.edu.alexu.csd.oop.cs71.jdbc.src.Connection connection){
+        this.connection = connection;
+    }
+
     @Override
     public Resultset executeQuery(String sql) throws SQLException {
         return null;
