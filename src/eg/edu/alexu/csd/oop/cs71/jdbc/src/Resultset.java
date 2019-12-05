@@ -26,6 +26,7 @@ public class Resultset implements java.sql.ResultSet {
     private ArrayList<String> colTypes;
     public Object[][] tableData;
     private int idxCurrent, idxLast, idxFirst;
+    private boolean closed=false;
 
     public Resultset(String tableName, Object[][] tableData, ArrayList<String> colTypes) {
         this.colTypes = colTypes;
@@ -60,7 +61,7 @@ public class Resultset implements java.sql.ResultSet {
 
     @Override
     public void close() throws SQLException {
-        this.close();
+        closed=true;
     }
 
     @Override
@@ -681,7 +682,7 @@ public class Resultset implements java.sql.ResultSet {
 
     @Override
     public boolean isClosed() throws SQLException {
-        return this.isClosed();
+        return this.closed;
     }
 
     @Override
