@@ -26,7 +26,8 @@ public class CLI {
         try {
             if (sqldriver.acceptsURL(query)) {
                 Properties info = new Properties();
-                File dbDir = new File("Databases");
+                File dbDir = new File("");
+                info.put("path", dbDir.getAbsoluteFile());
                 Connection c = (Connection) sqldriver.connect(query, info);
                 Statement finalStatement = c.createStatement();
                 while (true) {

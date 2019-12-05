@@ -51,7 +51,7 @@ public class Gui extends Application {
         });
         SQLDriver SQLDriver =new SQLDriver();
         Properties info = new Properties();
-        File dbDir = new File("Databases");
+        File dbDir = new File("");
         info.put("path", dbDir.getAbsoluteFile());
         Statement statement=null;
         try{
