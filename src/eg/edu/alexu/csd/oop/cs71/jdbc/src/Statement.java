@@ -119,10 +119,14 @@ public class Statement implements java.sql.Statement {
             checker = checker.toUpperCase();
             String secondChecker = command[1].toUpperCase();
             if (checker.contains("SELECT")) {
+                Resultset resultset = executeQuery(sql);
+                if(resultset.tableData.length>1)
                 return true;
+                else return false;
             } else if (checker.contains("UPDATE") || checker.contains("INSERT")
                     || checker.contains("DELETE") || checker.contains("ALTER")) {
-                return false;
+                executeUpdate(sql);
+                return true;
             }else if (checker.contains("CREATE")||checker.contains("DROP")){
                 if(query2.contains("database")) {
                     String[] temp = info.get("path").toString().split("JDBC-API");
