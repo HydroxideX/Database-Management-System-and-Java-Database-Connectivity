@@ -12,7 +12,7 @@ public class Facade {
     public ArrayList<String> getColumnTypes (){
         return engine.cTypes;
     }
-    public Object parse(String query) {
+    public Object parse(String query) throws SQLException {
         SQLDatabase.startUp();
         String checker;
         String[] command=query.split(" ");
@@ -23,11 +23,7 @@ public class Facade {
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
                 || checker.contains("DELETE")||checker.contains("ALTER")) {
-            try {
                 return engine.executeUpdateQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {
                return engine.createDatabase(command[2],true);
@@ -40,18 +36,11 @@ public class Facade {
             }
         }else if(checker.contains("DROP"))
         {
-            try {
+
                return engine.executeStructureQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         else if(checker.contains("SELECT")){
-            try {
                return engine.executeQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }else if(checker.contains("USE"))
         {
             return engine.createDatabase(command[1],false);

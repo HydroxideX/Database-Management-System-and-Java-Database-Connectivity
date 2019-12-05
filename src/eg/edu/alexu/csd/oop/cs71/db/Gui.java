@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 
@@ -54,8 +55,12 @@ public class Gui extends Application {
             query=query.replaceAll(";","");
             if(SQLvalidation.validateQuery(query))
             {
-                Object object;
-                object=facade.parse(query);
+                Object object=null;
+                try {
+                    object=facade.parse(query);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 currentDb.setText("Database: "+facade.engine.currentDatabase);
                 query=query.toLowerCase();
                 if(query.contains("select")&&object != null) {

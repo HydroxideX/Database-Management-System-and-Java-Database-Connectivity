@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static java.lang.Math.max;
@@ -16,7 +17,12 @@ public class CLI {
             Facade facade = new Facade();
             query = query.replaceAll(";", "");
             if (SQLvalidation.validateQuery(query)) {
-                Object object = facade.parse(query);
+                Object object = null;
+                try {
+                    object = facade.parse(query);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 query = query.toLowerCase();
                 if (query.contains("select") && object != null) {
                     Object[][] x = facade.getFullTable((Object[][]) object);
