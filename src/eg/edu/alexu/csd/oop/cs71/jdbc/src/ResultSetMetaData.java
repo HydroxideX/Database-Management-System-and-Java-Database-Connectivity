@@ -14,7 +14,7 @@ public class ResultSetMetaData implements java.sql.ResultSetMetaData{
 	}
 	@Override
     public int getColumnCount() throws SQLException {
-        return colTypes.size();
+        return colNames.length;
     }
 
     @Override
