@@ -42,7 +42,7 @@ public class SQLDatabase implements Database {
     }
 
     public ArrayList<String> cNames;
-    private ArrayList<String> cTypes;
+    public ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
     private ValidationInterface SQLvalidation;
 

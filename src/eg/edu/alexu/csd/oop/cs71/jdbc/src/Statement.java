@@ -1,30 +1,50 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+//import java.sql.Connection;
+//import java.sql.ResultSet;
+import eg.edu.alexu.csd.oop.cs71.db.*;
+
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.util.ArrayList;
 
 public class Statement implements java.sql.Statement {
-    eg.edu.alexu.csd.oop.cs71.jdbc.src.Connection connection;
 
-    public Statement(eg.edu.alexu.csd.oop.cs71.jdbc.src.Connection connection){
+    Facade facade=new Facade();
+    FileManagement fm =new FileManagement();
+    Connection connection;
+    ArrayList<String> Queries = new ArrayList<>();
+    boolean closeState = false;
+    public Statement(Connection connection){
         this.connection = connection;
     }
 
+
     @Override
     public Resultset executeQuery(String sql) throws SQLException {
-        return null;
+        if (isClosed()){
+            throw new SQLException();
+        }
+        Object[][] data = (Object[][]) facade.parse(sql);
+        data = facade.getFullTable(data);
+        ArrayList<String> types = facade.getColumnTypes();
+        String tableName = fm.getTableName(sql);
+        Resultset rs=new Resultset(tableName,data,types);
+        return rs;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        return 0;
+        if (isClosed()){
+            throw new SQLException();
+        }
+        return (int) facade.parse(sql);
     }
 
     @Override
     public void close() throws SQLException {
-
+        connection=null;
+        closeState=true;
     }
 
     @Override
@@ -84,11 +104,35 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        return false;
+        if (isClosed()){
+            throw new SQLException();
+        }
+        ValidationInterface SQLvalidation = new SQLBasicValidation();
+        if (SQLvalidation.validateQuery(sql)) {
+            String query2 = sql;
+            query2 = query2.toLowerCase();
+            String[] command = query2.split(" ");
+            String checker = query2.substring(0, 8);
+            checker = checker.toUpperCase();
+            String secondChecker = command[1].toUpperCase();
+            if (checker.contains("SELECT")) {
+                return true;
+            } else if (checker.contains("UPDATE") || checker.contains("INSERT")
+                    || checker.contains("DELETE") || checker.contains("ALTER")) {
+                return false;
+            }else if (checker.contains("CREATE")||checker.contains("DROP")){
+                facade.parse(sql);
+                return true;
+            }
+            return false;
+        }else {
+            System.out.println("Invalid Query");
+            return false;
+        }
     }
 
     @Override
-    public ResultSet getResultSet() throws SQLException {
+    public Resultset getResultSet() throws SQLException {
         return null;
     }
 
@@ -134,12 +178,18 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public void addBatch(String sql) throws SQLException {
-
+        if (isClosed()){
+            throw new SQLException();
+        }
+        Queries.add(sql);
     }
 
     @Override
     public void clearBatch() throws SQLException {
-
+        if (isClosed()){
+            throw new SQLException();
+        }
+        Queries.clear();
     }
 
     @Override
@@ -149,7 +199,7 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        return connection;
     }
 
     @Override
@@ -158,7 +208,7 @@ public class Statement implements java.sql.Statement {
     }
 
     @Override
-    public ResultSet getGeneratedKeys() throws SQLException {
+    public Resultset getGeneratedKeys() throws SQLException {
         return null;
     }
 
@@ -199,7 +249,7 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public boolean isClosed() throws SQLException {
-        return false;
+        return closeState;
     }
 
     @Override

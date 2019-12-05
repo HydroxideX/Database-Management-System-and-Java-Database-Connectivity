@@ -1,6 +1,9 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,9 +12,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Properties;
 
 
@@ -76,6 +81,7 @@ public class Gui extends Application {
                     assert finalStatement != null;
                     object = finalStatement.executeQuery(query);
                     //method to transfer result set to 2d array of Objects
+                    table.getColumns().clear();
                     Resultset temp =(Resultset)object;
                     Object[][] x=temp.tableData;
                     ObservableList<Object[]> data = FXCollections.observableArrayList();

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-class FileManagement implements FileManagementInterface{
+public class FileManagement implements FileManagementInterface{
     public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes){
        // String[] columnTypes =new String[tableColumns.size()];
        // String[] columnNames =new String[tableColumns.size()];

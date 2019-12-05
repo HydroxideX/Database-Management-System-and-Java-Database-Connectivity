@@ -4,13 +4,15 @@ import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-class Facade {
+public class Facade {
     public SQLDatabase engine;
     public Facade (){
         engine = SQLDatabase.getInstance();
     }
-
-    Object parse(String query) {
+    public ArrayList<String> getColumnTypes (){
+        return engine.cTypes;
+    }
+    public Object parse(String query) {
         SQLDatabase.startUp();
         String checker;
         String[] command=query.split(" ");
@@ -56,7 +58,7 @@ class Facade {
         }
         return null;
     }
-    Object[][] getFullTable(Object[][] incompleteTable)
+    public Object[][] getFullTable(Object[][] incompleteTable)
     {
         ArrayList<String> cNames=engine.cNames;
         Object[][] newTable = new Object[incompleteTable.length+1][cNames.size()];
