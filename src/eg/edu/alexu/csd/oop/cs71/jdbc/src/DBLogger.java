@@ -25,15 +25,15 @@ public class DBLogger {
     public void addLog(String level, String message) {
         switch (level.toLowerCase()) {
             case "config":
-                logger.config("Connection initialized "+message);
+                logger.config("message);
                 break;
             case "severe":
                 logger.severe("java.sql.SQLException "+message);
                 break;
             case "warning":
-                logger.warning("Connection failed"+message);
+                logger.warning("message);
                 break;
-            default:
+            case "fine":
                 logger.fine(message);
         }
     }
