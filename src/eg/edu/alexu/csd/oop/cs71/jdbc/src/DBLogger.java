@@ -10,7 +10,6 @@ public class DBLogger {
     FileHandler fh;
     SimpleFormatter sf;
     Logger logger;
-
     public DBLogger() throws IOException {
         fh = new FileHandler("Log.txt", true);
         fh.setFormatter(new DBLogFormatter());
