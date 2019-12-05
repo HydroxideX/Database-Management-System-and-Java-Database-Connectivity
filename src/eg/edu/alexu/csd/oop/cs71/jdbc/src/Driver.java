@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.*;
 //import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -24,7 +26,14 @@ public class Driver implements java.sql.Driver {
 
     @Override
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        return new DriverPropertyInfo[0];
+        DriverPropertyInfo[] driverPropertyInfo = new DriverPropertyInfo[info.size()];
+        int i = 0;
+        Iterator var4 = info.entrySet().iterator();
+        while(var4.hasNext()) {
+            Map.Entry s = (Map.Entry)var4.next();
+            DriverPropertyInfo temp = new DriverPropertyInfo(s.getKey().toString(),s.getValue().toString());
+            driverPropertyInfo[i++] = temp;
+        }
     }
 
     @Override
