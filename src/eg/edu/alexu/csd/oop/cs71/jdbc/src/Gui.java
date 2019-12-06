@@ -86,7 +86,7 @@ public class Gui extends Application {
                     //method to transfer result set to 2d array of Objects
                     table.getColumns().clear();
                     Resultset temp =(Resultset)object;
-                    Object[][] x=temp.tableData;
+                    Object[][] x= convertResultSetTOArray(temp);
                     ObservableList<Object[]> data = FXCollections.observableArrayList();
                     Object[][] y = new Object[x.length][x[0].length];
                     for(int i=0;i<x.length;i++)
@@ -240,5 +240,40 @@ public class Gui extends Application {
                 button.fire();
             }
         });
+    }
+
+    private static Object[][] convertResultSetTOArray(Resultset rs) {
+        try {
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+            int cols = resultSetMetaData.getColumnCount();
+            int rows = 0;
+            while(!rs.isAfterLast())  {
+                rows++;
+                rs.next();
+            }
+            String[][] table = new String[rows+1][cols];
+            while(!rs.isFirst())  {
+                rows--;
+                rs.previous();
+            }
+            for(int i = 0; i < cols; i++){
+                table[rows][i] = resultSetMetaData.getColumnLabel(i+1);
+            }
+            rows++;
+            while(true){
+                if(rs.isAfterLast()) break;
+                for(int i = 0; i < cols;i++){
+                    Object temp = rs.getObject(i+1);
+                    if(temp.toString().toLowerCase().equals("null")) table[rows][i] = "";
+                    table[rows][i] = temp.toString();
+                }
+                rs.next();
+                rows++;
+            }
+            return table;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new String[5][5];
     }
 }

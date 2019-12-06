@@ -19,9 +19,8 @@ public class CLI {
 
     public static void main(String [] args){
         Scanner input = new Scanner(System.in);
-        System.out.printf("SQL Command: ");
         Driver sqldriver = new SQLDriver();
-        String query = input.nextLine();
+        String query = "jdbc:xmldb://localhost";
         Object object;
         try {
             if (sqldriver.acceptsURL(query)) {
@@ -38,7 +37,8 @@ public class CLI {
                         try {
                             assert finalStatement != null;
                             Resultset rs = finalStatement.executeQuery(query);
-                            printTable(rs.tableData);
+                            Object[][] table = convertResultSetTOArray(rs);
+                            printTable(table);
                         } catch (SQLException ex) {
                             ex.printStackTrace();
                         }
@@ -125,5 +125,43 @@ public class CLI {
         if(big == 0) System.out.printf("▄▄\n");
         else System.out.printf("▄█\n");
     }
+
+
+    private static Object[][] convertResultSetTOArray(Resultset rs) {
+        try {
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+            int cols = resultSetMetaData.getColumnCount();
+            int rows = 0;
+            while(!rs.isAfterLast())  {
+                rows++;
+                rs.next();
+            }
+            String[][] table = new String[rows+1][cols];
+            while(!rs.isFirst())  {
+                rows--;
+                rs.previous();
+            }
+            for(int i = 0; i < cols; i++){
+                table[rows][i] = resultSetMetaData.getColumnLabel(i+1);
+            }
+            rows++;
+            while(true){
+                if(rs.isAfterLast()) break;
+                for(int i = 0; i < cols;i++){
+                    Object temp = rs.getObject(i+1);
+                    if(temp.toString().toLowerCase().equals("null")) table[rows][i] = "";
+                    table[rows][i] = temp.toString();
+                }
+                rs.next();
+                rows++;
+            }
+            return table;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new String[5][5];
+    }
 }
+
+
 
