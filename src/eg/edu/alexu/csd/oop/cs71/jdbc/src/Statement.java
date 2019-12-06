@@ -38,7 +38,7 @@ public class Statement implements java.sql.Statement {
             data = facade.getFullTable(data);
             ArrayList<String> types = facade.getColumnTypes();
             String tableName = fm.getTableName(sql);
-            Resultset rs = new Resultset(tableName, data, types);
+            Resultset rs = new Resultset(tableName, data, types,this);
             dbLogger.addLog("fine","Select Query executed");
             return rs;}
             dbLogger.addLog("severe","Select Query failed");
