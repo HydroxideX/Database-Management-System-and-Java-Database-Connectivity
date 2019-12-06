@@ -27,11 +27,12 @@ public class Resultset implements java.sql.ResultSet {
     public Object[][] tableData;
     private int idxCurrent, idxLast, idxFirst;
     private boolean closed = false;
-
-    public Resultset(String tableName, Object[][] tableData, ArrayList<String> colTypes) {
+    private Statement statement;
+    public Resultset(String tableName, Object[][] tableData, ArrayList<String> colTypes , Statement statement) {
         this.colTypes = colTypes;
         this.tableName = tableName;
         this.tableData = tableData;
+        this.statement = statement;
         this.idxCurrent = 1;
         this.idxLast = tableData.length - 1;
         this.idxFirst = (idxLast > 1) ? 1 : 0;
@@ -684,7 +685,7 @@ public class Resultset implements java.sql.ResultSet {
 
     @Override
     public Statement getStatement() throws SQLException {
-        throw new UnsupportedOperationException();
+    return statement;
     }
 
     @Override
