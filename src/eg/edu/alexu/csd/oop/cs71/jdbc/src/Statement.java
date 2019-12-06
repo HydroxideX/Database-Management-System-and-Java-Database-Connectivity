@@ -34,12 +34,14 @@ public class Statement implements java.sql.Statement {
         ValidationInterface SQLvalidation = new SQLBasicValidation();
         if (SQLvalidation.validateQuery(sql)) {
             Object[][] data = (Object[][]) facade.parse(sql);
+            if(data!=null){
             data = facade.getFullTable(data);
             ArrayList<String> types = facade.getColumnTypes();
             String tableName = fm.getTableName(sql);
             Resultset rs = new Resultset(tableName, data, types);
             dbLogger.addLog("fine","Select Query executed");
-            return rs;
+            return rs;}
+            throw new SQLException("Table doesn't exist");
         }
         dbLogger.addLog("severe","Select Query failed");
         throw new SQLException("Invalid Query");
