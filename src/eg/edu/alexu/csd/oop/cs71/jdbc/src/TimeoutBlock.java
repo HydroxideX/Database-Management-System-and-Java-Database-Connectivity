@@ -24,7 +24,7 @@ public class TimeoutBlock {
         }
         catch (ExecutionException e) {
             future.cancel(true);
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
         executor.shutdownNow();
         return  x;

@@ -95,7 +95,7 @@ public class Statement implements java.sql.Statement {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            throw new SQLException ("Update Query Timed Out");
+            throw new SQLException (e.getMessage());
         }
         return (int) x;
     }
