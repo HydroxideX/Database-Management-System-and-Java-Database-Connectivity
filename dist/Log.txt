@@ -1,0 +1,4 @@
+[ FINER ] 12\07\2019 , 01:50 :  Connection Initiated
+[ FINER ] 12\07\2019 , 01:50 :  Statement Created
+[ FINE ] 12\07\2019 , 01:51 :  Statement Closed
+[ FINE ] 12\07\2019 , 01:51 :  Connection Closed

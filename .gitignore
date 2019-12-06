@@ -4,3 +4,4 @@
 /src/out/*
 /src/.idea/*
 !.gitignore
+!/dist/

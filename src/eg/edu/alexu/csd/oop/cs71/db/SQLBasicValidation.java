@@ -81,5 +81,3 @@ public class SQLBasicValidation implements ValidationInterface {
         return true;
     }
 }
-//leave it here
-//\s(where)\s(not\s)?\w+\s?(\=|\>\=|\<\=|\<\>|\<|\>|\!\=|between|like|in)\s?(\'\s?\w+\s?\'|\-?\d+)(\sand\s(not\s)?\w+\s?(\=|\>\=|\<\=|\<\>|\<|\>|\!\=|between|like|in)\s?(\'\s?\w+\s?\'|\-?\d+))*(\sor\s(not\s)?\w+\s?(\=|\>\=|\<\=|\<\>|\<|\>|\!\=|between|like|in)\s?(\'\s?\w+\s?\'|\-?\d+))*)?

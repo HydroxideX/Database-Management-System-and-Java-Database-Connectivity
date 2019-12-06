@@ -19,17 +19,9 @@ import java.util.HashMap;
 
 public class FileManagement implements FileManagementInterface{
     public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes){
-       // String[] columnTypes =new String[tableColumns.size()];
-       // String[] columnNames =new String[tableColumns.size()];
         String[] columnContents =new String[tableColumns.size()];
         Arrays.fill(columnContents, "");
         int index = 0;
-       /* for (String str : tableColumns.keySet()) {
-            columnNames[index++] = str;
-        }
-        for (int i=0; i<tableColumns.size(); i++){
-            columnTypes[i]= tableColumns.get(columnNames[i]);
-        }*/
         for (HashMap<String, Object> tableDatum : tableData) {
             for (int j = 0; j < cNames.size(); j++) {
                 columnContents[j] += tableDatum.get(cNames.get(j)).toString() + " ";
