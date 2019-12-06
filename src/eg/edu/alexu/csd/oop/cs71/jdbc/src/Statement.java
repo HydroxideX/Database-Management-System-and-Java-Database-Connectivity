@@ -22,7 +22,7 @@ public class Statement implements java.sql.Statement {
     ArrayList<String> Queries = new ArrayList<>();
     Properties info;
     boolean closeState = false;
-    int timeout;
+    int timeout=5;
     DBLogger dbLogger =DBLogger.getInstance();
 
     public Statement(Connection connection, Properties info) {
