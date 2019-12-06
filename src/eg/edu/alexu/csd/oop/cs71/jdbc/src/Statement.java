@@ -70,6 +70,7 @@ public class Statement implements java.sql.Statement {
         FileManagement a = new FileManagement();
         Object x ;
         file = new File("back_up/" + a.getTableName(sql) + ".xml");
+        if(!source.exists())throw new SQLException("Table Doesn't exist");
         try {
             a.copyFileUsingChannel(source, file);
         } catch (IOException e) {
