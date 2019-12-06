@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -166,4 +167,21 @@ public class FileManagement implements FileManagementInterface{
         }
         return tableName;
     }
+
+    public void copyFileUsingChannel(File src, File dest) throws IOException {
+        FileChannel sourceChannel = null;
+        FileChannel destinationChannel = null;
+        try {
+            sourceChannel = new FileInputStream(src).getChannel();
+            destinationChannel = new FileOutputStream(dest).getChannel();
+            destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } finally {
+            assert sourceChannel != null;
+            sourceChannel.close();
+            assert destinationChannel != null;
+            destinationChannel.close();
+        }
+    }
 }
+
+
