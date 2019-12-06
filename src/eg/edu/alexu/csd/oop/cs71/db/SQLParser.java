@@ -262,7 +262,7 @@ public class SQLParser {
         ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
         HashMap<String, Object> columnMap = new HashMap<String, Object>();
         String[] temp_1;
-        for (int i = 0; i < colNames.size(); i++) columnMap.put(colNames.get(i).toLowerCase(), "NULL");
+
         temp_1 = s[1].replaceAll("\\(|\\)|\\,|\\s+|\\;", " ").split("\\s+");
         for (int i = 0; i < temp_1.length; i++) {
             if (temp_1[i].equals("")) continue;
@@ -287,7 +287,6 @@ public class SQLParser {
         //ArrayList<String> colTypesTemp = new ArrayList<String>();
         //for (int i = 0; i < values.size(); i++) colTypesTemp.add("varchar");
         ValidateColumnNames(insColNames, values, colNames, colTypes);
-        columnMap.clear();
         for (int i = 0; i < values.size(); i++) {
             String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();
             String iCN = insColNames.get(i).toLowerCase();
@@ -300,6 +299,7 @@ public class SQLParser {
             else if (type.equals("float"))
                 columnMap.put(iCN, Float.parseFloat(values.get(i).get(0)));
         }
+        for (int i = 0; i < colNames.size(); i++) columnMap.putIfAbsent(colNames.get(i).toLowerCase(), "null");
         table.add(columnMap);
         return 1;
 
