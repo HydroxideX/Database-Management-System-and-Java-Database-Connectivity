@@ -66,14 +66,16 @@ public class Statement implements java.sql.Statement {
         file.mkdir();
         FileManagement a = new FileManagement();
         file = new File("back_up/"+a.getTableName(sql)+".xml");
-        try {
-            a.copyFileUsingChannel(source,file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final int[] res = new int[1];
-        try {
-            TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
+        if(!source.exists())throw new SQLException("table not found");
+            try {
+                a.copyFileUsingChannel(source, file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            final int[] res = new int[1];
+            try {
+                TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
+
             Runnable block=new Runnable() {
                 boolean test=false;
                 @Override
