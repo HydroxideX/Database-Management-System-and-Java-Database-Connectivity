@@ -28,34 +28,5 @@ public class TimeoutBlock {
         }
         executor.shutdownNow();
         return  x;
-
-        /*if (future.isCancelled()){System.out.println("sorry");return false;}
-        else {System.out.println("good");
-            return true;}*/
-
     }
-
-   /* public static void main(String[] args) throws SQLException {
-        TimeoutBlock t = new TimeoutBlock();
-        System.out.println((int) t.addTask(new Callable() {
-
-            public Object call() throws Exception {
-                int a = 0;
-                for (int i = 0; i < 10000000; i++) {a++;}
-                System.out.print("finished 1\n");
-                return a;
-            }
-        },500));
-
-        System.out.println((int)t.addTask(new Callable() {
-
-            public Object call() throws Exception {
-                int a = 0;
-                for (int i = 0; i < 5000000; i++) {a++;}
-                System.out.print("finished 2\n");
-                return a;
-            }
-        },500));
-
-    }*/
 }
