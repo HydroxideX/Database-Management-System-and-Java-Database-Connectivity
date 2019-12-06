@@ -29,6 +29,7 @@ public class Facade {
     public Object parse(String query) throws SQLException {
         SQLDatabase.startUp();
         String checker;
+        query=query.replaceAll("\\s+"," ");
         String[] command=query.split(" ");
         String query2=query;
         query2 += "NullValueToPassUse";
@@ -36,7 +37,7 @@ public class Facade {
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
-                || checker.contains("DELETE")||checker.contains("ALTER")) {
+                || checker.contains("DELETE")) {
                 return engine.executeUpdateQuery(query);
         } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {

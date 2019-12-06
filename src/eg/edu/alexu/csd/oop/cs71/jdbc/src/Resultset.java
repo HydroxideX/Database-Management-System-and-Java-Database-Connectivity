@@ -141,7 +141,7 @@ public class Resultset implements java.sql.ResultSet {
     }
 
     @Override
-    public Timestamp getTimestamp(int columnIndex) throws SQLException {
+    public Timestamp getTimestamp (int columnIndex) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
