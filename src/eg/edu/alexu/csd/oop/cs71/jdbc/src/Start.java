@@ -44,7 +44,7 @@ public class Start extends Application {
             stage.close();
             try
             {
-                Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"java -cp Database-Management-System.jar eg.edu.alexu.csd.oop.cs71.jdbc.src.CLI");
+                Runtime.getRuntime().exec("cmd /c start cmd.exe /K \"java -cp JDBC-API.jar eg.edu.alexu.csd.oop.cs71.jdbc.src.CLI");
             }
             catch (Exception er)
             {

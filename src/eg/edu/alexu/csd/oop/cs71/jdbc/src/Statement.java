@@ -58,63 +58,13 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        File source = new File(facade.getTablePath(sql)+".xml");
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        s+="\\back_up";
-        File file = new File(s);
-        file.mkdir();
-        FileManagement a = new FileManagement();
-        file = new File("back_up/"+a.getTableName(sql)+".xml");
-        if(!source.exists())throw new SQLException("table not found");
-            try {
-                a.copyFileUsingChannel(source, file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            final int[] res = new int[1];
-            try {
-                TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
-
-                File finalFile = file;
-                Runnable block=new Runnable() {
-                boolean test=false;
-                @Override
-                public void run() {
-                    //TO DO write block of code
-                    ValidationInterface SQLvalidation = new SQLBasicValidation();
-                    if (SQLvalidation.validateQuery(sql)) {
-                        dbLogger.addLog("fine","Update Query executed");
-                        try {
-                            res[0] = (int) facade.parse(sql);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        test =true;
-                        finalFile.delete();
-                    }
-                    if (!test) {
-                        dbLogger.addLog("Severe", "Update Query Failed!");
-                        try {
-                            throw new SQLException("Invalid Query");
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            };
-
-            timeoutBlock.addBlock(block);// execute the runnable block
-
-        } catch (Throwable e) {
-            //catch the exception here . Which is block didn't execute within the time limit
-            try {
-                a.copyFileUsingChannel(file,source);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        ValidationInterface SQLvalidation = new SQLBasicValidation();
+        if (SQLvalidation.validateQuery(sql)) {
+            dbLogger.addLog("fine","Update Query executed");
+            return (int) facade.parse(sql);
         }
-        return res[0];
+        dbLogger.addLog("Severe","Update Query Failed!");
+        throw new SQLException("Invalid Query");
     }
 
     @Override
