@@ -39,7 +39,7 @@ public class Resultset implements java.sql.ResultSet {
     }
 
     private Boolean isIndex(int columnIndex) {
-        if (columnIndex > colTypes.size() - 1 || columnIndex < 0)
+        if (columnIndex > colTypes.size() || columnIndex < 1)
             return false;
         return true;
     }

@@ -16,7 +16,7 @@ public class SQLBasicValidation implements ValidationInterface {
             switch (command[1])
             {
                 case "database": case "schema":{
-                if(command.length>3)
+                if(command.length != 3)
                     return false;
             }
             break;
