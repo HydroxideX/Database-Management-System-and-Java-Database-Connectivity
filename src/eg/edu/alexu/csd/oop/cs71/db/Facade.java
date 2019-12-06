@@ -12,7 +12,19 @@ public class Facade {
     public ArrayList<String> getColumnTypes (){
         return engine.cTypes;
     }
-    public Object parse(String query) throws Exception {
+
+    public String getTablePath(String query){
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        s+="\\Databases\\";
+        s+=engine.currentDatabase;
+        s+="\\";
+        FileManagement a =new FileManagement();
+        s+=a.getTableName(query);
+        return s;
+    }
+
+    public Object parse(String query) throws SQLException {
         SQLDatabase.startUp();
         String checker;
         String[] command=query.split(" ");

@@ -5,6 +5,8 @@ package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 import eg.edu.alexu.csd.oop.cs71.db.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Statement implements java.sql.Statement {
     ArrayList<String> Queries = new ArrayList<>();
     Properties info;
     boolean closeState = false;
+    int timeout;
     DBLogger dbLogger =DBLogger.getInstance();
 
     public Statement(Connection connection, Properties info) {
@@ -53,13 +56,55 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        ValidationInterface SQLvalidation = new SQLBasicValidation();
-        if (SQLvalidation.validateQuery(sql)) {
-            dbLogger.addLog("fine","Update Query executed");
-            return (int) facade.parse(sql);
+        File source = new File(facade.getTablePath(sql));
+        File target = new File("back-up");
+        FileManagement a = new FileManagement();
+        try {
+            a.copyFileUsingChannel(source,target);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        dbLogger.addLog("Severe","Update Query Failed!");
-        throw new SQLException("Invalid Query");
+        final int[] res = new int[1];
+        try {
+            TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
+            Runnable block=new Runnable() {
+                boolean test=false;
+                @Override
+                public void run() {
+                    //TO DO write block of code
+                    ValidationInterface SQLvalidation = new SQLBasicValidation();
+                    if (SQLvalidation.validateQuery(sql)) {
+                        dbLogger.addLog("fine","Update Query executed");
+                        try {
+                            res[0] = (int) facade.parse(sql);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        test =true;
+
+                    }
+                    if (!test) {
+                        dbLogger.addLog("Severe", "Update Query Failed!");
+                        try {
+                            throw new SQLException("Invalid Query");
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+
+            timeoutBlock.addBlock(block);// execute the runnable block
+
+        } catch (Throwable e) {
+            //catch the exception here . Which is block didn't execute within the time limit
+            try {
+                a.copyFileUsingChannel(target,source);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res[0];
     }
 
     @Override
@@ -96,12 +141,21 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public int getQueryTimeout() throws SQLException {
-        throw new UnsupportedOperationException();
+        if (isClosed()){
+            throw new SQLException();
+        }
+        return timeout;
     }
 
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
-        throw new UnsupportedOperationException();
+        if (isClosed()){
+            throw new SQLException();
+        }
+        if (seconds < 0) {
+            throw new SQLException();
+        }
+        timeout=seconds;
     }
 
     @Override
