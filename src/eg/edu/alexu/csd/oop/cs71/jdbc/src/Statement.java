@@ -38,12 +38,18 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
+        ArrayList<String> types;
+        Object[][] data;
         ValidationInterface SQLvalidation = new SQLBasicValidation();
         if (SQLvalidation.validateQuery(sql)) {
-            Object[][] data = (Object[][]) facade.parse(sql);
+            data = (Object[][]) timeoutBlock.addTask(new Callable() {
+                public Object call() throws Exception {
+                    return facade.parse(sql);
+                }
+            },10);
             if (data != null) {
                 data = facade.getFullTable(data);
-                ArrayList<String> types = facade.getColumnTypes();
+                types = facade.getColumnTypes();
                 String tableName = fm.getTableName(sql);
                 Resultset rs = new Resultset(tableName, data, types, this);
                 dbLogger.addLog("fine", "Select Query executed");
@@ -68,9 +74,9 @@ public class Statement implements java.sql.Statement {
         File file = new File(s);
         file.mkdir();
         FileManagement a = new FileManagement();
-        Object x ;
+        Object x;
         file = new File("back_up/" + a.getTableName(sql) + ".xml");
-        if(!source.exists())throw new SQLException("Table Doesn't exist");
+        if (!source.exists()) throw new SQLException("Table Doesn't exist");
         try {
             a.copyFileUsingChannel(source, file);
         } catch (IOException e) {
@@ -97,7 +103,7 @@ public class Statement implements java.sql.Statement {
                 ex.printStackTrace();
             }
             dbLogger.addLog("Severe", "Update Query Failed!");
-            throw new SQLException (e.getMessage());
+            throw new SQLException(e.getMessage());
         }
         return (int) x;
     }
