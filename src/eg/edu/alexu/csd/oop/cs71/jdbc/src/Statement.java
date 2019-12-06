@@ -168,7 +168,10 @@ public class Statement implements java.sql.Statement {
                 {
                    if(facade.parse(sql)!=null)
                     dbLogger.addLog("fine","Use Query executed");
-                   else throw new SQLException("Database doesn't exist");
+                   else{
+                       dbLogger.addLog("Severe","Use Query failed!");
+                       throw new SQLException("Database doesn't exist");
+                   }
                 }
                 else return (boolean) facade.parse(sql);
                 return true;
