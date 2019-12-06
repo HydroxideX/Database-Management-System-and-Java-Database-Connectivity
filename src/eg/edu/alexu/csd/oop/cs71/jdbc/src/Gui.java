@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
@@ -29,7 +30,7 @@ public class Gui extends Application {
     TableView<Object[]> table = new TableView<>();
     static String success="";
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         table.setEditable(true);
         Scene scene = new Scene(new Group());
         stage.setTitle("SQL Database");
@@ -50,13 +51,18 @@ public class Gui extends Application {
             textField.requestFocus();
         });
         SQLDriver SQLDriver =new SQLDriver();
+        DBLogger dbLogger=new DBLogger();
+        dbLogger.addLog("finer","Driver Created");
         Properties info = new Properties();
         File dbDir = new File("");
         info.put("path", dbDir.getAbsoluteFile());
         Statement statement=null;
+        Connection connection=null;
         try{
-             Connection connection = SQLDriver.connect("jdbc:xmldb://localhost", info);
+              connection = SQLDriver.connect("jdbc:xmldb://localhost", info);
+            dbLogger.addLog("finer","Connection Initiated");
             statement=connection.createStatement();
+            dbLogger.addLog("finer","Statement Created");
 
         }catch (Exception e)
         {
@@ -66,6 +72,7 @@ public class Gui extends Application {
             alert.setHeaderText(success);
             alert.setContentText("Please try again!");
             success="";
+            dbLogger.addLog("Severe","Connection Failed");
             alert.showAndWait();
         }
         Label rowNum=new Label();
@@ -80,6 +87,8 @@ public class Gui extends Application {
                 try {
                     assert finalStatement != null;
                     object = finalStatement.executeQuery(query);
+                    dbLogger.addLog("fine","Select Query executed");
+
                     //method to transfer result set to 2d array of Objects
                     table.getColumns().clear();
                     Resultset temp =(Resultset)object;
@@ -111,83 +120,59 @@ public class Gui extends Application {
                     }
                     table.setItems(data);
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    success=ex.getMessage();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(success);
+                    alert.setContentText("Please try again!");
+                    success="";
+                    dbLogger.addLog("severe","Select Query failed");
+                    alert.showAndWait();
+
                 }
             }else if(query.contains("create")||query.contains("drop"))
             {
                 try {
                     object = finalStatement.execute(query);
-
+                    dbLogger.addLog("fine","Create|Drop Query executed");
                     if ((boolean) object) {
                         rowNum.setText("Success");
                     } else {
                         rowNum.setText("Fail");
                     }
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }else if(query.contains("update")||query.contains("insert")||query.contains("delete"))
-            {
-                try {
-                    object = finalStatement.executeUpdate(query);
-                    rowNum.setText("Rows Affected: "+object.toString());
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-
-            /*if(SQLvalidation.validateQuery(query))
-            {
-                object=facade.parse(query);
-                currentDb.setText("Database: "+facade.engine.currentDatabase);
-                query=query.toLowerCase();
-                if(query.contains("select")&&object != null) {
-                    rowNum.setText("");
-                    table.getColumns().clear();
-                    Object[][] x = facade.getFullTable((Object[][]) object);
-                    ObservableList<Object[]> data = FXCollections.observableArrayList();
-                    data.addAll(Arrays.asList(x));
-                    data.remove(0);
-                    for (int i = 0; i < x[0].length; i++)
-                    {
-                        TableColumn tc = new TableColumn(x[0][i].toString());
-                        tc.setMinWidth(150);
-                        final int colNo = i;
-                        tc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object[], Object>, SimpleStringProperty>() {
-                            @Override
-                            public SimpleStringProperty call(TableColumn.CellDataFeatures<Object[], Object> p) {
-                                return new SimpleStringProperty((String) p.getValue()[colNo]);
-                            }
-                        });
-                        table.getColumns().add(tc);
-
-                    }
-                    table.setItems(data);
-                }else if(!(query.contains("create")||query.contains("drop")||query.contains("use"))&&object != null)
-                {
-                    if((int)object!=-1)
-                    {
-                        rowNum.setText("Rows Number: "+object.toString());
-                    }
-                }
-                else rowNum.setText("");
-
-                if(!(success.equals(""))|| object == null)
-                {
+                    success=ex.getMessage();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
                     alert.setHeaderText(success);
                     alert.setContentText("Please try again!");
                     success="";
+                    dbLogger.addLog("Severe","Create|Drop Query Failed!");
                     alert.showAndWait();
                 }
-            }*/
+            }else if(query.contains("update")||query.contains("insert")||query.contains("delete"))
+            {
+                try {
+                    object = finalStatement.executeUpdate(query);
+                    dbLogger.addLog("fine","Update Query executed");
+                    rowNum.setText("Rows Affected: "+object.toString());
+                } catch (SQLException ex) {
+                    success=ex.getMessage();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(success);
+                    alert.setContentText("Please try again!");
+                    success="";
+                    dbLogger.addLog("Severe","Update Query Failed!");
+                    alert.showAndWait();
+                }
+            }
             else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid query");
                 alert.setContentText("Please try again!");
+                dbLogger.addLog("Severe","Invalid Query");
                 alert.showAndWait();
             }
         });
@@ -199,24 +184,45 @@ public class Gui extends Application {
             try {
                 assert finalStatement != null;
                 finalStatement.addBatch(query);
+                dbLogger.addLog("fine","Query Added to Batch");
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                success=ex.getMessage();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText(success);
+                alert.setContentText("Please try again!");
+                success="";
+                dbLogger.addLog("Severe","Failed to add to batch");
+                alert.showAndWait();
             }
         });
         clearBacth.setOnAction(e->{
             try {
                 assert finalStatement != null;
                 finalStatement.clearBatch();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                dbLogger.addLog("fine","Batch cleared");
+
+            } catch (SQLException ignored) {
             }
         });
         executeBacth.setOnAction(event -> {
             try {
                 assert finalStatement != null;
-                finalStatement.executeBatch();
+                int x[]=finalStatement.executeBatch();
+                dbLogger.addLog("fine","Batch Executed");
+                int sum=0;
+                for(int i=0;i<x.length;i++)
+                    sum+=x[i];
+                rowNum.setText("Rows Affected: "+sum);
             } catch (SQLException e) {
-                e.printStackTrace();
+                success=e.getMessage();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText(success);
+                alert.setContentText("Please try again!");
+                success="";
+                dbLogger.addLog("Severe","Failed to execute batch");
+                alert.showAndWait();
             }
         });
         final VBox vbox = new VBox();
@@ -234,6 +240,18 @@ public class Gui extends Application {
 
         stage.setScene(scene);
         stage.show();
+        Connection finalConnection = connection;
+        stage.setOnCloseRequest(e->{
+            try {
+                finalStatement.close();
+                finalConnection.close();
+                dbLogger.addLog("fine","Statement Closed");
+                dbLogger.addLog("fine","Connection Closed");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+        });
         scene.setOnKeyPressed(ke -> {
             KeyCode kc = ke.getCode();
             if(kc.equals(KeyCode.ENTER))

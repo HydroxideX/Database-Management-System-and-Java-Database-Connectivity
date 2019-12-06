@@ -30,12 +30,16 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        Object[][] data = (Object[][]) facade.parse(sql);
-        data = facade.getFullTable(data);
-        ArrayList<String> types = facade.getColumnTypes();
-        String tableName = fm.getTableName(sql);
-        Resultset rs = new Resultset(tableName, data, types);
-        return rs;
+        ValidationInterface SQLvalidation = new SQLBasicValidation();
+        if (SQLvalidation.validateQuery(sql)) {
+            Object[][] data = (Object[][]) facade.parse(sql);
+            data = facade.getFullTable(data);
+            ArrayList<String> types = facade.getColumnTypes();
+            String tableName = fm.getTableName(sql);
+            Resultset rs = new Resultset(tableName, data, types);
+            return rs;
+        }
+        throw new SQLException("Invalid Query");
     }
 
     @Override
@@ -43,7 +47,11 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        return (int) facade.parse(sql);
+        ValidationInterface SQLvalidation = new SQLBasicValidation();
+        if (SQLvalidation.validateQuery(sql)) {
+            return (int) facade.parse(sql);
+        }
+        throw new SQLException("Invalid Query");
     }
 
     @Override
@@ -203,7 +211,9 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
+        if(sql.contains("update")||sql.contains("insert")||sql.contains("delete"))
         Queries.add(sql);
+        else throw new SQLException("can't add a non-update query");
     }
 
     @Override
@@ -216,7 +226,16 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public int[] executeBatch() throws SQLException {
-        return new int[0];
+        ArrayList<Integer> rowsAffected =new ArrayList<Integer>();
+        if(Queries.size()==0)throw new SQLException("Batch is empty");
+        for(int i=0;i<Queries.size();i++)
+        {
+            if(Queries.get(i).contains("update")||Queries.get(i).contains("insert")||Queries.get(i).contains("delete"))
+                rowsAffected.add(executeUpdate(Queries.get(i)));
+        }
+        int[] rowsAffected1=new int[rowsAffected.size()];
+        for(int i=0;i<rowsAffected.size();i++)rowsAffected1[i]=rowsAffected.get(i);
+        return rowsAffected1;
     }
 
     @Override
