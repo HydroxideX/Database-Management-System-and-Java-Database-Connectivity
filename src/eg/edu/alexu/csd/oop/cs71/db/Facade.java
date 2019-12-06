@@ -29,6 +29,7 @@ public class Facade {
     public Object parse(String query) throws SQLException {
         SQLDatabase.startUp();
         String checker;
+        query=query.replaceAll("\\s+"," ");
         String[] command=query.split(" ");
         String query2=query;
         query2 += "NullValueToPassUse";
