@@ -12,7 +12,7 @@ public class Facade {
     public ArrayList<String> getColumnTypes (){
         return engine.cTypes;
     }
-    public Object parse(String query) throws SQLException {
+    public Object parse(String query) throws Exception {
         SQLDatabase.startUp();
         String checker;
         String[] command=query.split(" ");
