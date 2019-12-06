@@ -344,12 +344,12 @@ public class SQLDatabase implements Database {
            result = SQLParser.select(query, cNames, cTypes, tableData);
        }catch (FileNotFoundException e)
         {
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
         catch (Exception e)
        {
            Gui.success=e.getMessage();
-           return null;
+           throw new SQLException(e.getMessage());
        }
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
@@ -524,7 +524,7 @@ public class SQLDatabase implements Database {
         }catch (Exception e)
         {
             Gui.success=e.getMessage();
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
         switch (commad[0]){
             case "insert":{
@@ -533,7 +533,7 @@ public class SQLDatabase implements Database {
                 }catch (Exception e)
                 {
                     Gui.success=e.getMessage();
-                    return -1;
+                    throw new SQLException(e.getMessage());
                 }
             }
             break;
@@ -542,7 +542,7 @@ public class SQLDatabase implements Database {
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
-                return -1;
+                throw new SQLException(e.getMessage());
             }
             }
             break;
@@ -552,7 +552,7 @@ public class SQLDatabase implements Database {
                         }catch (Exception e)
                         {
                             Gui.success=e.getMessage();
-                            return -1;
+                            throw new SQLException(e.getMessage());
                         }
             }
             break;
@@ -562,7 +562,7 @@ public class SQLDatabase implements Database {
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
-                return -1;
+                throw new SQLException(e.getMessage());
             }
         }
             break;

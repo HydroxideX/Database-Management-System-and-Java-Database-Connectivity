@@ -76,7 +76,8 @@ public class Statement implements java.sql.Statement {
             try {
                 TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
 
-            Runnable block=new Runnable() {
+                File finalFile = file;
+                Runnable block=new Runnable() {
                 boolean test=false;
                 @Override
                 public void run() {
@@ -90,7 +91,7 @@ public class Statement implements java.sql.Statement {
                             e.printStackTrace();
                         }
                         test =true;
-
+                        finalFile.delete();
                     }
                     if (!test) {
                         dbLogger.addLog("Severe", "Update Query Failed!");
