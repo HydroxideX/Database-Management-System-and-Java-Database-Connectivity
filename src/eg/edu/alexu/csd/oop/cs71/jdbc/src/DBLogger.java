@@ -1,16 +1,14 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
 
 public class DBLogger {
     FileHandler fh;
     SimpleFormatter sf;
     Logger logger;
-   static DBLogger dbLogger;
+    static DBLogger dbLogger;
+
     static {
         try {
             dbLogger = new DBLogger();
@@ -18,15 +16,17 @@ public class DBLogger {
             e.printStackTrace();
         }
     }
+
     private DBLogger() throws IOException {
         fh = new FileHandler("Log.txt", true);
         fh.setFormatter(new DBLogFormatter());
         logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        logger.setUseParentHandlers(false);
         logger.addHandler(fh);
         logger.setLevel(Level.ALL);
     }
 
-    public static DBLogger getInstance(){
+    public static DBLogger getInstance() {
         return dbLogger;
     }
 
@@ -38,7 +38,6 @@ public class DBLogger {
         switch (level.toLowerCase()) {
             case "config":
                 logger.config(message);
-
                 break;
             case "severe":
                 logger.severe(message);
@@ -61,7 +60,9 @@ public class DBLogger {
     }
     /*public static void main(String[] args) throws IOException{
         DBLogger d = new DBLogger();
-        d.addLog("info", "hello world");
+       // d.addLog("info", "hello world");
+        Logger l = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        l.severe("hello");
     }*/
 
 }
