@@ -41,6 +41,7 @@ public class Statement implements java.sql.Statement {
             Resultset rs = new Resultset(tableName, data, types);
             dbLogger.addLog("fine","Select Query executed");
             return rs;}
+            dbLogger.addLog("severe","Select Query failed");
             throw new SQLException("Table doesn't exist");
         }
         dbLogger.addLog("severe","Select Query failed");
