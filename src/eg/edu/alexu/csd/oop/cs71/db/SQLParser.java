@@ -371,9 +371,10 @@ public class SQLParser {
                 M1 = P1.matcher(Value.get(i).get(j));
                 M2 = P2.matcher(Value.get(i).get(j));
                 if (XDS_2.get(idx).toLowerCase().equals("int") && (M1.matches() || !M2.matches()))
-                    throw new RuntimeException( "Column " + Value.get(i).get(j) + " isn't an Int");
+                    throw new RuntimeException( "Column \"" + Column.get(i) + "\" Type Mismatch");
                 if (XDS_2.get(idx).toLowerCase().equals("varchar") && !M1.matches())
-                    throw new RuntimeException("Column " + Value.get(i).get(j) + " isn't a Varchar ");
+                    throw new RuntimeException("Column \"" + Column.get(i) + "\" Type Mismatch ");
+
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
 
             }
