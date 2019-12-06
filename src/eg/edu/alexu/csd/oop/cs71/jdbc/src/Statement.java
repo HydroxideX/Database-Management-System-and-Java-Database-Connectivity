@@ -77,12 +77,15 @@ public class Statement implements java.sql.Statement {
             e.printStackTrace();
         }
         try {
+            File finalFile = file;
             x = timeoutBlock.addTask(new Callable() {
                 public Object call() throws Exception {
                     ValidationInterface SQLvalidation = new SQLBasicValidation();
                     if (SQLvalidation.validateQuery(sql)) {
                         dbLogger.addLog("fine", "Update Query executed");
-                        return facade.parse(sql);
+                        Object w=facade.parse(sql);
+                        finalFile.delete();
+                        return w;
                     } else {
                         dbLogger.addLog("Severe", "Update Query Failed!");
                         throw new SQLException("Invalid Query");
@@ -93,6 +96,7 @@ public class Statement implements java.sql.Statement {
             //catch the exception here . Which is block didn't execute within the time limit
             try {
                 a.copyFileUsingChannel(file, source);
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -100,7 +104,6 @@ public class Statement implements java.sql.Statement {
         }
         return (int) x;
     }
-
     @Override
     public void close() throws SQLException {
         connection = null;
