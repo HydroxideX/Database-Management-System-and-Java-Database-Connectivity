@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.*;
 
 public class Statement implements java.sql.Statement {
 
@@ -22,8 +23,9 @@ public class Statement implements java.sql.Statement {
     ArrayList<String> Queries = new ArrayList<>();
     Properties info;
     boolean closeState = false;
-    int timeout=5;
-    DBLogger dbLogger =DBLogger.getInstance();
+    int timeout;
+    DBLogger dbLogger = DBLogger.getInstance();
+    TimeoutBlock timeoutBlock = new TimeoutBlock();
 
     public Statement(Connection connection, Properties info) {
         this.connection = connection;
@@ -39,17 +41,18 @@ public class Statement implements java.sql.Statement {
         ValidationInterface SQLvalidation = new SQLBasicValidation();
         if (SQLvalidation.validateQuery(sql)) {
             Object[][] data = (Object[][]) facade.parse(sql);
-            if(data!=null){
-            data = facade.getFullTable(data);
-            ArrayList<String> types = facade.getColumnTypes();
-            String tableName = fm.getTableName(sql);
-            Resultset rs = new Resultset(tableName, data, types,this);
-            dbLogger.addLog("fine","Select Query executed");
-            return rs;}
-            dbLogger.addLog("severe","Select Query failed");
+            if (data != null) {
+                data = facade.getFullTable(data);
+                ArrayList<String> types = facade.getColumnTypes();
+                String tableName = fm.getTableName(sql);
+                Resultset rs = new Resultset(tableName, data, types, this);
+                dbLogger.addLog("fine", "Select Query executed");
+                return rs;
+            }
+            dbLogger.addLog("severe", "Select Query failed");
             throw new SQLException("Table doesn't exist");
         }
-        dbLogger.addLog("severe","Select Query failed");
+        dbLogger.addLog("severe", "Select Query failed");
         throw new SQLException("Invalid Query");
     }
 
@@ -58,69 +61,50 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        File source = new File(facade.getTablePath(sql)+".xml");
+        File source = new File(facade.getTablePath(sql) + ".xml");
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
-        s+="\\back_up";
+        s += "\\back_up";
         File file = new File(s);
         file.mkdir();
         FileManagement a = new FileManagement();
-        file = new File("back_up/"+a.getTableName(sql)+".xml");
-        if(!source.exists())throw new SQLException("table not found");
-            try {
-                a.copyFileUsingChannel(source, file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            final int[] res = new int[1];
-            try {
-                TimeoutBlock timeoutBlock = new TimeoutBlock(timeout* 1000);//set timeout in milliseconds
-
-            Runnable block=new Runnable() {
-                boolean test=false;
-                @Override
-                public void run() {
-                    //TO DO write block of code
+        Object x ;
+        file = new File("back_up/" + a.getTableName(sql) + ".xml");
+        try {
+            a.copyFileUsingChannel(source, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            x = timeoutBlock.addTask(new Callable() {
+                public Object call() throws Exception {
                     ValidationInterface SQLvalidation = new SQLBasicValidation();
                     if (SQLvalidation.validateQuery(sql)) {
-                        dbLogger.addLog("fine","Update Query executed");
-                        try {
-                            res[0] = (int) facade.parse(sql);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        test =true;
-
-                    }
-                    if (!test) {
+                        dbLogger.addLog("fine", "Update Query executed");
+                        return facade.parse(sql);
+                    } else {
                         dbLogger.addLog("Severe", "Update Query Failed!");
-                        try {
-                            throw new SQLException("Invalid Query");
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                        throw new SQLException("Invalid Query");
                     }
                 }
-            };
-
-            timeoutBlock.addBlock(block);// execute the runnable block
-
+            }, 5);
         } catch (Throwable e) {
             //catch the exception here . Which is block didn't execute within the time limit
             try {
-                a.copyFileUsingChannel(file,source);
+                a.copyFileUsingChannel(file, source);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            throw new SQLException ("Update Query Timed Out");
         }
-        return res[0];
+        return (int) x;
     }
 
     @Override
     public void close() throws SQLException {
         connection = null;
         closeState = true;
-        dbLogger.addLog("fine","Statement Closed");
+        dbLogger.addLog("fine", "Statement Closed");
     }
 
     @Override
@@ -150,7 +134,7 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public int getQueryTimeout() throws SQLException {
-        if (isClosed()){
+        if (isClosed()) {
             throw new SQLException();
         }
         return timeout;
@@ -158,13 +142,13 @@ public class Statement implements java.sql.Statement {
 
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
-        if (isClosed()){
+        if (isClosed()) {
             throw new SQLException();
         }
         if (seconds < 0) {
             throw new SQLException();
         }
-        timeout=seconds;
+        timeout = seconds;
     }
 
     @Override
@@ -210,16 +194,15 @@ public class Statement implements java.sql.Statement {
                     || checker.contains("DELETE") || checker.contains("ALTER")) {
                 executeUpdate(sql);
                 return true;
-            } else if (checker.contains("CREATE") || checker.contains("DROP")||checker.contains("USE")) {
+            } else if (checker.contains("CREATE") || checker.contains("DROP") || checker.contains("USE")) {
                 if (query2.contains("database")) {
-                    String a=info.get("path").toString()+command[2];
+                    String a = info.get("path").toString() + command[2];
                     String[] temp = a.split("JDBC-API");
-                    if(temp[1].charAt(0)=='\\')
-                    {
-                        String tempo=temp[1].substring(1,temp[1].length()-1);
-                        temp[1]=tempo;
+                    if (temp[1].charAt(0) == '\\') {
+                        String tempo = temp[1].substring(1, temp[1].length() - 1);
+                        temp[1] = tempo;
                     }
-                    if(!temp[1].contains("\\")){
+                    if (!temp[1].contains("\\")) {
                         facade.parse(sql);
                         return true;
                     }
@@ -229,22 +212,20 @@ public class Statement implements java.sql.Statement {
                     else
                         sql2 = "drop database " + temp[1] + "\\" + command[2];
                     facade.parse(sql2);
-                    dbLogger.addLog("fine","Create|Drop Query executed");
-                }else if(checker.contains("USE"))
-                {
-                   if(facade.parse(sql)!=null)
-                    dbLogger.addLog("fine","Use Query executed");
-                   else{
-                       dbLogger.addLog("Severe","Use Query failed!");
-                       throw new SQLException("Database doesn't exist");
-                   }
-                }
-                else return (boolean) facade.parse(sql);
+                    dbLogger.addLog("fine", "Create|Drop Query executed");
+                } else if (checker.contains("USE")) {
+                    if (facade.parse(sql) != null)
+                        dbLogger.addLog("fine", "Use Query executed");
+                    else {
+                        dbLogger.addLog("Severe", "Use Query failed!");
+                        throw new SQLException("Database doesn't exist");
+                    }
+                } else return (boolean) facade.parse(sql);
                 return true;
             }
             return false;
         } else {
-            dbLogger.addLog("Severe","Invalid Query");
+            dbLogger.addLog("Severe", "Invalid Query");
             throw new SQLException("Invalid Query");
         }
     }
@@ -300,12 +281,11 @@ public class Statement implements java.sql.Statement {
             throw new SQLException();
         }
 
-        if(sql.contains("update")||sql.contains("insert")||sql.contains("delete")){
+        if (sql.contains("update") || sql.contains("insert") || sql.contains("delete")) {
             Queries.add(sql);
-            dbLogger.addLog("fine","Query Added to Batch");
-        }
-        else{
-            dbLogger.addLog("Severe","Failed to add to batch");
+            dbLogger.addLog("fine", "Query Added to Batch");
+        } else {
+            dbLogger.addLog("Severe", "Failed to add to batch");
             throw new SQLException("can't add a non-update query");
         }
     }
@@ -316,24 +296,23 @@ public class Statement implements java.sql.Statement {
             throw new SQLException();
         }
         Queries.clear();
-        dbLogger.addLog("fine","Batch cleared");
+        dbLogger.addLog("fine", "Batch cleared");
     }
 
     @Override
     public int[] executeBatch() throws SQLException {
-        ArrayList<Integer> rowsAffected =new ArrayList<Integer>();
-        if(Queries.size()==0){
-            dbLogger.addLog("Severe","Failed to execute batch");
+        ArrayList<Integer> rowsAffected = new ArrayList<Integer>();
+        if (Queries.size() == 0) {
+            dbLogger.addLog("Severe", "Failed to execute batch");
             throw new SQLException("Batch is empty");
         }
-        for(int i=0;i<Queries.size();i++)
-        {
-            if(Queries.get(i).contains("update")||Queries.get(i).contains("insert")||Queries.get(i).contains("delete"))
+        for (int i = 0; i < Queries.size(); i++) {
+            if (Queries.get(i).contains("update") || Queries.get(i).contains("insert") || Queries.get(i).contains("delete"))
                 rowsAffected.add(executeUpdate(Queries.get(i)));
         }
-        int[] rowsAffected1=new int[rowsAffected.size()];
-        for(int i=0;i<rowsAffected.size();i++)rowsAffected1[i]=rowsAffected.get(i);
-        dbLogger.addLog("fine","Batch Executed");
+        int[] rowsAffected1 = new int[rowsAffected.size()];
+        for (int i = 0; i < rowsAffected.size(); i++) rowsAffected1[i] = rowsAffected.get(i);
+        dbLogger.addLog("fine", "Batch Executed");
         return rowsAffected1;
 
     }
