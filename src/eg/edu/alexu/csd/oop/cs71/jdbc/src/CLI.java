@@ -40,9 +40,10 @@ public class CLI {
                             Object[][] table = convertResultSetTOArray(rs);
                             printTable(table);
                         } catch (SQLException ex) {
-                            ex.printStackTrace();
+                            String errorMessage = ex.getMessage();
+                            System.out.println(errorMessage);
                         }
-                    }else if(query.contains("create")||query.contains("drop"))
+                    }else if(query.contains("create")||query.contains("drop") || query.contains("use"))
                     {
                         try {
                             object = finalStatement.execute(query);
@@ -53,7 +54,8 @@ public class CLI {
                                 System.out.println("Success");
                             }
                         } catch (SQLException ex) {
-                            ex.printStackTrace();
+                            String errorMessage = ex.getMessage();
+                            System.out.println(errorMessage);
                         }
                     }else if(query.contains("update")||query.contains("insert")||query.contains("delete"))
                     {
@@ -61,7 +63,8 @@ public class CLI {
                             int x = finalStatement.executeUpdate(query);
                             System.out.println("Changed Number of Columns: " + x );
                         } catch (SQLException ex) {
-                            ex.printStackTrace();
+                            String errorMessage = ex.getMessage();
+                            System.out.println(errorMessage);
                         }
                     }
                 }
