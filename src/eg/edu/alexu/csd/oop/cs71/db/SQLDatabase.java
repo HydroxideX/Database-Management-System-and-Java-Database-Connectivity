@@ -86,17 +86,18 @@ public class SQLDatabase implements Database {
     public String createDatabase(String databaseName, boolean dropIfExists) {
 
        databaseName=databaseName.toLowerCase();
+        boolean exist = false;
         if (dropIfExists) {
             try {
                 executeStructureQuery("drop database "+databaseName);
                 Gui.success="";
                 executeStructureQuery("create database "+databaseName);
                 currentDatabase=databaseName;
+                exist=true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        boolean exist = false;
         if (!dropIfExists){
             for (String database : databases) {
                 if (database.equals(databaseName)) {
