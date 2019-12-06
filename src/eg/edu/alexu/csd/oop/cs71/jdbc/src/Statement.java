@@ -131,6 +131,7 @@ public class Statement implements java.sql.Statement {
             String query2 = sql;
             query2 = query2.toLowerCase();
             String[] command = query2.split(" ");
+            query2 += "NullValueToPassUse";
             String checker = query2.substring(0, 8);
             checker = checker.toUpperCase();
             String secondChecker = command[1].toUpperCase();
@@ -143,7 +144,7 @@ public class Statement implements java.sql.Statement {
                     || checker.contains("DELETE") || checker.contains("ALTER")) {
                 executeUpdate(sql);
                 return true;
-            } else if (checker.contains("CREATE") || checker.contains("DROP")) {
+            } else if (checker.contains("CREATE") || checker.contains("DROP")||checker.contains("USE")) {
                 if (query2.contains("database")) {
                     String a=info.get("path").toString()+command[2];
                     String[] temp = a.split("JDBC-API");
@@ -163,7 +164,13 @@ public class Statement implements java.sql.Statement {
                         sql2 = "drop database " + temp[1] + "\\" + command[2];
                     facade.parse(sql2);
                     dbLogger.addLog("fine","Create|Drop Query executed");
-                } else return (boolean) facade.parse(sql);
+                }else if(checker.contains("USE"))
+                {
+                   if(facade.parse(sql)!=null)
+                    dbLogger.addLog("fine","Use Query executed");
+                   else throw new SQLException("Database doesn't exist");
+                }
+                else return (boolean) facade.parse(sql);
                 return true;
             }
             return false;

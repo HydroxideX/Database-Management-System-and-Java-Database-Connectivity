@@ -28,15 +28,10 @@ public class Facade {
             if (secondChecker.contains("DATABASE")) {
                return engine.createDatabase(command[2],true);
             } else {
-                try {
                     return  engine.executeStructureQuery(query);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }else if(checker.contains("DROP"))
         {
-
                return engine.executeStructureQuery(query);
         }
         else if(checker.contains("SELECT")){

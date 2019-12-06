@@ -123,7 +123,7 @@ public class Gui extends Application {
                     alert.showAndWait();
 
                 }
-            }else if(query.contains("create")||query.contains("drop"))
+            }else if(query.contains("create")||query.contains("drop")||query.contains("use"))
             {
                 try {
                     object = finalStatement.execute(query);

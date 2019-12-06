@@ -115,7 +115,6 @@ public class SQLDatabase implements Database {
             currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
             return currentpath;
         }
-        Gui.success="Database doesn't exist";
         return null;
     }
 
