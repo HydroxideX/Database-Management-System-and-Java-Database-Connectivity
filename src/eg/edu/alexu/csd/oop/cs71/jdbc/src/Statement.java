@@ -96,6 +96,7 @@ public class Statement implements java.sql.Statement {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            dbLogger.addLog("Severe", "Update Query Failed!");
             throw new SQLException (e.getMessage());
         }
         return (int) x;
