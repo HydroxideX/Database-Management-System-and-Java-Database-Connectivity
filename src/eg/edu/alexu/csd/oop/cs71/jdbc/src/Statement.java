@@ -61,13 +61,43 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        ValidationInterface SQLvalidation = new SQLBasicValidation();
-        if (SQLvalidation.validateQuery(sql)) {
-            dbLogger.addLog("fine","Update Query executed");
-            return (int) facade.parse(sql);
+        File source = new File(facade.getTablePath(sql) + ".xml");
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        s += "\\back_up";
+        File file = new File(s);
+        file.mkdir();
+        FileManagement a = new FileManagement();
+        Object x ;
+        file = new File("back_up/" + a.getTableName(sql) + ".xml");
+        try {
+            a.copyFileUsingChannel(source, file);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        dbLogger.addLog("Severe","Update Query Failed!");
-        throw new SQLException("Invalid Query");
+        try {
+            x = timeoutBlock.addTask(new Callable() {
+                public Object call() throws Exception {
+                    ValidationInterface SQLvalidation = new SQLBasicValidation();
+                    if (SQLvalidation.validateQuery(sql)) {
+                        dbLogger.addLog("fine", "Update Query executed");
+                        return facade.parse(sql);
+                    } else {
+                        dbLogger.addLog("Severe", "Update Query Failed!");
+                        throw new SQLException("Invalid Query");
+                    }
+                }
+            }, 5);
+        } catch (Throwable e) {
+            //catch the exception here . Which is block didn't execute within the time limit
+            try {
+                a.copyFileUsingChannel(file, source);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            throw new SQLException ("Update Query Timed Out");
+        }
+        return (int) x;
     }
 
     @Override
@@ -166,12 +196,7 @@ public class Statement implements java.sql.Statement {
                 return true;
             } else if (checker.contains("CREATE") || checker.contains("DROP") || checker.contains("USE")) {
                 if (query2.contains("database")) {
-                    String a=info.get("path").toString()+command[2];
-                    if(!a.contains("JDBC-API"))
-                    {
-                        facade.parse(sql);
-                        return true;
-                    }
+                    String a = info.get("path").toString() + command[2];
                     String[] temp = a.split("JDBC-API");
                     if (temp[1].charAt(0) == '\\') {
                         String tempo = temp[1].substring(1, temp[1].length() - 1);
