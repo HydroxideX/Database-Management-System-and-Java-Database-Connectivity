@@ -46,7 +46,7 @@ public class Statement implements java.sql.Statement {
                 public Object call() throws Exception {
                     return facade.parse(sql);
                 }
-            },10);
+            },timeout);
             if (data != null) {
                 data = facade.getFullTable(data);
                 types = facade.getColumnTypes();
@@ -97,7 +97,7 @@ public class Statement implements java.sql.Statement {
                         throw new SQLException("Invalid Query");
                     }
                 }
-            }, 5);
+            }, timeout);
         } catch (Throwable e) {
             //catch the exception here . Which is block didn't execute within the time limit
             try {

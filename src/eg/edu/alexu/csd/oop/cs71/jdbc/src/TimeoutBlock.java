@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 public class TimeoutBlock {
     Future<Object> future ;
     ExecutorService executor;
-    public Object addTask(Callable c , long time) throws SQLException {
+    public Object addTask(Callable c , int time) throws SQLException {
         Object x ;
         executor = Executors.newSingleThreadExecutor();
         future = executor.submit(c);
