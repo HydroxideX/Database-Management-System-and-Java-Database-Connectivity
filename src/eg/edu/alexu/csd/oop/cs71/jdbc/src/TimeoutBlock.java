@@ -14,7 +14,7 @@ public class TimeoutBlock {
         executor = Executors.newSingleThreadExecutor();
         future = executor.submit(c);
         try {
-            x= (int)future.get(time, TimeUnit.SECONDS); //timeout is in 2 seconds
+            x=future.get(time, TimeUnit.SECONDS); //timeout is in 2 seconds
         } catch (TimeoutException e) {
             future.cancel(true);
             throw new SQLException("Query TimedOut");
