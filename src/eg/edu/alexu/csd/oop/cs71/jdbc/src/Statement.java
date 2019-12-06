@@ -214,6 +214,11 @@ public class Statement implements java.sql.Statement {
             } else if (checker.contains("CREATE") || checker.contains("DROP")||checker.contains("USE")) {
                 if (query2.contains("database")) {
                     String a=info.get("path").toString()+command[2];
+                    if(!a.contains("JDBC-API"))
+                    {
+                        facade.parse(sql);
+                        return true;
+                    }
                     String[] temp = a.split("JDBC-API");
                     if(temp[1].charAt(0)=='\\')
                     {
