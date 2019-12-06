@@ -228,6 +228,7 @@ public class Gui extends Application {
             try {
                 finalStatement.close();
                 finalConnection.close();
+                System.exit(0);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
