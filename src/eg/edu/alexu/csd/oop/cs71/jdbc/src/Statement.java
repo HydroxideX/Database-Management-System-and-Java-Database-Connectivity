@@ -7,6 +7,8 @@ import eg.edu.alexu.csd.oop.cs71.db.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.ArrayList;
@@ -56,11 +58,16 @@ public class Statement implements java.sql.Statement {
         if (isClosed()) {
             throw new SQLException();
         }
-        File source = new File(facade.getTablePath(sql));
-        File target = new File("back-up");
+        File source = new File(facade.getTablePath(sql)+".xml");
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        s+="\\back_up";
+        File file = new File(s);
+        file.mkdir();
         FileManagement a = new FileManagement();
+        file = new File("back_up/"+a.getTableName(sql)+".xml");
         try {
-            a.copyFileUsingChannel(source,target);
+            a.copyFileUsingChannel(source,file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -99,7 +106,7 @@ public class Statement implements java.sql.Statement {
         } catch (Throwable e) {
             //catch the exception here . Which is block didn't execute within the time limit
             try {
-                a.copyFileUsingChannel(target,source);
+                a.copyFileUsingChannel(file,source);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
