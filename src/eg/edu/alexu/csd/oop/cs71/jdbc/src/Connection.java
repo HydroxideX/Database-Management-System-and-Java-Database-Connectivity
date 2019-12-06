@@ -9,7 +9,7 @@ public class Connection implements java.sql.Connection {
     SQLDriver SQLDriver;
     Properties info;
     Statement statement;
-
+    DBLogger dbLogger=DBLogger.getInstance();
     public Connection(Properties info, SQLDriver SQLDriver) {
         this.SQLDriver = SQLDriver;
         this.info = info;
@@ -21,13 +21,16 @@ public class Connection implements java.sql.Connection {
             if (SQLDriver.connections.get(i) == this) {
                 statement = null;
                 SQLDriver.connections.remove(this);
+                break;
             }
         }
+        dbLogger.addLog("fine","Connection Closed");
     }
 
     @Override
     public Statement createStatement() throws SQLException {
         statement = new Statement(this, info);
+        dbLogger.addLog("finer","Statement Created");
         return statement;
     }
 

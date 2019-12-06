@@ -11,12 +11,16 @@ import java.util.logging.Logger;
 
 public class SQLDriver implements java.sql.Driver {
     ArrayList<Connection> connections = new ArrayList<>();
-
+    DBLogger dbLogger=DBLogger.getInstance();
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        if (!acceptsURL(url)) throw new SQLException("Wrong URL");
+        if (!acceptsURL(url)) {
+            dbLogger.addLog("Severe","Connection Failed");
+            throw new SQLException("Wrong URL");
+        }
         Connection connection = new Connection(info, this);
         connections.add(connection);
+        dbLogger.addLog("finer","Connection Initiated");
         return connection;
     }
 

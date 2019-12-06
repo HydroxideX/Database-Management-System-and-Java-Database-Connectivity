@@ -51,8 +51,6 @@ public class Gui extends Application {
             textField.requestFocus();
         });
         SQLDriver SQLDriver =new SQLDriver();
-        DBLogger dbLogger=new DBLogger();
-        dbLogger.addLog("finer","Driver Created");
         Properties info = new Properties();
         File dbDir = new File("");
         info.put("path", dbDir.getAbsoluteFile());
@@ -60,9 +58,7 @@ public class Gui extends Application {
         Connection connection=null;
         try{
               connection = SQLDriver.connect("jdbc:xmldb://localhost", info);
-            dbLogger.addLog("finer","Connection Initiated");
             statement=connection.createStatement();
-            dbLogger.addLog("finer","Statement Created");
 
         }catch (Exception e)
         {
@@ -72,7 +68,6 @@ public class Gui extends Application {
             alert.setHeaderText(success);
             alert.setContentText("Please try again!");
             success="";
-            dbLogger.addLog("Severe","Connection Failed");
             alert.showAndWait();
         }
         Label rowNum=new Label();
@@ -87,7 +82,6 @@ public class Gui extends Application {
                 try {
                     assert finalStatement != null;
                     object = finalStatement.executeQuery(query);
-                    dbLogger.addLog("fine","Select Query executed");
 
                     //method to transfer result set to 2d array of Objects
                     table.getColumns().clear();
@@ -126,7 +120,6 @@ public class Gui extends Application {
                     alert.setHeaderText(success);
                     alert.setContentText("Please try again!");
                     success="";
-                    dbLogger.addLog("severe","Select Query failed");
                     alert.showAndWait();
 
                 }
@@ -134,7 +127,6 @@ public class Gui extends Application {
             {
                 try {
                     object = finalStatement.execute(query);
-                    dbLogger.addLog("fine","Create|Drop Query executed");
                     if ((boolean) object) {
                         rowNum.setText("Success");
                     } else {
@@ -147,14 +139,12 @@ public class Gui extends Application {
                     alert.setHeaderText(success);
                     alert.setContentText("Please try again!");
                     success="";
-                    dbLogger.addLog("Severe","Create|Drop Query Failed!");
                     alert.showAndWait();
                 }
             }else if(query.contains("update")||query.contains("insert")||query.contains("delete"))
             {
                 try {
                     object = finalStatement.executeUpdate(query);
-                    dbLogger.addLog("fine","Update Query executed");
                     rowNum.setText("Rows Affected: "+object.toString());
                 } catch (SQLException ex) {
                     success=ex.getMessage();
@@ -163,7 +153,6 @@ public class Gui extends Application {
                     alert.setHeaderText(success);
                     alert.setContentText("Please try again!");
                     success="";
-                    dbLogger.addLog("Severe","Update Query Failed!");
                     alert.showAndWait();
                 }
             }
@@ -172,7 +161,6 @@ public class Gui extends Application {
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid query");
                 alert.setContentText("Please try again!");
-                dbLogger.addLog("Severe","Invalid Query");
                 alert.showAndWait();
             }
         });
@@ -184,7 +172,6 @@ public class Gui extends Application {
             try {
                 assert finalStatement != null;
                 finalStatement.addBatch(query);
-                dbLogger.addLog("fine","Query Added to Batch");
             } catch (SQLException ex) {
                 success=ex.getMessage();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -192,7 +179,6 @@ public class Gui extends Application {
                 alert.setHeaderText(success);
                 alert.setContentText("Please try again!");
                 success="";
-                dbLogger.addLog("Severe","Failed to add to batch");
                 alert.showAndWait();
             }
         });
@@ -200,7 +186,6 @@ public class Gui extends Application {
             try {
                 assert finalStatement != null;
                 finalStatement.clearBatch();
-                dbLogger.addLog("fine","Batch cleared");
 
             } catch (SQLException ignored) {
             }
@@ -209,7 +194,6 @@ public class Gui extends Application {
             try {
                 assert finalStatement != null;
                 int x[]=finalStatement.executeBatch();
-                dbLogger.addLog("fine","Batch Executed");
                 int sum=0;
                 for(int i=0;i<x.length;i++)
                     sum+=x[i];
@@ -221,7 +205,6 @@ public class Gui extends Application {
                 alert.setHeaderText(success);
                 alert.setContentText("Please try again!");
                 success="";
-                dbLogger.addLog("Severe","Failed to execute batch");
                 alert.showAndWait();
             }
         });
@@ -245,8 +228,6 @@ public class Gui extends Application {
             try {
                 finalStatement.close();
                 finalConnection.close();
-                dbLogger.addLog("fine","Statement Closed");
-                dbLogger.addLog("fine","Connection Closed");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

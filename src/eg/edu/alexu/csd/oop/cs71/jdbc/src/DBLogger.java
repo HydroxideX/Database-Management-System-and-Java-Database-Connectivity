@@ -10,12 +10,24 @@ public class DBLogger {
     FileHandler fh;
     SimpleFormatter sf;
     Logger logger;
-    public DBLogger() throws IOException {
+   static DBLogger dbLogger;
+    static {
+        try {
+            dbLogger = new DBLogger();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private DBLogger() throws IOException {
         fh = new FileHandler("Log.txt", true);
         fh.setFormatter(new DBLogFormatter());
         logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         logger.addHandler(fh);
         logger.setLevel(Level.ALL);
+    }
+
+    public static DBLogger getInstance(){
+        return dbLogger;
     }
 
     //Config for connection succesful
