@@ -96,7 +96,7 @@ public class SQLDatabase implements Database {
                 e.printStackTrace();
             }
         }
-        boolean exist = true;
+        boolean exist = false;
         if (!dropIfExists){
             for (String database : databases) {
                 if (database.equals(databaseName)) {
