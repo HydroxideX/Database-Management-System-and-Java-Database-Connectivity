@@ -366,7 +366,7 @@ public class SQLParser {
         Matcher M2;
         for (int i = 0; i < Column.size(); i++) {
             int idx = XDS_1.indexOf(Column.get(i).toLowerCase());
-            if (idx == -1) throw new NullPointerException("Column Name : " + Column.get(i) + " Doesn't Exist ,WTF ?! ");
+            if (idx == -1) throw new NullPointerException("Column Name : " + Column.get(i) + " Doesn't Exist ! ");
             for (int j = 0; j < Value.get(i).size(); j++) {
                 M1 = P1.matcher(Value.get(i).get(j));
                 M2 = P2.matcher(Value.get(i).get(j));

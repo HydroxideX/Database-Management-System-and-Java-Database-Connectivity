@@ -95,7 +95,7 @@ public class CLI {
         final String CYAN_BOLD_BRIGHT = "\033[1;96m";
         final String RESET = "\033[0m";
         for(int i = 0;i<table.length;i++){
-            System.out.printf("█ ");
+            System.out.printf("+ ");
             for(int j = 0;j <table[i].length;j++){
                 if(i == 0) System.out.printf(CYAN_BOLD_BRIGHT);
                 else System.out.printf(RESET);
@@ -105,28 +105,28 @@ public class CLI {
                 }
                 if(j == table[i].length - 1) break;
                 System.out.printf(RESET);
-                System.out.printf(" █ ");
+                System.out.printf(" | ");
             }
             System.out.printf(RESET);
-            System.out.printf(" █\n");
+            System.out.printf(" +\n");
             printRow(maxDistArray,1);
         }
 
     }
 
     public static void printRow (int[] maxDistArray ,int big) {
-        if(big == 0) System.out.printf("▄▄");
-        else System.out.printf("█▄");
+        if(big == 0) System.out.printf("+-");
+        else System.out.printf("+-");
         for(int i = 0;i<maxDistArray.length;i++){
             for(int j = 0;j <maxDistArray[i];j++){
-                System.out.printf("▄");
+                System.out.printf("-");
             }
             if(i == maxDistArray.length - 1) break;
-            if(big == 0) System.out.printf("▄▄▄");
-            else System.out.printf("▄█▄");
+            if(big == 0) System.out.printf("-+-");
+            else System.out.printf("---");
         }
-        if(big == 0) System.out.printf("▄▄\n");
-        else System.out.printf("▄█\n");
+        if(big == 0) System.out.printf("-+\n");
+        else System.out.printf("-+\n");
     }
 
 
