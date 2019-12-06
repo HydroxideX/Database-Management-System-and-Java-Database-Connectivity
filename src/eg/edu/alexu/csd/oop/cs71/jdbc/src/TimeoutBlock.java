@@ -35,7 +35,7 @@ public class TimeoutBlock {
 
     }
 
-    public static void main(String[] args) throws SQLException {
+   /* public static void main(String[] args) throws SQLException {
         TimeoutBlock t = new TimeoutBlock();
         System.out.println((int) t.addTask(new Callable() {
 
@@ -57,5 +57,5 @@ public class TimeoutBlock {
             }
         },500));
 
-    }
+    }*/
 }
