@@ -1,0 +1,94 @@
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:20 :  Use Query failed!
+[ FINE ] 12\07\2019 , 15:20 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:20 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ FINE ] 12\07\2019 , 15:20 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:20 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ FINE ] 12\07\2019 , 15:20 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:20 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ FINE ] 12\07\2019 , 15:20 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:20 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ FINE ] 12\07\2019 , 15:20 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:20 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:20 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:20 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:20 :  Statement Created
+[ FINE ] 12\07\2019 , 15:21 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ FINE ] 12\07\2019 , 15:21 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:21 :  Select Query failed
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ FINE ] 12\07\2019 , 15:21 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:21 :  Select Query failed
+[ FINE ] 12\07\2019 , 15:21 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:21 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:21 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:21 :  Statement Created
+[ FINER ] 12\07\2019 , 15:26 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:26 :  Statement Created
+[ FINE ] 12\07\2019 , 15:26 :  Use Query executed
+[ FINE ] 12\07\2019 , 15:26 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:26 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:26 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:26 :  Statement Created
+[ FINE ] 12\07\2019 , 15:26 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:26 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:26 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:26 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:26 :  Statement Created
+[ FINE ] 12\07\2019 , 15:26 :  Update Query executed
+[ FINE ] 12\07\2019 , 15:26 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:26 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:26 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:26 :  Statement Created
+[ FINE ] 12\07\2019 , 15:27 :  Select Query executed
+[ FINE ] 12\07\2019 , 15:27 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:27 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:27 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:27 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:27 :  Select Query failed
+[ FINE ] 12\07\2019 , 15:27 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:27 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:27 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:27 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:27 :  Select Query failed
+[ FINE ] 12\07\2019 , 15:27 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:27 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:27 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:27 :  Statement Created
+[ SEVERE ] 12\07\2019 , 15:27 :  Select Query failed
+[ FINE ] 12\07\2019 , 15:27 :  Connection Closed
+[ FINE ] 12\07\2019 , 15:27 :  Statement Closed
+[ FINER ] 12\07\2019 , 15:27 :  Connection Initiated
+[ FINER ] 12\07\2019 , 15:27 :  Statement Created

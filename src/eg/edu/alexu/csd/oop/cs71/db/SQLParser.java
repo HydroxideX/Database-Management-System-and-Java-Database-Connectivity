@@ -39,6 +39,7 @@ public class SQLParser {
         ArrayList<String> orderColumns = new ArrayList<>();
         query.replaceAll("<>", "!=");
         String q = query.substring(7, query.length());
+        q = q.replaceAll("\\s*,\\s*",", ");
         String[] collection = q.split(" ");
         ArrayList<String> ans = new ArrayList<String>();
         int i = 0;

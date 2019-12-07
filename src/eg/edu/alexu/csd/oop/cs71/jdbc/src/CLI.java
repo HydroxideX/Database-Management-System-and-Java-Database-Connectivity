@@ -58,11 +58,13 @@ public class CLI {
                     {
                         try {
                             int x = finalStatement.executeUpdate(query);
-                            System.out.println("Changed Number of Columns: " + x );
+                            System.out.println("Changed Number of Rows: " + x );
                         } catch (SQLException ex) {
                             String errorMessage = ex.getMessage();
                             System.out.println(errorMessage);
                         }
+                    } else {
+                        System.out.println("Invalid Query");
                     }
                     c.close();
                     finalStatement.close();

@@ -21,7 +21,8 @@ public class CLI {
                 try {
                     object = facade.parse(query);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    String s = e.getMessage();
+                    System.out.println(s);
                 }
                 query = query.toLowerCase();
                 if (query.contains("select") && object != null) {
@@ -32,6 +33,8 @@ public class CLI {
                         System.out.println("Rows Number: " + object.toString());
                     }
                 }
+            } else {
+                System.out.println("Invalid Query");
             }
         }
     }
@@ -52,22 +55,16 @@ public class CLI {
         sum+=4;
         sum+= 3 * table[0].length-2;
         printRow(maxDistArray,0);
-        final String CYAN_BOLD_BRIGHT = "\033[1;96m";
-        final String RESET = "\033[0m";
         for(int i = 0;i<table.length;i++){
             System.out.printf("█ ");
             for(int j = 0;j <table[i].length;j++){
-                if(i == 0) System.out.printf(CYAN_BOLD_BRIGHT);
-                else System.out.printf(RESET);
                 System.out.printf(table[i][j].toString());
                 for(int k = 0; k < maxDistArray[j] - table[i][j].toString().length();k++){
                     System.out.printf(" ");
                 }
                 if(j == table[i].length - 1) break;
-                System.out.printf(RESET);
                 System.out.printf(" █ ");
             }
-            System.out.printf(RESET);
             System.out.printf(" █\n");
             printRow(maxDistArray,1);
         }

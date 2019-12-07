@@ -307,7 +307,7 @@ public class SQLDatabase implements Database {
             File file =new File(tablePath);
 
             if (!file.delete()) {
-                Gui.success="Table doesn't exist!";
+                Gui.success = "Table doesn't exist!";
                 return false;
             }
              currentRelativePath = Paths.get("");
