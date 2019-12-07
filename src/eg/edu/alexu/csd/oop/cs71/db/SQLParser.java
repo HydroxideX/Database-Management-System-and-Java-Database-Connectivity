@@ -319,12 +319,12 @@ public class SQLParser {
     }
 
     private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|\\d))|\\;", " ");
+        query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|-?\\d))|\\;", " ");
         query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
         query = query.replaceAll("\\s+(?=\\=)", "");
-        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*(<|>|>\\s*=|<\\s*=|!\\s*=|=)[\\s]*([']?\\w+[']?)[\\s]*\\z");
+        Pattern P1 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*(<|>|>\\s*=|<\\s*=|!\\s*=|=)[\\s]*([']?-?\\w+[']?)[\\s]*\\z");
         Matcher M1;
-        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?\\w+[']?)[\\s]*)+\\z");
+        Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?-?\\w+[']?)[\\s]*)+\\z");
         Matcher M2;
         logicOperatorParser(query, colNames, colTypes, table);
         query = query.replaceAll("(?i)(not)\\s*", "");
