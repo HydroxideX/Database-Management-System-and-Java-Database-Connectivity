@@ -1,8 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import java.io.File;
 import java.sql.*;
-//import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;

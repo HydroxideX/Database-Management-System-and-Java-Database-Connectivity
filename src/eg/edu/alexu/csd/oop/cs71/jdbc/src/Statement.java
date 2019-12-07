@@ -1,7 +1,5 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-//import java.sql.Connection;
-//import java.sql.ResultSet;
 
 import eg.edu.alexu.csd.oop.cs71.db.*;
 

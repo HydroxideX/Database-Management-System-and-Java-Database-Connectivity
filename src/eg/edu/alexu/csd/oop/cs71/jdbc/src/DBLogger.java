@@ -30,10 +30,7 @@ public class DBLogger {
         return dbLogger;
     }
 
-    //Config for connection succesful
-    //severe for SQLException
-    //warning for connection failure (Database Not found)
-    //fine for starting the program and closing it
+
     public void addLog(String level, String message) {
         switch (level.toLowerCase()) {
             case "config":
@@ -58,11 +55,5 @@ public class DBLogger {
                 logger.finest(message);
         }
     }
-    /*public static void main(String[] args) throws IOException{
-        DBLogger d = new DBLogger();
-       // d.addLog("info", "hello world");
-        Logger l = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        l.severe("hello");
-    }*/
 
 }

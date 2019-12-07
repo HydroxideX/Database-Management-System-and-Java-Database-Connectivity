@@ -1,9 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.concurrent.*;
 
 public class TimeoutBlock {

@@ -1,8 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 
-
-
 import java.io.File;
 import java.sql.Driver;
 import java.sql.SQLException;
