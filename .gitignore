@@ -1,3 +1,6 @@
-*.xml
-*.class
-*.iml
+/*
+/*/
+!/src/
+/src/out/*
+/src/.idea/*
+!.gitignore
