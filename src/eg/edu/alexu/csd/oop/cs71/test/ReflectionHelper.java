@@ -1,9 +1,9 @@
-//
+package eg.edu.alexu.csd.oop.cs71.test;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
 //
 
-package eg.edu.alexu.csd.oop.cs71.test;
+
 
 import java.io.File;
 import java.io.IOException;

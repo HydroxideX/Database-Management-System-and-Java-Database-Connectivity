@@ -42,7 +42,7 @@ public class SQLDatabase implements Database {
     }
 
     public ArrayList<String> cNames;
-    private ArrayList<String> cTypes;
+    public ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
     private ValidationInterface SQLvalidation;
 
@@ -86,17 +86,18 @@ public class SQLDatabase implements Database {
     public String createDatabase(String databaseName, boolean dropIfExists) {
 
        databaseName=databaseName.toLowerCase();
+        boolean exist = false;
         if (dropIfExists) {
             try {
                 executeStructureQuery("drop database "+databaseName);
                 Gui.success="";
                 executeStructureQuery("create database "+databaseName);
                 currentDatabase=databaseName;
+                exist=true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        boolean exist = true;
         if (!dropIfExists){
             for (String database : databases) {
                 if (database.equals(databaseName)) {
@@ -115,7 +116,6 @@ public class SQLDatabase implements Database {
             currentpath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + databaseName;
             return currentpath;
         }
-        Gui.success="Database doesn't exist";
         return null;
     }
 
@@ -298,19 +298,19 @@ public class SQLDatabase implements Database {
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
             String tablePath="";
-            if (currentDatabase.contains("\\")){
-                tablePath=currentDatabase+"\\"+tableName+".xml";
-            }else{
+           /* if (currentDatabase.contains("\\")){
+                tablePath=currentDatabase+"\\"+tableName+".xml";*/
+            //}else{
                 Path currentRelativePath = Paths.get("");
                 tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            }
+           // }
             File file =new File(tablePath);
 
             if (!file.delete()) {
-                Gui.success="Table doesn't exist!";
+                Gui.success = "Table doesn't exist!";
                 return false;
             }
-            Path currentRelativePath = Paths.get("");
+             currentRelativePath = Paths.get("");
             tablePath=currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
              file =new File(tablePath);
             file.delete();
@@ -345,12 +345,12 @@ public class SQLDatabase implements Database {
            result = SQLParser.select(query, cNames, cTypes, tableData);
        }catch (FileNotFoundException e)
         {
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
         catch (Exception e)
        {
            Gui.success=e.getMessage();
-           return null;
+           throw new SQLException(e.getMessage());
        }
         ArrayList<String> colNames =  new ArrayList<>();
         for(int i = 0;i<cNames.size();i++) colNames.add(cNames.get(i));
@@ -489,9 +489,11 @@ public class SQLDatabase implements Database {
         Object[][] finalTable =  new Object[selectedRows.size()][printColumns.size()];
         int row = 0;
         int col = 0;
+        cNames.clear();
         for (int i = 0;i<colNames.size();i++) {
             for (int j = 0;j<printColumns.size();j++) {
                 if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
+                    cNames.add(colNames.get(i));
                     for (int k = 0;k < table.size();k++) {
                         if(colTypes.get(i).toLowerCase().equals("int") && !table.get(k).get(i).toString().toLowerCase().equals("null")){
                             finalTable[row++][col] = Integer.parseInt(table.get(k).get(i).toString());
@@ -523,7 +525,7 @@ public class SQLDatabase implements Database {
         }catch (Exception e)
         {
             Gui.success=e.getMessage();
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
         switch (commad[0]){
             case "insert":{
@@ -532,7 +534,7 @@ public class SQLDatabase implements Database {
                 }catch (Exception e)
                 {
                     Gui.success=e.getMessage();
-                    return -1;
+                    throw new SQLException(e.getMessage());
                 }
             }
             break;
@@ -541,7 +543,7 @@ public class SQLDatabase implements Database {
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
-                return -1;
+                throw new SQLException(e.getMessage());
             }
             }
             break;
@@ -551,7 +553,7 @@ public class SQLDatabase implements Database {
                         }catch (Exception e)
                         {
                             Gui.success=e.getMessage();
-                            return -1;
+                            throw new SQLException(e.getMessage());
                         }
             }
             break;
@@ -561,7 +563,7 @@ public class SQLDatabase implements Database {
             }catch (Exception e)
             {
                 Gui.success=e.getMessage();
-                return -1;
+                throw new SQLException(e.getMessage());
             }
         }
             break;

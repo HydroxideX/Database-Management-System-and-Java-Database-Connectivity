@@ -10,25 +10,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-class FileManagement implements FileManagementInterface{
+public class FileManagement extends FileManagementInterface{
     public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes){
-       // String[] columnTypes =new String[tableColumns.size()];
-       // String[] columnNames =new String[tableColumns.size()];
         String[] columnContents =new String[tableColumns.size()];
         Arrays.fill(columnContents, "");
         int index = 0;
-       /* for (String str : tableColumns.keySet()) {
-            columnNames[index++] = str;
-        }
-        for (int i=0; i<tableColumns.size(); i++){
-            columnTypes[i]= tableColumns.get(columnNames[i]);
-        }*/
         for (HashMap<String, Object> tableDatum : tableData) {
             for (int j = 0; j < cNames.size(); j++) {
                 columnContents[j] += tableDatum.get(cNames.get(j)).toString() + " ";
@@ -166,4 +159,21 @@ class FileManagement implements FileManagementInterface{
         }
         return tableName;
     }
+
+    public void copyFileUsingChannel(File src, File dest) throws IOException {
+        FileChannel sourceChannel = null;
+        FileChannel destinationChannel = null;
+        try {
+            sourceChannel = new FileInputStream(src).getChannel();
+            destinationChannel = new FileOutputStream(dest).getChannel();
+            destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } finally {
+            assert sourceChannel != null;
+            sourceChannel.close();
+            assert destinationChannel != null;
+            destinationChannel.close();
+        }
+    }
 }
+
+

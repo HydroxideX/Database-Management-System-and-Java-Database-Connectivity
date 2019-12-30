@@ -1,17 +1,35 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-class Facade {
+public class Facade {
     public SQLDatabase engine;
     public Facade (){
         engine = SQLDatabase.getInstance();
     }
+    public ArrayList<String> getColumnTypes (){
+        return engine.cTypes;
+    }
 
-    Object parse(String query) {
+    public String getTablePath(String query){
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        s+="\\Databases\\";
+        s+=engine.currentDatabase;
+        s+="\\";
+        FileManagement a =new FileManagement();
+        s+=a.getTableName(query);
+        return s;
+    }
+
+    public Object parse(String query) throws SQLException {
+        SQLDatabase.startUp();
         String checker;
+        query=query.replaceAll("\\s+"," ");
         String[] command=query.split(" ");
         String query2=query;
         query2 += "NullValueToPassUse";
@@ -19,43 +37,27 @@ class Facade {
         checker = checker.toUpperCase();
         String secondChecker = query.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
-                || checker.contains("DELETE")||checker.contains("ALTER")) {
-            try {
+                || checker.contains("DELETE")) {
                 return engine.executeUpdateQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {
                return engine.createDatabase(command[2],true);
             } else {
-                try {
                     return  engine.executeStructureQuery(query);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }else if(checker.contains("DROP"))
         {
-            try {
                return engine.executeStructureQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         else if(checker.contains("SELECT")){
-            try {
                return engine.executeQuery(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }else if(checker.contains("USE"))
         {
             return engine.createDatabase(command[1],false);
         }
         return null;
     }
-    Object[][] getFullTable(Object[][] incompleteTable)
+    public Object[][] getFullTable(Object[][] incompleteTable)
     {
         ArrayList<String> cNames=engine.cNames;
         Object[][] newTable = new Object[incompleteTable.length+1][cNames.size()];
@@ -67,7 +69,7 @@ class Facade {
         {
             for(int j=0;j<incompleteTable[i].length;j++)
             {
-                newTable[i+1][j]=incompleteTable[i][j].toString();
+                newTable[i+1][j]=incompleteTable[i][j];
             }
         }
         return newTable;
