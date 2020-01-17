@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.concurrent.*;
 
 public class TimeoutBlock {
-    Future<Object> future ;
-    ExecutorService executor;
+    public Future<Object> future ;
+    public ExecutorService executor;
     public Object addTask(Callable c , int time) throws SQLException {
         Object x ;
         executor = Executors.newSingleThreadExecutor();

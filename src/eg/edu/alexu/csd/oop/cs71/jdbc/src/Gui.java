@@ -23,12 +23,12 @@ import java.util.Properties;
 
 public class Gui extends Application {
 
+    public TableView<Object[]> table = new TableView<>();
+    public static String success="";
     public static void main (String[] args) {
         launch(args);
     }
 
-    TableView<Object[]> table = new TableView<>();
-    static String success="";
     @Override
     public void start(Stage stage) throws IOException {
         table.setEditable(true);
@@ -167,7 +167,6 @@ public class Gui extends Application {
         addBatch.setOnAction(e->{
             String query=textField.getText();
             query=query.replaceAll(";","");
-            Object object;
             query=query.toLowerCase();
             try {
                 assert finalStatement != null;

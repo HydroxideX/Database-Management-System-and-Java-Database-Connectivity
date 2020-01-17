@@ -78,9 +78,9 @@ public class SQLParser {
                 ArrayList<String> pp = oPParameters.get(j);
                 String columnName = columnNames.get(j);
                 String type = getColumnType(columnName, colNames, colTypes);
-                if(type.equals("varchar")){
+                if("varchar".equals(type)){
                     stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
-                } else if (type.equals("int")){
+                } else if ("int".equals(type)){
                     integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
                 }
             }

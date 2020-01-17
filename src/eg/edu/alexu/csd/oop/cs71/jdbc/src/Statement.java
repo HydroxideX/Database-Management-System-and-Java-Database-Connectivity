@@ -1,7 +1,6 @@
 package eg.edu.alexu.csd.oop.cs71.jdbc.src;
 
 
-import eg.edu.alexu.csd.oop.cs71.db.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,15 +14,15 @@ import java.util.concurrent.*;
 
 public class Statement implements java.sql.Statement {
 
-    Facade facade = new Facade();
-    FileManagement fm = new FileManagement();
-    Connection connection;
-    ArrayList<String> Queries = new ArrayList<>();
-    Properties info;
-    boolean closeState = false;
-    int timeout=10;
-    DBLogger dbLogger = DBLogger.getInstance();
-    TimeoutBlock timeoutBlock = new TimeoutBlock();
+    public Facade facade = new Facade();
+    public FileManagement fm = new FileManagement();
+    public Connection connection;
+    public ArrayList<String> Queries = new ArrayList<>();
+    public Properties info;
+    public boolean closeState = false;
+    public int timeout=10;
+    public DBLogger dbLogger = DBLogger.getInstance();
+    public TimeoutBlock timeoutBlock = new TimeoutBlock();
 
     public Statement(Connection connection, Properties info) {
         this.connection = connection;

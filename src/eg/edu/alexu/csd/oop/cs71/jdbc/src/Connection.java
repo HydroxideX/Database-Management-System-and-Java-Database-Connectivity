@@ -6,10 +6,10 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class Connection implements java.sql.Connection {
-    SQLDriver SQLDriver;
-    Properties info;
-    Statement statement;
-    DBLogger dbLogger=DBLogger.getInstance();
+    public SQLDriver SQLDriver;
+    public Properties info;
+    public Statement statement;
+    public DBLogger dbLogger=DBLogger.getInstance();
     public Connection(Properties info, SQLDriver SQLDriver) {
         this.SQLDriver = SQLDriver;
         this.info = info;
