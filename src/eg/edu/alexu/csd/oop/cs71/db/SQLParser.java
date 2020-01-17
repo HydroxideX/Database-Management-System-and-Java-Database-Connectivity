@@ -69,7 +69,7 @@ public class SQLParser {
                 s = s + " " + collection[i];
                 i++;
             }
-            operationParser(s.substring(1, s.length()), colNames, colTypes, table);
+            operationParser(s.substring(1, s.length()));
             validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
@@ -164,7 +164,7 @@ public class SQLParser {
         validateColumnNames(chColumn, chValue, colNames, colTypes);
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
-            operationParser(query, colNames, colTypes, table);
+            operationParser(query);
             validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
@@ -173,9 +173,9 @@ public class SQLParser {
                 ArrayList<String> pp = oPParameters.get(j);
                 String columnName = columnNames.get(j);
                 String type = getColumnType(columnName, colNames, colTypes);
-                if(type.equals("varchar")){
+                if("varchar".equals(type)){
                     stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
-                } else if (type.equals("int")){
+                } else if ("int".equals(type)){
                     integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
                 }
             }
@@ -214,7 +214,7 @@ public class SQLParser {
         int counter = 0;
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
-            operationParser(query, colNames, colTypes, table);
+            operationParser(query);
             validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
@@ -318,7 +318,7 @@ public class SQLParser {
         return 0;
     }
 
-    private void operationParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
+    private void operationParser(String query) {
         query = query.replaceAll("\\s+|\\(+|\\)|\\,|(?i)(and\\s+(?='|-?\\d))|\\;", " ");
         query = query.replaceAll("\\s*\\<\\>\\s*", " != ");
         query = query.replaceAll("\\s+(?=\\=)", "");

@@ -12,10 +12,7 @@ import org.junit.Assert;
 public class TestRunner {
     private static Class<?> implementation;
     private static boolean Debug = false;
-
-    public TestRunner() {
-    }
-
+    
     public static Object getImplementationInstanceForInterface(Class<?> interfaceToTest) {
         initaiteforInterface(interfaceToTest);
 

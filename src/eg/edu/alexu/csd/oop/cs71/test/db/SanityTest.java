@@ -6,7 +6,8 @@ import java.io.File;
 
 import eg.edu.alexu.csd.oop.cs71.db.Database;
 import eg.edu.alexu.csd.oop.cs71.test.TestRunner;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SanityTest {
 

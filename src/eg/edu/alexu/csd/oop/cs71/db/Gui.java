@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

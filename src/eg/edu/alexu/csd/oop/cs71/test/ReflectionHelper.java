@@ -15,8 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ReflectionHelper {
-    public ReflectionHelper() {
-    }
+
 
     public static List<Class<?>> findClassesImpmenenting(Class<?> interfaceClass, Package fromPackage) {
         if (interfaceClass == null) {
