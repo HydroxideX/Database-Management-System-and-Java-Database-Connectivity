@@ -32,7 +32,7 @@ import java.util.*;
 public class SQLDatabase implements Database {
     private static SQLDatabase uniqueSQLDatabaseInstance;
     private static ArrayList<String> databases = new ArrayList<>();
-    String currentDatabase;
+    public String currentDatabase;
     private SQLParser SQLParser;
     private ArrayList<HashMap<String,Object>> tableData;
     private HashMap<String,String> tableColumns;
@@ -49,7 +49,6 @@ public class SQLDatabase implements Database {
         cNames= new ArrayList<>();
         cTypes= new ArrayList<>();
         fileManagement=new FileManagement();
-        currentDatabase= new String();
     }
     public static synchronized SQLDatabase getInstance() {
         if (uniqueSQLDatabaseInstance == null) {
@@ -58,7 +57,7 @@ public class SQLDatabase implements Database {
         return uniqueSQLDatabaseInstance;
     }
 
-    static void startUp()
+    public static void startUp()
     {
          File file ;
         try {
@@ -141,39 +140,37 @@ public class SQLDatabase implements Database {
                 }
             }
         }
-        if (checker.contains("DROP")) {
-            if (secondChecker.contains("DATABASE")) {
-                boolean exist = false;
-                int foundat=0;
-                for (int i = 0; i < databases.size(); i++) {
-                    if (databases.get(i).equals(command[2])) {
-                        exist = true;
-                        foundat=i;
-                    }
+        if (checker.contains("DROP") && secondChecker.contains("DATABASE")) {
+            boolean exist = false;
+            int foundat=0;
+            for (int i = 0; i < databases.size(); i++) {
+                if (databases.get(i).equals(command[2])) {
+                    exist = true;
+                    foundat=i;
                 }
-                if (exist) {
-                    String s11;
-                    Path currentRelativePath = Paths.get("");
-                    s11= currentRelativePath.toAbsolutePath().toString();
-                    s11+="\\Databases\\";
-                    s11+=command[2];
-                    File dir = new File(s11);
-                    File[] listFiles = dir.listFiles();
-                    for (File file : listFiles) {
-                        file.delete();
-                    }
-                    databases.remove(foundat);
-                    currentDatabase="";
+            }
+            if (exist) {
+                String s11;
+                Path currentRelativePath = Paths.get("");
+                s11= currentRelativePath.toAbsolutePath().toString();
+                s11+="\\Databases\\";
+                s11+=command[2];
+                File dir = new File(s11);
+                File[] listFiles = dir.listFiles();
+                for (File file : listFiles) {
+                    file.delete();
                 }
-                else {
-                    Gui.success="Database doesn't exist!";
-                    return false;
-                }
+                databases.remove(foundat);
+                currentDatabase="";
+            }
+            else {
+                Gui.success="Database doesn't exist!";
+                return false;
             }
         }
         if (query.contains("(")&&checker.contains("CREATE")&&secondChecker.contains("TABLE")) {
 
-            if(currentDatabase.equals(""))
+            if("".equals(currentDatabase))
             {
                 Gui.success="Please select the desired database using \"use x\"";
                throw new SQLException();
@@ -274,7 +271,6 @@ public class SQLDatabase implements Database {
             } catch (ParserConfigurationException | IOException e) {
                 e.printStackTrace();
             }
-            boolean flag = validateXMLSchema(Path,tablePath);
         }
         else if(checker.contains("DROP")&&secondChecker.contains("TABLE")) {
             String tableName = command[2];
@@ -341,8 +337,7 @@ public class SQLDatabase implements Database {
         ArrayList<String> selectedRows = result.get(1);
         ArrayList<String> orderColumns = result.get(2);
         ArrayList <ArrayList<Object> >table = new ArrayList<>();
-        ArrayList <Object> singleRow = new ArrayList<>();
-        int row;
+        ArrayList <Object> singleRow;
         for(int j = 0;j<selectedRows.size();j++){
             singleRow = new ArrayList<>();
             for (int i = 0;i < cNames.size();i++) {
@@ -367,10 +362,10 @@ public class SQLDatabase implements Database {
         ArrayList <Boolean> orderAscOrDesc = new ArrayList<>();
         for(int i = 0;i<orderColumns.size();i++){
             if(i < orderColumns.size()-1){
-                if(orderColumns.get(i+1).toUpperCase().equals("DESC") ){
+                if(orderColumns.get(i+1).equalsIgnoreCase("DESC") ){
                     orderAscOrDesc.add(true);
                     i++;
-                } else if(orderColumns.get(i+1).toUpperCase().equals("ASC") ){
+                } else if(orderColumns.get(i+1).equalsIgnoreCase("ASC") ){
                     orderAscOrDesc.add(false);
                     i++;
                 } else {
@@ -382,7 +377,7 @@ public class SQLDatabase implements Database {
         }
         int cur = 0;
         for (int i = 0;i<orderColumns.size();i++) {
-            if(orderColumns.get(i).toUpperCase().equals("DESC") || orderColumns.get(i).toUpperCase().equals("ASC")) continue;
+            if(orderColumns.get(i).equalsIgnoreCase("DESC") || orderColumns.get(i).equalsIgnoreCase("ASC")) continue;
             swapColumns(orderColumns.get(i),table,colNames,colTypes,cur,swapped,true);
             cur++;
         }
@@ -392,10 +387,10 @@ public class SQLDatabase implements Database {
         }
     }
 
-    void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur,ArrayList <Pair<Integer,Integer>> swapped,boolean addtoswapped) {
+    public void swapColumns (String Name, ArrayList<ArrayList <Object>> table, ArrayList<String> colNames,ArrayList<String> colTypes ,int cur,ArrayList <Pair<Integer,Integer>> swapped,boolean addtoswapped) {
         int index = 0;
         for (int i = 0;i<colNames.size();i++) {
-            if (Name.toUpperCase().equals(colNames.get(i).toUpperCase())) {
+            if (Name.equalsIgnoreCase(colNames.get(i))) {
                 index = i;
                 colNames.set(i,colNames.get(cur));
                 colNames.set(cur,Name);
@@ -457,27 +452,25 @@ public class SQLDatabase implements Database {
         });
     }
 
-    int getCorrectPolarity(int comparator, ArrayList <Boolean> orderAscOrDesc, int i){
+    public int getCorrectPolarity(int comparator, ArrayList <Boolean> orderAscOrDesc, int i){
         int z = comparator;
-        if(i < orderAscOrDesc.size()){
-            if(orderAscOrDesc.get(i)){
+        if(i < orderAscOrDesc.size() && orderAscOrDesc.get(i)){
                 z *= -1;
-            }
         }
         return z;
     }
 
-    Object[][] transformToTable(ArrayList<String> colNames, ArrayList<String> printColumns, ArrayList <String> selectedRows, ArrayList<ArrayList <Object> > table,ArrayList<String> colTypes){
+   public Object[][] transformToTable(ArrayList<String> colNames, ArrayList<String> printColumns, ArrayList <String> selectedRows, ArrayList<ArrayList <Object> > table,ArrayList<String> colTypes){
         Object[][] finalTable =  new Object[selectedRows.size()][printColumns.size()];
         int row = 0;
         int col = 0;
         cNames.clear();
         for (int i = 0;i<colNames.size();i++) {
             for (int j = 0;j<printColumns.size();j++) {
-                if (colNames.get(i).toUpperCase().equals(printColumns.get(j).toUpperCase())) {
+                if (colNames.get(i).equalsIgnoreCase(printColumns.get(j))) {
                     cNames.add(colNames.get(i));
                     for (int k = 0;k < table.size();k++) {
-                        if(colTypes.get(i).toLowerCase().equals("int") && !table.get(k).get(i).toString().toLowerCase().equals("null")){
+                        if(colTypes.get(i).equalsIgnoreCase("int") && !table.get(k).get(i).toString().equalsIgnoreCase("null")){
                             finalTable[row++][col] = Integer.parseInt(table.get(k).get(i).toString());
                             continue;
                         }
@@ -494,9 +487,6 @@ public class SQLDatabase implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
-        /*if(!SQLvalidation.validateQuery(query)){
-            throw new SQLException("Wrong Query");
-        }*/
         query= query.toLowerCase();
         String[] commad=query.split(" ",2);
         commad[0]=commad[0].toLowerCase();

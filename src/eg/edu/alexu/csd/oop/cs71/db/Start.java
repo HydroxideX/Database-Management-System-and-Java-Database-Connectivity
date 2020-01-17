@@ -2,7 +2,8 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -19,7 +20,6 @@ public class Start extends Application {
         stage.setWidth(300);
         stage.setHeight(60);
         stage.setResizable(false);
-        TextField textField =new TextField();
         HBox hBox = new HBox();
 
         Button commandLineInterface =new Button("Command Line Interface");

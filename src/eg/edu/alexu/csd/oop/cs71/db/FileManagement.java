@@ -21,7 +21,6 @@ public class FileManagement extends FileManagementInterface{
     public void writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes){
         String[] columnContents =new String[tableColumns.size()];
         Arrays.fill(columnContents, "");
-        int index = 0;
         for (HashMap<String, Object> tableDatum : tableData) {
             for (int j = 0; j < cNames.size(); j++) {
                 columnContents[j] += tableDatum.get(cNames.get(j)).toString() + " ";
@@ -61,7 +60,7 @@ public class FileManagement extends FileManagementInterface{
         String z = tableName;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         z=z.toLowerCase();
-        if(currentDatabase.equals(""))
+        if("".equals(currentDatabase))
         {
             throw new FileNotFoundException("Please select the desired database using \"use x\"");
         }
@@ -113,7 +112,7 @@ public class FileManagement extends FileManagementInterface{
                 HashMap<String, Object> row = new HashMap<>();
                 for (int j = 0; j < columnContents.length; j++) {
                     String[] columnCon = columnContents[j].split(" ");
-                    if (columnCon[i] != "")
+                    if ( !"".equals(columnCon[i]))
                         row.put(columnNames[j], columnCon[i]);
                 }
                 if (row.size() > 0)
@@ -121,23 +120,6 @@ public class FileManagement extends FileManagementInterface{
             }
         } catch (Exception e){
             throw new IOException("No Table Exists");
-        }
-
-
-    }
-
-    public void copyFileUsingChannel(File src, File dest) throws IOException {
-        FileChannel sourceChannel = null;
-        FileChannel destinationChannel = null;
-        try {
-            sourceChannel = new FileInputStream(src).getChannel();
-            destinationChannel = new FileOutputStream(dest).getChannel();
-            destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        } finally {
-            assert sourceChannel != null;
-            sourceChannel.close();
-            assert destinationChannel != null;
-            destinationChannel.close();
         }
     }
 }

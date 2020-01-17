@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import static java.lang.Math.max;
 
-public class CommandLineInterface {
+public class Commandlineinterface {
 
     public static void main(String [] args){
         Scanner input = new Scanner(System.in);
@@ -28,10 +28,8 @@ public class CommandLineInterface {
                 if (query.contains("select") && object != null) {
                     Object[][] x = facade.getFullTable((Object[][]) object);
                     printTable(x);
-                } else if (!(query.contains("create") || query.contains("drop") || query.contains("use")) && object != null) {
-                    if ((int) object != -1) {
+                } else if (!(query.contains("create") || query.contains("drop") || query.contains("use")) && object != null && (int) object != -1) {
                         System.out.println("Rows Number: " + object.toString());
-                    }
                 }
             } else {
                 System.out.println("Invalid Query");
