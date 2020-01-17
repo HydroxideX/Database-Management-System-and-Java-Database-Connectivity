@@ -11,7 +11,7 @@ public class StringConditionalParser implements ConditionalParser{
             HashMap<String, Object> t = table.get(i);
             for (int ppIterator = 0; ppIterator < pp.size(); ppIterator++)
                 pp.set(ppIterator, pp.get(ppIterator).replaceAll("'", ""));
-            if (t.get(columnName).toString().toLowerCase().equals("null")) continue;
+            if (t.get(columnName).toString().equalsIgnoreCase("null")) continue;
             switch (operation) {
                 case "between":
                     if ((t.get(columnName)).toString().compareTo(pp.get(0)) >= 0 && (t.get(columnName)).toString().compareTo(pp.get(1)) <= 0) {
@@ -31,12 +31,10 @@ public class StringConditionalParser implements ConditionalParser{
                     else ans += "0";
                     break;
                 case "=":
-                    String s = t.get(columnName).toString();
                     if (t.get(columnName).toString().equals(pp.get(0))) ans += "1";
                     else ans += "0";
                     break;
                 case ">=":
-                    String sr = t.get(columnName).toString();
                     if (t.get(columnName).toString().compareTo(pp.get(0)) >= 0) ans += "1";
                     else ans += "0";
                     break;
@@ -56,6 +54,8 @@ public class StringConditionalParser implements ConditionalParser{
                 case "<>":
                     if (t.get(columnName).toString().compareTo(pp.get(0)) != 0) ans += "1";
                     else ans += "0";
+                    break;
+                default:
                     break;
             }
             answers.set(i, answers.get(i) + ans);

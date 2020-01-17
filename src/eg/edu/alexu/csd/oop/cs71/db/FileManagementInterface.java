@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class FileManagementInterface {
-    abstract void  writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes);
-    abstract void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws IOException, ParserConfigurationException, SAXException;
+    public abstract void  writeInFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase,ArrayList <String> cNames, ArrayList<String> cTypes);
+    public abstract void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws IOException, ParserConfigurationException, SAXException;
     public String getTableName(String query){
         String tableName="";
         String[] parts=query.split(" ");
@@ -20,7 +20,7 @@ public abstract class FileManagementInterface {
                 int index=0;
                 for (String x:parts) {
                     x=x.toLowerCase();
-                    if(x.equals("from")){
+                    if("from".equals(x)){
                         index++;
                         break;
                     }
@@ -40,7 +40,8 @@ public abstract class FileManagementInterface {
             case "update":{
                 tableName=parts[1];
             }
-            break;
+            default:
+             break;
         }
         return tableName;
     }

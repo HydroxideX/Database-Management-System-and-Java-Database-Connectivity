@@ -126,41 +126,6 @@ public class FileManagement extends FileManagementInterface{
 
     }
 
-    public String getTableName(String query) {
-        String tableName="";
-        String[] parts=query.split(" ");
-        parts[0]=parts[0].toLowerCase();
-        switch (parts[0])
-        {
-            case "select":{
-                int index=0;
-                for (String x:parts) {
-                    x=x.toLowerCase();
-                    if(x.equals("from")){
-                        index++;
-                        break;
-                    }
-                    index++;
-                }
-                tableName=parts[index];
-            }
-            break;
-            case "insert":
-            case "alter":
-            case "delete":{
-                tableName=parts[2];
-                parts=tableName.split("\\(" );
-                tableName=parts[0];
-            }
-            break;
-            case "update":{
-                tableName=parts[1];
-            }
-            break;
-        }
-        return tableName;
-    }
-
     public void copyFileUsingChannel(File src, File dest) throws IOException {
         FileChannel sourceChannel = null;
         FileChannel destinationChannel = null;

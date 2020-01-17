@@ -10,7 +10,7 @@ public class IntegerConditionalParser implements ConditionalParser {
             HashMap<String, Object> t = table.get(i);
             for (int ppIterator = 0; ppIterator < pp.size(); ppIterator++)
                 pp.set(ppIterator, pp.get(ppIterator).replaceAll("'", ""));
-            if (t.get(columnName).toString().toLowerCase().equals("null")) continue;
+            if (t.get(columnName).toString().equalsIgnoreCase("null")) continue;
             switch (operation) {
                 case "between":
                     if (Integer.parseInt(t.get(columnName).toString()) >= Integer.parseInt(pp.get(0)) && Integer.parseInt(t.get(columnName).toString()) <= Integer.parseInt(pp.get(1))) {
@@ -34,7 +34,6 @@ public class IntegerConditionalParser implements ConditionalParser {
                     else ans += "0";
                     break;
                 case ">=":
-                    String sr = t.get(columnName).toString();
                     if (Integer.parseInt(t.get(columnName).toString()) >= Integer.parseInt(pp.get(0))) ans += "1";
                     else ans += "0";
                     break;
@@ -54,6 +53,8 @@ public class IntegerConditionalParser implements ConditionalParser {
                 case "<>":
                     if (!Integer.valueOf(t.get(columnName).toString()).equals(Integer.valueOf(pp.get(0)))) ans += "1";
                     else ans += "0";
+                    break;
+                default:
                     break;
             }
             answers.set(i, answers.get(i) + ans);

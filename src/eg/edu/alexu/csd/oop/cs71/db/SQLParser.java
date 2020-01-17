@@ -12,8 +12,8 @@ public class SQLParser {
     private ArrayList<String> logicOperator;
     private ArrayList<String> answers;
     private ArrayList<ArrayList<String>> oPParameters;
-    ConditionalParser stringConditionalParser;
-    ConditionalParser integerConditionalParser;
+    public ConditionalParser stringConditionalParser;
+    public ConditionalParser integerConditionalParser;
 
     private static SQLParser uniqueSQLParserInstance;
     private SQLParser() {
@@ -52,7 +52,7 @@ public class SQLParser {
                 printColumns.add(colNames.get(col));
             }
         } else {
-            while (!collection[i].toUpperCase().equals("FROM")) {
+            while (!collection[i].equalsIgnoreCase("FROM")) {
                 if (collection[i].charAt(collection[i].length() - 1) == ',') {
                     printColumns.add(collection[i].substring(0, collection[i].length() - 1));
                 } else {
@@ -70,7 +70,7 @@ public class SQLParser {
                 i++;
             }
             operationParser(s.substring(1, s.length()), colNames, colTypes, table);
-            ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
+            validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
             }
@@ -122,16 +122,16 @@ public class SQLParser {
     private boolean checkColumnNames(ArrayList<String> columnNames, ArrayList<String> toCheckOn) throws Exception {
         boolean found = false;
         for (int i = 0; i < toCheckOn.size(); i++) {
-            if (toCheckOn.get(i).toUpperCase().equals("DESC") || toCheckOn.get(i).toUpperCase().equals("ASC")
-                    || toCheckOn.get(i).toUpperCase().equals("*") || toCheckOn.get(i).toUpperCase().equals("NOORDER"))
+            if (toCheckOn.get(i).equalsIgnoreCase("DESC") || toCheckOn.get(i).equalsIgnoreCase("ASC")
+                    || toCheckOn.get(i).equalsIgnoreCase("*") || toCheckOn.get(i).equalsIgnoreCase("NOORDER"))
                 continue;
             found = false;
             for (int j = 0; j < columnNames.size(); j++) {
-                if (toCheckOn.get(i).toUpperCase().equals(columnNames.get(j).toUpperCase())) {
+                if (toCheckOn.get(i).equalsIgnoreCase(columnNames.get(j))) {
                     found = true;
                 }
             }
-            if (!found) throw new Exception("Wrong column name: " + toCheckOn.get(i).toString());
+            if (!found) throw new RuntimeException("Wrong column name: " + toCheckOn.get(i).toString());
         }
         return true;
     }
@@ -161,11 +161,11 @@ public class SQLParser {
             temp.add(changes[i + 1]);
             chValue.add(temp);
         }
-        ValidateColumnNames(chColumn, chValue, colNames, colTypes);
+        validateColumnNames(chColumn, chValue, colNames, colTypes);
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
+            validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
             }
@@ -215,7 +215,7 @@ public class SQLParser {
         if (query.toLowerCase().contains("where")) {
             query = query.split("\\s*(?i)(where)\\s*")[1];
             operationParser(query, colNames, colTypes, table);
-            ValidateColumnNames(columnNames, oPParameters, colNames, colTypes);
+            validateColumnNames(columnNames, oPParameters, colNames, colTypes);
             for(int iterator = 0;iterator<table.size();iterator++){
                 answers.add("");
             }
@@ -223,9 +223,9 @@ public class SQLParser {
                 ArrayList<String> pp = oPParameters.get(j);
                 String columnName = columnNames.get(j);
                 String type = getColumnType(columnName, colNames, colTypes);
-                if(type.equals("varchar")){
+                if("varchar".equals(type)){
                     stringConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
-                } else if (type.equals("int")){
+                } else if ("int".equals(type)){
                     integerConditionalParser.operationPerformer(columnName, table,pp,answers,operationNames.get(j));
                 }
             }
@@ -287,17 +287,17 @@ public class SQLParser {
             throw new NullPointerException("No. of Values and No of Columns aren't equal , They have to be the same number DumbAss !");
         //ArrayList<String> colTypesTemp = new ArrayList<String>();
         //for (int i = 0; i < values.size(); i++) colTypesTemp.add("varchar");
-        ValidateColumnNames(insColNames, values, colNames, colTypes);
+        validateColumnNames(insColNames, values, colNames, colTypes);
         for (int i = 0; i < values.size(); i++) {
             String type = getColumnType(insColNames.get(i), colNames, colTypes).toLowerCase();
             String iCN = insColNames.get(i).toLowerCase();
-            if (values.get(i).get(0).toLowerCase().equals("null"))
+            if (values.get(i).get(0).equalsIgnoreCase("null"))
                 columnMap.put(iCN, values.get(i).get(0));
-            else if (type.equals("varchar"))
+            else if ("varchar".equals(type))
                 columnMap.put(iCN, values.get(i).get(0));
-            else if (type.equals("int"))
+            else if ("int".equals(type))
                 columnMap.put(iCN, Integer.parseInt(values.get(i).get(0)));
-            else if (type.equals("float"))
+            else if ("float".equals(type))
                 columnMap.put(iCN, Float.parseFloat(values.get(i).get(0)));
         }
         for (int i = 0; i < colNames.size(); i++) columnMap.putIfAbsent(colNames.get(i).toLowerCase(), "null");
@@ -306,7 +306,7 @@ public class SQLParser {
 
     }
 
-    String getColumnType(String columnName, ArrayList<String> colNames, ArrayList<String> colTypes) {
+    public String getColumnType(String columnName, ArrayList<String> colNames, ArrayList<String> colTypes) {
         for (int i = 0; i < colNames.size(); i++) {
             if (columnName.equals(colNames.get(i))) return colTypes.get(i);
         }
@@ -326,7 +326,7 @@ public class SQLParser {
         Matcher M1;
         Pattern P2 = Pattern.compile("\\A[\\s]*(\\w+)[\\s]*((?i)between|in)([\\s]*([']?-?\\w+[']?)[\\s]*)+\\z");
         Matcher M2;
-        logicOperatorParser(query, colNames, colTypes, table);
+        logicOperatorParser(query);
         query = query.replaceAll("(?i)(not)\\s*", "");
         String[] operation = query.split("(?i)(\\s*(and|or)\\s*)");
         for (int i = 0; i < operation.length; i++) {
@@ -350,17 +350,17 @@ public class SQLParser {
         }
     }
 
-    private void logicOperatorParser(String query, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
+    private void logicOperatorParser(String query) {
         String[] operation = query.split(" ");
         for (int i = 0; i < operation.length; i++) {
             String s = operation[i].toLowerCase();
-            if (s.equals("and") || s.equals("or") || s.equals("not")) {
+            if ("and".equals(s) || "or".equals(s) || "not".equals(s)) {
                 logicOperator.add(s);
             }
         }
     }
 
-    private void ValidateColumnNames(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
+    private void validateColumnNames(ArrayList<String> Column, ArrayList<ArrayList<String>> Value, ArrayList<String> XDS_1, ArrayList<String> XDS_2) {
         Pattern P1 = Pattern.compile("('\\-*\\w+')");
         Matcher M1;
         Pattern P2 = Pattern.compile("(\\-*\\d+)");
@@ -371,9 +371,9 @@ public class SQLParser {
             for (int j = 0; j < Value.get(i).size(); j++) {
                 M1 = P1.matcher(Value.get(i).get(j));
                 M2 = P2.matcher(Value.get(i).get(j));
-                if (XDS_2.get(idx).toLowerCase().equals("int") && (M1.matches() || !M2.matches()))
+                if (XDS_2.get(idx).equalsIgnoreCase("int") && (M1.matches() || !M2.matches()))
                     throw new RuntimeException( "Column \"" + Column.get(i) + "\" Type Mismatch");
-                if (XDS_2.get(idx).toLowerCase().equals("varchar") && !M1.matches())
+                if (XDS_2.get(idx).equalsIgnoreCase("varchar") && !M1.matches())
                     throw new RuntimeException("Column \"" + Column.get(i) + "\" Type Mismatch ");
 
                 Value.get(i).set(j, Value.get(i).get(j).replaceAll("\\'", ""));
@@ -385,14 +385,14 @@ public class SQLParser {
 
 
     public Boolean isTrue(String ans, ArrayList<String> colNames, ArrayList<String> colTypes, ArrayList<HashMap<String, Object>> table) {
-        String a = "", b = "";
+        String a = "";
         boolean negative;
         int j = 0;
         String callable = "";
         for (int i = 0; i < logicOperator.size(); i++) {
             negative = false;
             String s = logicOperator.get(i);
-            if (s.equals("not")) {
+            if ("not".equals(s)) {
                 negative = !negative;
                 i++;
                 if (i != logicOperator.size()) s = logicOperator.get(i);
@@ -401,7 +401,7 @@ public class SQLParser {
             else a = "FALSE";
             j++;
             if (negative) {
-                if (a == "TRUE") {
+                if ("TRUE".equals(a)) {
                     a = "FALSE";
                 } else {
                     a = "TRUE";
@@ -414,6 +414,8 @@ public class SQLParser {
                     break;
                 case "or":
                     callable = callable + " OR ";
+                    break;
+                default:
                     break;
             }
         }
