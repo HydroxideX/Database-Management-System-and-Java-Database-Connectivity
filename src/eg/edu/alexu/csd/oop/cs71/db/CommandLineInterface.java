@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import static java.lang.Math.max;
 
-public class CLI {
+public class CommandLineInterface {
 
     public static void main(String [] args){
         Scanner input = new Scanner(System.in);

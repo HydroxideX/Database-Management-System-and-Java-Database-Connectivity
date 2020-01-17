@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.oop.cs71.db;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -27,36 +26,38 @@ public class Facade {
     }
 
     public Object parse(String query) throws SQLException {
+        String z = query;
         SQLDatabase.startUp();
         String checker;
-        query=query.replaceAll("\\s+"," ");
-        String[] command=query.split(" ");
-        String query2=query;
+        z=z.replaceAll("\\s+"," ");
+        String[] command=z.split(" ");
+        String query2=z;
         query2 += "NullValueToPassUse";
         checker = query2.substring(0,8);
         checker = checker.toUpperCase();
-        String secondChecker = query.toUpperCase();
+        String secondChecker = z.toUpperCase();
         if (checker.contains("UPDATE") || checker.contains("INSERT")
                 || checker.contains("DELETE")) {
-                return engine.executeUpdateQuery(query);
+                return engine.executeUpdateQuery(z);
         } else if (checker.contains("CREATE")){
             if (secondChecker.contains("DATABASE")) {
                return engine.createDatabase(command[2],true);
             } else {
-                    return  engine.executeStructureQuery(query);
+                    return  engine.executeStructureQuery(z);
             }
         }else if(checker.contains("DROP"))
         {
-               return engine.executeStructureQuery(query);
+               return engine.executeStructureQuery(z);
         }
         else if(checker.contains("SELECT")){
-               return engine.executeQuery(query);
+               return engine.executeQuery(z);
         }else if(checker.contains("USE"))
         {
             return engine.createDatabase(command[1],false);
         }
         return null;
     }
+
     public Object[][] getFullTable(Object[][] incompleteTable)
     {
         ArrayList<String> cNames=engine.cNames;

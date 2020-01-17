@@ -58,8 +58,9 @@ public class FileManagement extends FileManagementInterface{
     }
 
     public void  readFile(String tableName, HashMap<String, String> tableColumns, ArrayList<HashMap<String, Object>> tableData, String currentDatabase, ArrayList<String> cNames, ArrayList<String> cTypes) throws IOException, ParserConfigurationException, SAXException {
+        String z = tableName;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        tableName=tableName.toLowerCase();
+        z=z.toLowerCase();
         if(currentDatabase.equals(""))
         {
             throw new FileNotFoundException("Please select the desired database using \"use x\"");
@@ -67,7 +68,7 @@ public class FileManagement extends FileManagementInterface{
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Path currentRelativePath = Paths.get("");
-            String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase + "\\" + tableName + ".xml";
+            String path = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase + "\\" + z + ".xml";
             FileInputStream fis = new FileInputStream(new File(path));
             InputSource is = new InputSource(fis);
             Document doc = builder.parse(is);

@@ -24,7 +24,7 @@ public class SmokeTest {
         return dbDir;
     }
     
-    private File createDatabase_static(Database db, String name, boolean drop){
+    private File createDatabaseStatic(Database db, String name, boolean drop){
         String path = db.createDatabase("sample" + System.getProperty("file.separator") + name, drop);  // create database
         Assert.assertNotNull("Failed to create database", path);
         File dbDir = new File(path);
@@ -37,7 +37,7 @@ public class SmokeTest {
         File dummy = null;
         Database db = (Database) TestRunner.getImplementationInstanceForInterface(Database.class);
         {
-            File dbDir = createDatabase_static(db, "SaMpLe", true);
+            File dbDir = createDatabaseStatic(db, "SaMpLe", true);
             String files[] = dbDir.list();
             Assert.assertTrue("Database directory is not empty!", files == null || files.length == 0);
             dummy = new File(dbDir, "dummy");
@@ -49,13 +49,13 @@ public class SmokeTest {
             }
         }
         {
-            File dbDir = createDatabase_static(db, "sAmPlE", false);
+            File dbDir = createDatabaseStatic(db, "sAmPlE", false);
             String files[] = dbDir.list();
             Assert.assertTrue("Database directory is empty after opening! Database name is case insensitive!", files.length > 0);
             Assert.assertTrue("Failed t create find a previously created file into DB", dummy.exists());
         }
         {
-            File dbDir = createDatabase_static(db, "SAMPLE", true);
+            File dbDir = createDatabaseStatic(db, "SAMPLE", true);
             String files[] = dbDir.list();
             Assert.assertTrue("Database directory is not empty after drop! Database name is case insensitive!", files == null || files.length == 0);
         }

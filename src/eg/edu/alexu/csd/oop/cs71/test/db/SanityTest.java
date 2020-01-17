@@ -124,7 +124,7 @@ public class SanityTest {
 	}
 
 	@Test
-	public void testScenario_1()
+	public void testScenario1()
 	{
 		Database db = (Database)TestRunner.getImplementationInstanceForInterface(Database.class);
 
@@ -155,7 +155,7 @@ public class SanityTest {
 	}
 
 	@Test
-	public void testScenario_2()
+	public void testScenario2()
 	{
 		Database db = (Database)TestRunner.getImplementationInstanceForInterface(Database.class);
 
@@ -200,7 +200,7 @@ public class SanityTest {
 	}
 
 	@Test
-	public void testScenario_3()
+	public void testScenario3()
 	{
 		Database db = (Database)TestRunner.getImplementationInstanceForInterface(Database.class);
 

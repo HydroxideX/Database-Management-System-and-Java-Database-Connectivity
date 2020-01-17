@@ -36,11 +36,6 @@ public class SQLDatabase implements Database {
     private SQLParser SQLParser;
     private ArrayList<HashMap<String,Object>> tableData;
     private HashMap<String,String> tableColumns;
-
-    public ArrayList<String> getcNames() {
-        return cNames;
-    }
-
     public ArrayList<String> cNames;
     public ArrayList<String> cTypes;
     private FileManagementInterface fileManagement;
@@ -131,7 +126,7 @@ public class SQLDatabase implements Database {
         String secondChecker = command[1].toUpperCase();
         if (checker.contains("CREATE")) {
             if (secondChecker.contains("DATABASE")) {
-                String s= command[2];
+                String s;
                 Path currentRelativePath = Paths.get("");
                 s = currentRelativePath.toAbsolutePath().toString();
                 s+="\\Databases\\";
@@ -139,7 +134,6 @@ public class SQLDatabase implements Database {
                 try {
                     File file = new File(s);
                     file.getParentFile().mkdirs();
-                    boolean flag = file.mkdir();
                     databases.add(command[2]);
                     currentDatabase=command[2];
                 } catch(Exception e) {
@@ -158,21 +152,16 @@ public class SQLDatabase implements Database {
                     }
                 }
                 if (exist) {
-                    String s11 = new String();
-                   /* if (command[2].contains("\\")){
-                        s11=command[2];
-                    }else{*/
-                        Path currentRelativePath = Paths.get("");
-                        s11= currentRelativePath.toAbsolutePath().toString();
-                        s11+="\\Databases\\";
-                        s11+=command[2];
-                    //}
+                    String s11;
+                    Path currentRelativePath = Paths.get("");
+                    s11= currentRelativePath.toAbsolutePath().toString();
+                    s11+="\\Databases\\";
+                    s11+=command[2];
                     File dir = new File(s11);
                     File[] listFiles = dir.listFiles();
                     for (File file : listFiles) {
                         file.delete();
                     }
-                    boolean flag=dir.delete();
                     databases.remove(foundat);
                     currentDatabase="";
                 }
@@ -195,13 +184,10 @@ public class SQLDatabase implements Database {
                 tableName=temp1[0];
                 tableName=tableName.toLowerCase();
             }
-            String tablePath="";
-           /* if (currentDatabase.contains("\\")){
-                tablePath=currentDatabase+"\\"+tableName+".xml";
-            }else{*/
+            String tablePath;
+
                 Path currentRelativePath = Paths.get("");
                 tablePath = currentRelativePath.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xml";
-            //}
             File test =new File(tablePath);
             if(test.exists())return false;
 
@@ -254,21 +240,16 @@ public class SQLDatabase implements Database {
                 }
                 Element table = elMaker.createElement("element", "table", "tableType");
                 schemaRoot.appendChild(table);
-
-                // till now fine
                 TransformerFactory tFactory = TransformerFactory.newInstance();
                 Transformer transformer = tFactory.newTransformer();
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 DOMSource domSource = new DOMSource(doc);
-                //to create a file use something like this:
                 Path currentRelativePath1 = Paths.get("");
                 Path=currentRelativePath1.toAbsolutePath().toString() + "\\Databases\\" + currentDatabase +"\\" + tableName + ".xsd";
                 transformer.transform(domSource, new StreamResult(new File(Path)));
-                //to print to console use this:
             }
             catch (FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
-                //handle exception
                 e.printStackTrace();
             }
             try {
@@ -477,12 +458,13 @@ public class SQLDatabase implements Database {
     }
 
     int getCorrectPolarity(int comparator, ArrayList <Boolean> orderAscOrDesc, int i){
+        int z = comparator;
         if(i < orderAscOrDesc.size()){
             if(orderAscOrDesc.get(i)){
-                comparator *= -1;
+                z *= -1;
             }
         }
-        return comparator;
+        return z;
     }
 
     Object[][] transformToTable(ArrayList<String> colNames, ArrayList<String> printColumns, ArrayList <String> selectedRows, ArrayList<ArrayList <Object> > table,ArrayList<String> colTypes){
@@ -566,6 +548,7 @@ public class SQLDatabase implements Database {
                 throw new SQLException(e.getMessage());
             }
         }
+            default:
             break;
         }
         if(rowsNum!=-1){

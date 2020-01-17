@@ -1,6 +1,5 @@
 package eg.edu.alexu.csd.oop.cs71.db;
 
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
