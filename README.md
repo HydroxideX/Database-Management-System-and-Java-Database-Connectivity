@@ -10,50 +10,43 @@
 ## Features ##
 
 -   Java Database Connectivity API implementation.
-
 -   Graphical User Interface.
-
 -   Command Line Interface.
-
 -   Timeout For Queries.
-
 -   Batching Queries.
-
 -   Full Logger Of User Actions.
-
 
 ## Supported SQL statements ##
 > ### CREATE
->> -  CREATE DATABASE dbname.
->> -  CREATE TABLE table_name (column_name1 data_type, column_name2 data_type).
+>> -   CREATE DATABASE dbname.
+>> -   CREATE TABLE table_name (column_name1 data_type, column_name2 data_type).
 
 > ### DROP
->> -  DROP TABLE table_name.
->> -  DROP DATABASE database_name.
+>> -   DROP TABLE table_name.
+>> -   DROP DATABASE database_name.
 
 > ### INSERT
->> -  INSERT INTO table_name (ID,Name) VALUES (1,'youssef').
->> -  INSERT INTO table_name VALUES (1,'youssef', ...).
+>> -   INSERT INTO table_name (ID,Name) VALUES (1,'youssef').
+>> -   INSERT INTO table_name VALUES (1,'youssef', ...).
 
 > ### SELECT
->> -  SELECT col1, col2, col3 FROM table_name WHERE col1 < 8.
->> -  SELECT * FROM table_name WHERE col1 = 5 or not col2 in ('yahia', 'omar') and col3 != 7.
->> -  SELECT * FROM table_name where col1 <= col2.
->> -  SELECT * FROM table_name where col1 between 5 and 7.
->> -  SELECT * FROM table_name order by col1 ASC, col2, col3 DESC.
+>> -   SELECT col1, col2, col3 FROM table_name WHERE col1 < 8.
+>> -   SELECT * FROM table_name WHERE col1 = 5 or not col2 in ('yahia', 'omar') and col3 != 7.
+>> -   SELECT * FROM table_name where col1 <= col2.
+>> -   SELECT * FROM table_name where col1 between 5 and 7.
+>> -   SELECT * FROM table_name order by col1 ASC, col2, col3 DESC.
 
 > ### DELETE
->> -  DELETE FROM table_name WHERE some_column=some_value.
->> -  DELETE FROM table_name.
->> -  DELETE * FROM table_name.
+>> -   DELETE FROM table_name WHERE some_column=some_value.
+>> -   DELETE FROM table_name.
+>> -   DELETE * FROM table_name.
 
 > ### UPDATE
->> -  UPDATE table_name SET column1= 'value1',column2='value2' WHERE column3 ='value'.
->> -  UPDATE tableName SET column1 ='someValue', column2 ='someValue'.
+>> -   UPDATE table_name SET column1= 'value1',column2='value2' WHERE column3 ='value'.
+>> -   UPDATE tableName SET column1 ='someValue', column2 ='someValue'.
 
 ## Supported Data Types
-### int, varchar.
-
+### int, varchar
 
 ## Contribution Guidelines ##
 This project is public, Feel free to create pull requests.
@@ -78,7 +71,6 @@ This project is public, Feel free to create pull requests.
 ![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_6.png)
 
 ## Diagrams
-
 ### Use Case Diagram
 ![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_12.png)
 
