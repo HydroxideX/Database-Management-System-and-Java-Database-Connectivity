@@ -62,15 +62,3 @@ This project is public, Feel free to create pull requests.
 ![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_4.png)
 ![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_5.png)
 ![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_6.png)
-
-## Diagrams
-### Use Case Diagram
-![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_12.png)
-
-### State Diagram
-![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_13.png)
-![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_14.png)
-![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_15.png)
-
-### Sequence Diagram
-![picture alt](https://github.com/HydroxideX/Database-Management-System-and-Java-Database-Connectivity/blob/master/screenshots/screenshot_16.png)
